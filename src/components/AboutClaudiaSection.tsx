@@ -76,15 +76,11 @@ export default function AboutClaudiaSection() {
             </h2>
 
             <p className="text-lg text-gray-100 mb-8 font-noto-sans leading-relaxed">
-              La verdadera luz no es que otros nos ciegue, sino la que nos
-              permite ver el camino con claridad, incluida la penumbra.
+              Capa Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci quia commodi soluta quibusdam provident iure optio et maxime qui perspiciatis nihil, modi pariatur alias! Iure, corrupti labore? Animi, vel voluptatum!
             </p>
 
             <p className="text-base text-gray-200 mb-8 font-noto-sans leading-relaxed">
-              Esta comunidad nace de la voluntad de transformar una experiencia
-              desafiante en un espacio de encuentro. Melanoma no es solo un
-              nombre, es el símbolo de una búsqueda incesante por la verdad
-              médica y la serenidad emocional.
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam sed soluta itaque facere quos? Fugit rem excepturi distinctio praesentium temporibus. Necessitatibus repellat ad eos facilis blanditiis dignissimos natus? Iure, aperiam.
             </p>
 
             <button
