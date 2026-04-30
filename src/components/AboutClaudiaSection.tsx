@@ -1,9 +1,13 @@
 'use client';
 
 import { useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
+import { ArrowRight } from 'lucide-react';
 
 export default function AboutClaudiaSection() {
+  const router = useRouter();
+
   const overlayRef = useRef<HTMLSpanElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
   const iconRef = useRef<SVGSVGElement>(null);
@@ -57,6 +61,7 @@ export default function AboutClaudiaSection() {
 
       <div className="w-full flex justify-center px-6">
         <div className="max-w-[1000px] w-full relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          
           {/* Left Content */}
           <div>
             <p className="text-sm font-medium uppercase tracking-wider text-[#E3FEF7] mb-6">
@@ -72,7 +77,7 @@ export default function AboutClaudiaSection() {
 
             <p className="text-lg text-gray-100 mb-8 font-noto-sans leading-relaxed">
               La verdadera luz no es que otros nos ciegue, sino la que nos
-              permite ver el camino con claridad, incluido el penumbra.
+              permite ver el camino con claridad, incluida la penumbra.
             </p>
 
             <p className="text-base text-gray-200 mb-8 font-noto-sans leading-relaxed">
@@ -83,9 +88,10 @@ export default function AboutClaudiaSection() {
             </p>
 
             <button
+              onClick={() => router.push('/about-claudia')}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
-              className="relative overflow-hidden bg-[#E3FEF7] border-1 border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-noto-sans uppercase text-sm font-bold tracking-wide flex items-center gap-3"
+              className="relative overflow-hidden bg-[#E3FEF7] border border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-noto-sans uppercase text-sm font-bold tracking-wide flex items-center gap-3 cursor-pointer"
             >
               {/* Animated overlay */}
               <span
@@ -101,46 +107,21 @@ export default function AboutClaudiaSection() {
                 Conocer su historia completa
               </span>
 
-              {/* Arrow icon */}
-              <svg
+              {/* Lucide icon */}
+              <ArrowRight
                 ref={iconRef}
                 className="relative z-10 w-4 h-4 text-[#003C43]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              />
             </button>
           </div>
 
           {/* Right Image Placeholder */}
-          <div className="bg-gradient-to-br from-[#77B0AA] to-[#135D66] rounded-lg h-96 flex items-center justify-center">
-            <div className="text-center">
-              <svg
-                className="w-24 h-24 text-white/30 mx-auto mb-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-
-              <p className="text-white/50 font-noto-sans">
-                Imagen de Claudia
-              </p>
-            </div>
+          <div className="w-full h-[400px] rounded-lg bg-[#d9e7e7] flex items-center justify-center">
+            <span className="font-inconsolata text-[#003C43] text-sm tracking-widest uppercase">
+              Imagen de Claudia
+            </span>
           </div>
+
         </div>
       </div>
     </section>

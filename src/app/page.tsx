@@ -12,11 +12,12 @@ export default function Home() {
     <div className="bg-white">
       <Header />
       <main>
-        <HeroSection />
-        <ForumSectionThematic />
-        <ResourcesSection />
-        <AboutClaudiaSection />
-        <FAQSectionCCM />
+        <section id="inicio"><HeroSection /> </section>
+     {/*    <section id="muro">   <ForumSectionThematic /> </section> */}
+        <section id="foros">   <ForumSectionThematic /></section>
+        <section id="melanoma"> <ResourcesSection /> </section>
+        <section id="claudia"> <AboutClaudiaSection /> </section>
+        <section id="faq">     <FAQSectionCCM /> </section>
       </main>
       <Footer />
     </div>

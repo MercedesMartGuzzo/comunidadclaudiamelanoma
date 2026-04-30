@@ -1,158 +1,191 @@
 'use client';
 
-import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useRef, useState } from 'react';
+import { gsap } from 'gsap';
 
 interface FAQItem {
-    category: string;
     question: string;
     answer: string;
 }
 
-function FAQCard({
-    item,
-    isOpen,
-    onToggle,
-}: {
-    item: FAQItem;
-    isOpen: boolean;
-    onToggle: () => void;
-}) {
+const faqData: FAQItem[] = [
+    {
+        question: '¿Cómo me registro en la plataforma?',
+        answer:
+            'Podés crear tu cuenta gratuitamente desde el botón de ingreso o registro. Solo necesitás tu correo electrónico para comenzar.',
+    },
+    {
+        question: '¿La comunidad tiene costo?',
+        answer:
+            'No. Comunidad Claudia Melanoma es completamente gratuita para pacientes, familiares, cuidadores y acompañantes.',
+    },
+    {
+        question: '¿Qué recursos ofrece la plataforma?',
+        answer:
+            'Incluye información clínica curada, foros temáticos, recursos emocionales, experiencias compartidas y contenido educativo actualizado.',
+    },
+    {
+        question: '¿Cómo puedo contactar al equipo?',
+        answer:
+            'Podés hacerlo mediante la sección de contacto o ayuda dentro de la plataforma, donde encontrarás formularios y canales directos.',
+    },
+    {
+        question: '¿Puedo participar aunque no sea paciente?',
+        answer:
+            'Sí. Familiares, cuidadores y personas de apoyo también forman parte esencial de esta comunidad.',
+    },
+    {
+        question: '¿La información reemplaza a mi médico?',
+        answer:
+            'No. La plataforma brinda acompañamiento e información educativa, pero siempre debe complementarse con atención médica profesional.',
+    },
+];
+
+function FAQCard({ item }: { item: FAQItem }) {
+    const [open, setOpen] = useState(false);
+
     return (
-        <div className="bg-white rounded-2xl p-6 sm:p-8 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,60,67,0.06)] self-start">
+        <div className="bg-white rounded-xl p-7 flex flex-col self-start transition-shadow hover:shadow-[0_20px_40px_rgba(0,60,67,0.06)]">
             <button
-                onClick={onToggle}
-                className="w-full text-left flex items-start justify-between gap-4 min-h-[44px]"
+                onClick={() => setOpen(!open)}
+                className="w-full flex justify-between items-start gap-4 text-left"
             >
-                <div>
-                    <span className="inline-block bg-[#aaeaf5] text-[#003C43] font-inconsolata text-[0.65rem] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4">
-                        {item.category}
-                    </span>
-
-                    <h3
-                        className="font-inconsolata text-[1.05rem] sm:text-[1.15rem] font-semibold text-[#003C43] leading-snug"
-                        style={{ letterSpacing: '-0.02em' }}
-                    >
-                        {item.question}
-                    </h3>
-                </div>
-
-                <motion.div
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="shrink-0 mt-1"
+                <h3
+                    className="font-inconsolata text-[1.125rem] font-semibold text-[#003C43] leading-snug"
+                    style={{ letterSpacing: '-0.01em' }}
                 >
-                    <ChevronDown className="w-5 h-5 text-[#003C43]" />
-                </motion.div>
+                    {item.question}
+                </h3>
+
+                <span className="text-[#003C43] text-xl leading-none shrink-0">
+                    {open ? '−' : '+'}
+                </span>
             </button>
 
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.35, ease: 'easeOut' }}
-                        className="overflow-hidden"
-                    >
-                        <div className="pt-5 mt-5 border-t border-[#003C43]/10">
-                            <p className="text-[0.95rem] leading-relaxed text-[#181c1d]/75 font-noto-sans max-w-3xl">
-                                {item.answer}
-                            </p>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {open && (
+                <div className="mt-5 pt-4 border-t border-[rgba(0,60,67,0.08)]">
+                    <p className="text-[14px] text-[#181c1d]/75 leading-relaxed font-noto-sans">
+                        {item.answer}
+                    </p>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function CommunityCTAButton() {
+    const overlayRef = useRef<HTMLSpanElement>(null);
+    const textRef = useRef<HTMLSpanElement>(null);
+    const iconRef = useRef<SVGSVGElement>(null);
+
+    const handleMouseEnter = () => {
+        gsap.to(overlayRef.current, {
+            x: 0,
+            duration: 0.4,
+            ease: 'power2.out',
+        });
+
+        gsap.to(textRef.current, {
+            x: 4,
+            color: '#003C43',
+            duration: 0.4,
+        });
+
+        gsap.to(iconRef.current, {
+            x: 6,
+            stroke: '#003C43',
+            duration: 0.4,
+        });
+    };
+
+    const handleMouseLeave = () => {
+        gsap.to(overlayRef.current, {
+            x: '-100%',
+            duration: 0.4,
+            ease: 'power2.out',
+        });
+
+        gsap.to(textRef.current, {
+            x: 0,
+            color: '#E3FEF7',
+            duration: 0.4,
+        });
+
+        gsap.to(iconRef.current, {
+            x: 0,
+            stroke: '#E3FEF7',
+            duration: 0.4,
+        });
+    };;
+
+    return (
+        <div className="flex justify-center mt-16">
+            <button
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                className="relative overflow-hidden bg-[#003C43] border-2 border-[#003C43] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center gap-3 min-w-[220px] shadow-md"
+            >
+                <span
+                    ref={overlayRef}
+                    className="absolute inset-0 bg-[#E3FEF7] translate-x-[-100%]"
+                />
+
+                <span
+                    ref={textRef}
+                    className="relative z-10 text-[#E3FEF7] uppercase text-sm tracking-wide font-bold"
+                >
+                    Unirme
+                </span>
+
+                <svg
+                    ref={iconRef}
+                    className="relative z-10 w-4 h-4 text-[#E3FEF7]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                    />
+                </svg>
+            </button>
         </div>
     );
 }
 
 export default function FAQSectionCCM() {
-    const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-    const faqItems: FAQItem[] = [
-        {
-            category: 'acceso',
-            question: '¿Cómo ingreso a la plataforma Comunidad Claudia Melanoma?',
-            answer:
-                'Podés acceder desde cualquier dispositivo con conexión a internet a través del sitio oficial. Solo necesitás registrarte con tus datos básicos para participar en foros, explorar recursos y acceder a contenidos exclusivos diseñados para pacientes, familiares y acompañantes.',
-        },
-        {
-            category: 'membresía',
-            question: '¿La comunidad tiene algún costo?',
-            answer:
-                'No. Comunidad Claudia Melanoma es un espacio gratuito pensado para brindar apoyo, información clínica curada y contención emocional accesible para todas las personas que atraviesan el melanoma, directa o indirectamente.',
-        },
-        {
-            category: 'contacto',
-            question: '¿Cómo puedo comunicarme con el equipo de CCM?',
-            answer:
-                'Podés contactarte mediante el formulario disponible en la sección de contacto del sitio, o a través de los canales oficiales de correo electrónico y redes sociales. Nuestro equipo busca responder consultas generales, institucionales o colaborativas con cercanía y claridad.',
-        },
-        {
-            category: 'participación',
-            question: '¿Quién puede formar parte de la comunidad?',
-            answer:
-                'La plataforma está abierta a pacientes, sobrevivientes, familiares, cuidadores y personas interesadas en información confiable sobre melanoma. El objetivo es construir una red inclusiva donde experiencia, ciencia y acompañamiento convivan.',
-        },
-        {
-            category: 'privacidad',
-            question: '¿Mi información personal y participación son confidenciales?',
-            answer:
-                'Sí. CCM prioriza la privacidad, la seguridad de datos y el respeto por cada integrante. Toda participación dentro de la plataforma está diseñada para promover un entorno seguro, protegido y centrado en el bienestar de la comunidad.',
-        },
-    ];
-
     return (
-        <section className="bg-[#f6fafa] py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none opacity-30">
-                <div className="absolute top-0 right-0 w-[28rem] h-[28rem] bg-[#E3FEF7] rounded-full blur-3xl" />
-            </div>
-
-            <div className="w-full flex justify-center relative z-10">
+        <section className="bg-[#f6fafa] py-24 px-4">
+            <div className="w-full flex justify-center px-6">
                 <div className="max-w-[1000px] w-full">
-                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 mb-16">
-                        <div className="max-w-2xl">
-                            <p className="font-inconsolata text-[0.7rem] font-bold uppercase tracking-[0.12em] text-[#003C43]/55 mb-4">
-                                claridad clínica
-                            </p>
+                    <div className="mb-14">
+                        <p className="font-inconsolata text-[0.7rem] font-bold uppercase tracking-[0.12em] text-[#003C43]/55 mb-3">
+                            Centro de ayuda
+                        </p>
 
-                            <h2
-                                className="font-inconsolata text-3xl sm:text-4xl lg:text-5xl font-bold text-[#003C43] mb-6 leading-tight"
-                                style={{ letterSpacing: '-0.02em' }}
-                            >
-                                Preguntas Frecuentes
-                            </h2>
+                        <h2
+                            className="font-inconsolata text-3xl sm:text-4xl font-bold text-[#003C43] mb-4"
+                            style={{ letterSpacing: '-0.02em' }}
+                        >
+                            FAQ
+                        </h2>
 
-                            <p className="text-base sm:text-lg text-[#181c1d]/75 font-noto-sans leading-relaxed max-w-xl">
-                                Respuestas confiables para acompañar decisiones informadas,
-                                reducir incertidumbre y brindar orientación serena en cada etapa.
-                            </p>
-                        </div>
-
-                        <div className="bg-[#f0f4f4] rounded-2xl px-6 py-5 max-w-sm">
-                            <p className="font-inconsolata text-[0.7rem] uppercase tracking-widest text-[#003C43]/50 mb-2">
-                                CCM / conocimiento accesible
-                            </p>
-                            <p className="text-sm text-[#181c1d]/70 font-noto-sans leading-relaxed">
-                                Información editorialmente curada con enfoque humano y precisión médica.
-                            </p>
-                        </div>
+                        <p className="text-[#181c1d] text-base font-noto-sans max-w-2xl leading-relaxed">
+                            Resolvé tus dudas sobre el funcionamiento de la plataforma,
+                            acceso a recursos y formas de participación dentro de la comunidad.
+                        </p>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-6">
-                        {faqItems.map((item, index) => (
-                            <FAQCard
-                                key={index}
-                                item={item}
-                                isOpen={openIndex === index}
-                                onToggle={() =>
-                                    setOpenIndex(openIndex === index ? null : index)
-                                }
-                            />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                        {faqData.map((item, index) => (
+                            <FAQCard key={index} item={item} />
                         ))}
                     </div>
+
+                    <CommunityCTAButton />
                 </div>
             </div>
         </section>
