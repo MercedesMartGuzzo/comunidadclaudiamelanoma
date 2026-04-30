@@ -2,6 +2,7 @@
 
 import ForumCard from './ForumCard';
 import { Wheat, Leaf, LeafyGreen, Clover } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ForumSectionThematic() {
   const forums = [
@@ -55,8 +56,10 @@ export default function ForumSectionThematic() {
                 dudas y hallazgos en comunidad.
               </p>
             </div>
-
-            <button className="group flex items-center gap-1 text-sm font-medium text-[#003C43] hover:text-[#00252a] transition font-noto-sans">
+            <Link
+              href="/foros"
+              className="group flex items-center gap-1 text-sm font-medium text-[#003C43] hover:text-[#00252a] transition font-noto-sans"
+            >
               Ver todos los foros
               <svg
                 className="w-4 h-4 transition-transform group-hover:translate-x-1"
@@ -64,14 +67,9 @@ export default function ForumSectionThematic() {
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-            </button>
+            </Link>
           </div>
 
           {/* Grid */}
