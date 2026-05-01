@@ -34,47 +34,45 @@ export default function ForosPage() {
                 </p>
             </div>
 
-            {/* Grid 3 columnas */}
+            {/* Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
                 {mockForums.map((forum) => (
                     <Link
                         key={forum.id}
                         href={`/foros/${forum.slug}`}
-                        className="bg-white rounded-xl p-8 flex flex-col h-full group transition-all hover:shadow-[0_20px_40px_rgba(0,60,67,0.08)] cursor-pointer"
+                        className="group w-full bg-[var(--clr-surface-low)] rounded-lg p-6 gap-6 hover:shadow-[0_20px_40px_rgba(0,80,70,0.1)] transition-shadow flex flex-col"
                     >
-                        {/* Icono */}
-                        <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-6 bg-[#E3FEF7] group-hover:scale-110 transition-transform">
-                            {iconMap[forum.slug]}
-                        </div>
+                        <div className="mb-6">{iconMap[forum.slug]}</div>
 
-                        {/* Título */}
-                        <h3
-                            className="font-inconsolata text-xl font-bold text-[#003C43] mb-3"
-                            style={{ letterSpacing: '-0.01em' }}
-                        >
+                        <h3 className="font-inconsolata text-lg font-semibold text-[#003C43] mb-2">
                             {forum.title}
                         </h3>
 
-                        {/* Descripción */}
-                        <p className="text-[#181c1d]/70 text-sm font-noto-sans leading-relaxed flex-grow mb-8">
+                        <p className="text-sm text-[#181c1d] mb-3 font-noto-sans leading-relaxed flex-grow">
                             {forum.description}
                         </p>
 
-                        {/* Footer de la card */}
-                        <div className="flex items-center justify-between mt-auto pt-6 border-t border-[#003C43]/08">
-                            <span className="text-xs font-semibold text-[#003C43]/60 font-noto-sans flex items-center gap-1">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0" />
-                                </svg>
+                        <div className="flex gap-3 flex-wrap mb-3">
+                            <span className="text-xs uppercase font-medium text-[#003C43] tracking-wider font-inconsolata">
+                                {forum.activeTopics} temas activos
+                            </span>
+                            <span className="text-xs uppercase font-medium text-[#003C43] tracking-wider font-inconsolata">
                                 {forum.membersCount >= 1000
                                     ? `${(forum.membersCount / 1000).toFixed(1)}k`
-                                    : forum.membersCount} Miembros
+                                    : forum.membersCount} miembros
                             </span>
+                        </div>
 
-                            <span className="font-inconsolata text-xs font-bold text-[#003C43] bg-[#E3FEF7] px-4 py-1.5 rounded-full group-hover:bg-[#003C43] group-hover:text-white transition-colors">
-                                Ver foro →
-                            </span>
+                        <div className="mt-2 text-sm font-medium text-[#003C43] hover:text-[#00252a] transition flex items-center gap-1 font-noto-sans">
+                            Entrar al foro
+                            <svg
+                                className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
                         </div>
                     </Link>
                 ))}
@@ -82,11 +80,9 @@ export default function ForosPage() {
 
             {/* CTA Banner */}
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#00252a] to-[#003c43] p-12">
-                {/* Watermark */}
                 <span className="absolute right-8 top-1/2 -translate-y-1/2 font-inconsolata text-[120px] font-bold text-white/5 select-none leading-none">
                     CCM
                 </span>
-
                 <div className="relative z-10 max-w-xl">
                     <h2
                         className="font-inconsolata text-2xl sm:text-3xl font-bold text-[#E3FEF7] mb-4"

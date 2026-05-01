@@ -1,3 +1,5 @@
+// forum-posts.ts
+
 export interface ForumPost {
     id: string
     forumId: string
@@ -69,5 +71,47 @@ export const mockForumPosts: ForumPost[] = [
         likesCount: 89,
         isPinned: false,
         tags: ['mindfulness', 'salud emocional'],
+    },
+    {
+        id: '5',
+        forumId: '4',
+        forumSlug: 'cuidado-del-cuidador',
+        title: 'Cómo acompañar sin agotarse emocionalmente',
+        content: 'Ser cuidador también implica desgaste. ¿Qué herramientas les ayudan a sostenerse?',
+        authorName: 'Sofía Herrera',
+        authorAvatar: '/images/avatars/sofia.jpg',
+        createdAt: '2024-12-06T11:00:00Z',
+        repliesCount: 18,
+        likesCount: 40,
+        isPinned: false,
+        tags: ['cuidador', 'apoyo emocional'],
+    },
+    {
+        id: '6',
+        forumId: '5',
+        forumSlug: 'dermatologia',
+        title: 'Seguimiento dermatológico post cirugía',
+        content: '¿Cada cuánto recomiendan controles después de una resección completa?',
+        authorName: 'Federico López',
+        authorAvatar: '/images/avatars/federico.jpg',
+        createdAt: '2024-12-05T16:00:00Z',
+        repliesCount: 11,
+        likesCount: 26,
+        isPinned: false,
+        tags: ['dermatología', 'seguimiento'],
+    },
+    {
+        id: '7',
+        forumId: '6',
+        forumSlug: 'actividad-fisica',
+        title: 'Ejercicio adaptado durante tratamiento',
+        content: '¿Qué rutinas suaves les ayudaron a recuperar energía sin sobreexigirse?',
+        authorName: 'Marta Ruiz',
+        authorAvatar: '/images/avatars/marta.jpg',
+        createdAt: '2024-12-04T13:00:00Z',
+        repliesCount: 16,
+        likesCount: 34,
+        isPinned: false,
+        tags: ['ejercicio', 'bienestar'],
     },
 ]
