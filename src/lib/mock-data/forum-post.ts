@@ -115,3 +115,47 @@ export const mockForumPosts: ForumPost[] = [
         tags: ['ejercicio', 'bienestar'],
     },
 ]
+
+export interface ForumReply {
+  id: string
+  postId: string
+  authorName: string
+  content: string
+  likesCount: number
+  createdAt: string
+}
+
+export const mockForumReplies: ForumReply[] = [
+  {
+    id: '1',
+    postId: '1',
+    authorName: 'Carlos Méndez',
+    content: 'Yo también tuve mucho cansancio las primeras semanas. El oncólogo me dijo que es una respuesta normal del sistema inmune activándose. Pasó a las 3-4 semanas.',
+    likesCount: 8,
+    createdAt: '2024-12-10T12:00:00Z',
+  },
+  {
+    id: '2',
+    postId: '1',
+    authorName: 'Marta Ruiz',
+    content: 'Es muy común. Lo importante es reportarle cualquier síntoma nuevo al equipo médico. Yo llevaba un diario de síntomas y me ayudó mucho en las consultas.',
+    likesCount: 14,
+    createdAt: '2024-12-10T14:30:00Z',
+  },
+  {
+    id: '3',
+    postId: '1',
+    authorName: 'Laura Sosa',
+    content: 'También podés preguntar por la escala CTCAE para entender mejor la gravedad de los efectos secundarios. Te ayuda a comunicarte mejor con el equipo médico.',
+    likesCount: 11,
+    createdAt: '2024-12-11T09:00:00Z',
+  },
+  {
+    id: '4',
+    postId: '2',
+    authorName: 'Ana García',
+    content: 'El KEYNOTE-716 estudió pembrolizumab como tratamiento adyuvante en estadio IIB y IIC. Los resultados mostraron reducción significativa del riesgo de recurrencia.',
+    likesCount: 19,
+    createdAt: '2024-12-09T10:00:00Z',
+  },
+]

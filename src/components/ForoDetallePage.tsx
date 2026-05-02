@@ -9,13 +9,15 @@ import {
     ArrowLeft, Users, MessageSquare, Heart, Pin, Clock
 } from 'lucide-react';
 
+
+
 const iconComponents: Record<string, React.ElementType> = {
-    inmunologia:            LeafyGreen,
-    nutricion:              Wheat,
-    bienestar:              Leaf,
+    inmunologia: LeafyGreen,
+    nutricion: Wheat,
+    bienestar: Leaf,
     'cuidado-del-cuidador': Clover,
-    dermatologia:           Microscope,
-    'actividad-fisica':     Dumbbell,
+    dermatologia: Microscope,
+    'actividad-fisica': Dumbbell,
 };
 
 function timeAgo(dateStr: string) {
@@ -33,6 +35,7 @@ interface Props {
 export default function ForoDetallePage({ slug }: Props) {
     const [isDesktop, setIsDesktop] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
+    const [joined, setJoined] = useState(false);
     const [titulo, setTitulo] = useState('');
     const [contenido, setContenido] = useState('');
     const [tagInput, setTagInput] = useState('');
@@ -146,17 +149,34 @@ export default function ForoDetallePage({ slug }: Props) {
 
                             {/* Botón mobile */}
                             <button
-                                onClick={() => setModalOpen(true)}
-                                className="md:hidden mt-6 self-start bg-[#E3FEF7] text-[#003C43] font-inconsolata text-xs font-bold uppercase tracking-wide px-6 py-3 rounded-md hover:opacity-90 transition-opacity"
+                                onClick={() => setJoined(v => !v)}
+                                style={{ minWidth: '100px' }}
+                                className={`md:hidden mt-6 self-start font-inconsolata text-xs font-bold uppercase tracking-wide px-6 py-3 rounded-md transition-all relative border border-[#E3FEF7]/30  ${joined
+                                        ? 'bg-white/20 text-[#E3FEF7]'
+                                        : 'bg-[#E3FEF7] text-[#003C43] hover:opacity-90'
+                                    }`}
                             >
-                                Unirme
+                                <span className={joined ? 'opacity-0' : 'opacity-100'}>Unirme</span>
+                                <span className={`absolute inset-0 flex items-center justify-center ${joined ? 'opacity-100' : 'opacity-0'}`}>
+                                    Unido
+                                </span>
                             </button>
                         </div>
 
                         {/* Botón desktop */}
                         <div className="hidden md:flex shrink-0 self-start pt-1">
-                            <button className="bg-[#E3FEF7] text-[#003C43] font-inconsolata text-xs font-bold uppercase tracking-wide px-6 py-3 rounded-md hover:opacity-90 transition-opacity">
-                                Unirme
+                            <button
+                                onClick={() => setJoined(v => !v)}
+                                style={{ minWidth: '100px' }}
+                                className={`font-inconsolata text-xs font-bold uppercase tracking-wide px-6 py-3 rounded-md transition-all relative border border-[#E3FEF7]/30  ${joined
+                                        ? 'bg-white/20 text-[#E3FEF7]'
+                                        : 'bg-[#E3FEF7] text-[#003C43] hover:opacity-90'
+                                    }`}
+                            >
+                                <span className={joined ? 'opacity-0' : 'opacity-100'}>Unirme</span>
+                                <span className={`absolute inset-0 flex items-center justify-center ${joined ? 'opacity-100' : 'opacity-0'}`}>
+                                    Unido
+                                </span>
                             </button>
                         </div>
 
@@ -191,7 +211,8 @@ export default function ForoDetallePage({ slug }: Props) {
             ) : (
                 <div className="flex flex-col gap-4">
                     {posts.map((post) => (
-                        <div
+                        <Link
+                            href={`/foros/${slug}/${post.id}`}
                             key={post.id}
                             className="group bg-white rounded-xl p-6 hover:shadow-[0_20px_40px_rgba(0,60,67,0.07)] transition-shadow cursor-pointer"
                         >
@@ -253,7 +274,7 @@ export default function ForoDetallePage({ slug }: Props) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             )}
@@ -261,16 +282,12 @@ export default function ForoDetallePage({ slug }: Props) {
             {/* Modal Nuevo Tema */}
             {modalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-                    {/* Backdrop */}
                     <div
                         className="absolute inset-0 bg-[#00252a]/60 backdrop-blur-sm"
                         onClick={handleCloseModal}
                     />
-
-                    {/* Contenido */}
                     <div className="relative bg-white rounded-2xl w-full max-w-xl p-10 shadow-[0_20px_60px_rgba(0,60,67,0.2)] z-10">
 
-                        {/* Header */}
                         <div className="flex items-center justify-between mb-6">
                             <div>
                                 <p className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#003C43]/50 mb-1">
@@ -293,10 +310,8 @@ export default function ForoDetallePage({ slug }: Props) {
                             </button>
                         </div>
 
-                        {/* Formulario */}
                         <div className="flex flex-col gap-5">
 
-                            {/* Título */}
                             <div className="flex flex-col gap-1.5">
                                 <label className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#003C43]/55">
                                     Título
@@ -310,7 +325,6 @@ export default function ForoDetallePage({ slug }: Props) {
                                 />
                             </div>
 
-                            {/* Contenido */}
                             <div className="flex flex-col gap-1.5">
                                 <label className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#003C43]/55">
                                     Contenido
@@ -324,7 +338,6 @@ export default function ForoDetallePage({ slug }: Props) {
                                 />
                             </div>
 
-                            {/* Tags */}
                             <div className="flex flex-col gap-1.5">
                                 <label className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#003C43]/55">
                                     Etiquetas <span className="normal-case opacity-60">(Enter para agregar, máx. 5)</span>
@@ -357,7 +370,6 @@ export default function ForoDetallePage({ slug }: Props) {
                                 )}
                             </div>
 
-                            {/* Botones */}
                             <div className="flex items-center justify-end gap-3 pt-2">
                                 <button
                                     onClick={handleCloseModal}
