@@ -75,7 +75,7 @@ export default function ForumSectionThematic() {
           {/* Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {forums.map((forum, idx) => (
-              <ForumCard key={idx} {...forum} />
+              <ForumCard key={idx} {...forum} showButton={false} />
             ))}
           </div>
 

@@ -3,9 +3,10 @@ interface ForumCardProps {
   title: string;
   description: string;
   tags: string[];
+  showButton?: boolean;
 }
 
-export default function ForumCard({ icon, title, description, tags }: ForumCardProps) {
+export default function ForumCard({ icon, title, description, tags, showButton = true }: ForumCardProps) {
   return (
     <div className="group w-full bg-[var(--clr-surface-low)] rounded-lg p-6 gap-6 hover:shadow-[0_20px_40px_rgba(0,80,70,0.1)] transition-shadow">
       <div className="mb-6">{icon}</div>
@@ -18,12 +19,14 @@ export default function ForumCard({ icon, title, description, tags }: ForumCardP
           </span>
         ))}
       </div>
-      <button className="mt-2 text-sm font-medium text-[#003C43] hover:text-[#00252a] transition flex items-center gap-1 font-noto-sans">
-        Entrar al foro
-        <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
+      {showButton && (
+        <button className="mt-2 text-sm font-medium text-[#003C43] hover:text-[#00252a] transition flex items-center gap-1 font-noto-sans">
+          Entrar al foro
+          <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      )}
     </div>
   );
 }

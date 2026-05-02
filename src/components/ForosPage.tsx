@@ -63,16 +63,21 @@ export default function ForosPage() {
                             </span>
                         </div>
 
-                        <div className="mt-2 text-sm font-medium text-[#003C43] hover:text-[#00252a] transition flex items-center gap-1 font-noto-sans">
-                            Entrar al foro
-                            <svg
-                                className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
+                        <div className="mt-2 flex items-center justify-between">
+                         {/*    <span className="text-sm font-medium text-[#003C43] font-noto-sans flex items-center gap-1 group-hover:opacity-70 transition-opacity">
+                                Ver foro
+                                <svg
+                                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </span> */}
+                            <span className="font-inconsolata text-xs font-bold uppercase tracking-wide bg-[#003C43] text-[#E3FEF7] px-6 py-3 rounded-md hover:bg-[#00252a] transition-colors">
+                                Unirme
+                            </span>
                         </div>
                     </Link>
                 ))}

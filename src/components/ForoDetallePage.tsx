@@ -9,15 +9,13 @@ import {
     ArrowLeft, Users, MessageSquare, Heart, Pin, Clock
 } from 'lucide-react';
 
-
-
 const iconComponents: Record<string, React.ElementType> = {
-    inmunologia: LeafyGreen,
-    nutricion: Wheat,
-    bienestar: Leaf,
+    inmunologia:            LeafyGreen,
+    nutricion:              Wheat,
+    bienestar:              Leaf,
     'cuidado-del-cuidador': Clover,
-    dermatologia: Microscope,
-    'actividad-fisica': Dumbbell,
+    dermatologia:           Microscope,
+    'actividad-fisica':     Dumbbell,
 };
 
 function timeAgo(dateStr: string) {
@@ -35,11 +33,15 @@ interface Props {
 export default function ForoDetallePage({ slug }: Props) {
     const [isDesktop, setIsDesktop] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
-    const [joined, setJoined] = useState(false);
     const [titulo, setTitulo] = useState('');
     const [contenido, setContenido] = useState('');
     const [tagInput, setTagInput] = useState('');
     const [tags, setTags] = useState<string[]>([]);
+
+    const forum = mockForums.find(f => f.slug === slug);
+    const initialPosts = mockForumPosts.filter(p => p.forumSlug === slug);
+    const [localPosts, setLocalPosts] = useState(initialPosts);
+    const IconComponent = iconComponents[slug];
 
     useEffect(() => {
         const check = () => setIsDesktop(window.innerWidth >= 768);
@@ -66,9 +68,24 @@ export default function ForoDetallePage({ slug }: Props) {
         setTagInput('');
     };
 
-    const forum = mockForums.find(f => f.slug === slug);
-    const posts = mockForumPosts.filter(p => p.forumSlug === slug);
-    const IconComponent = iconComponents[slug];
+    const handlePublicarTema = () => {
+        if (!titulo.trim() || !contenido.trim()) return;
+        setLocalPosts(prev => [...prev, {
+            id: String(Date.now()),
+            forumId: forum?.id ?? '',
+            forumSlug: slug,
+            title: titulo.trim(),
+            content: contenido.trim(),
+            authorName: 'Vos',
+            authorAvatar: '',
+            createdAt: new Date().toISOString(),
+            repliesCount: 0,
+            likesCount: 0,
+            isPinned: false,
+            tags: tags,
+        }]);
+        handleCloseModal();
+    };
 
     if (!forum) {
         return (
@@ -147,37 +164,17 @@ export default function ForoDetallePage({ slug }: Props) {
                                 </span>
                             </div>
 
-                            {/* Botón mobile */}
-                            <button
-                                onClick={() => setJoined(v => !v)}
-                                style={{ minWidth: '100px' }}
-                                className={`md:hidden mt-6 self-start font-inconsolata text-xs font-bold uppercase tracking-wide px-6 py-3 rounded-md transition-all relative border border-[#E3FEF7]/30  ${joined
-                                        ? 'bg-white/20 text-[#E3FEF7]'
-                                        : 'bg-[#E3FEF7] text-[#003C43] hover:opacity-90'
-                                    }`}
-                            >
-                                <span className={joined ? 'opacity-0' : 'opacity-100'}>Unirme</span>
-                                <span className={`absolute inset-0 flex items-center justify-center ${joined ? 'opacity-100' : 'opacity-0'}`}>
-                                    Unido
-                                </span>
-                            </button>
+                            {/* Badge Miembro mobile */}
+                            <div className="md:hidden mt-6 self-start flex items-center gap-2 bg-white/10 border border-[#E3FEF7]/30 text-[#E3FEF7] font-inconsolata text-xs font-bold uppercase tracking-wide px-6 py-3 rounded-md">
+                                ✓ Miembro
+                            </div>
                         </div>
 
-                        {/* Botón desktop */}
+                        {/* Badge Miembro desktop */}
                         <div className="hidden md:flex shrink-0 self-start pt-1">
-                            <button
-                                onClick={() => setJoined(v => !v)}
-                                style={{ minWidth: '100px' }}
-                                className={`font-inconsolata text-xs font-bold uppercase tracking-wide px-6 py-3 rounded-md transition-all relative border border-[#E3FEF7]/30  ${joined
-                                        ? 'bg-white/20 text-[#E3FEF7]'
-                                        : 'bg-[#E3FEF7] text-[#003C43] hover:opacity-90'
-                                    }`}
-                            >
-                                <span className={joined ? 'opacity-0' : 'opacity-100'}>Unirme</span>
-                                <span className={`absolute inset-0 flex items-center justify-center ${joined ? 'opacity-100' : 'opacity-0'}`}>
-                                    Unido
-                                </span>
-                            </button>
+                            <div className="flex items-center gap-2 bg-white/10 border border-[#E3FEF7]/30 text-[#E3FEF7] font-inconsolata text-xs font-bold uppercase tracking-wide px-6 py-3 rounded-md">
+                                ✓ Miembro
+                            </div>
                         </div>
 
                     </div>
@@ -202,7 +199,7 @@ export default function ForoDetallePage({ slug }: Props) {
             </div>
 
             {/* Lista de posts */}
-            {posts.length === 0 ? (
+            {localPosts.length === 0 ? (
                 <div className="bg-white rounded-xl p-12 text-center">
                     <MessageSquare className="w-10 h-10 text-[#003C43]/20 mx-auto mb-4" />
                     <p className="font-inconsolata text-[#003C43] font-semibold mb-2">Todavía no hay temas</p>
@@ -210,11 +207,11 @@ export default function ForoDetallePage({ slug }: Props) {
                 </div>
             ) : (
                 <div className="flex flex-col gap-4">
-                    {posts.map((post) => (
+                    {localPosts.map((post) => (
                         <Link
                             href={`/foros/${slug}/${post.id}`}
                             key={post.id}
-                            className="group bg-white rounded-xl p-6 hover:shadow-[0_20px_40px_rgba(0,60,67,0.07)] transition-shadow cursor-pointer"
+                            className="group bg-white rounded-xl p-6 hover:shadow-[0_20px_40px_rgba(0,60,67,0.07)] transition-shadow cursor-pointer block"
                         >
                             <div className="flex items-start gap-4">
 
@@ -227,7 +224,6 @@ export default function ForoDetallePage({ slug }: Props) {
                                 </div>
 
                                 <div className="flex-1 min-w-0">
-                                    {/* Título + pin */}
                                     <div className="flex items-center gap-2 mb-1">
                                         {post.isPinned && (
                                             <Pin className="w-3 h-3 text-[#003C43]/40 shrink-0" />
@@ -240,12 +236,10 @@ export default function ForoDetallePage({ slug }: Props) {
                                         </h3>
                                     </div>
 
-                                    {/* Extracto */}
                                     <p className="text-sm text-[#181c1d]/65 font-noto-sans leading-relaxed mb-3 line-clamp-2">
                                         {post.content}
                                     </p>
 
-                                    {/* Tags */}
                                     <div className="flex flex-wrap gap-2 mb-3">
                                         {post.tags.map((tag, i) => (
                                             <span
@@ -257,7 +251,6 @@ export default function ForoDetallePage({ slug }: Props) {
                                         ))}
                                     </div>
 
-                                    {/* Footer */}
                                     <div className="flex flex-wrap items-center gap-4 text-xs text-[#181c1d]/45 font-noto-sans">
                                         <span className="flex items-center gap-1">
                                             <Clock className="w-3 h-3 shrink-0" />
@@ -378,7 +371,7 @@ export default function ForoDetallePage({ slug }: Props) {
                                     Cancelar
                                 </button>
                                 <button
-                                    onClick={handleCloseModal}
+                                    onClick={handlePublicarTema}
                                     disabled={!titulo.trim() || !contenido.trim()}
                                     className="bg-[#003C43] text-[#E3FEF7] font-inconsolata text-xs font-bold uppercase tracking-wide px-6 py-3 rounded-md hover:bg-[#00252a] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                                 >
