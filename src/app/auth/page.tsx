@@ -1,24 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 
-export default function AuthPage() {
+// Separamos el contenido en un componente interno para usar useSearchParams correctamente
+function AuthContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
 
-    // 1. DERIVAMOS EL ESTADO DE LA URL (Sin useState ni useEffect)
-    // Esto evita el error de "cascading renders"
+    // Derivamos el estado de la URL
     const tab = searchParams.get('tab') === 'registro' ? 'registro' : 'login';
 
-    // 2. FUNCIÓN PARA CAMBIAR DE TAB
-    // En lugar de modificar un estado local, actualizamos la URL
     const setTab = (newTab: 'login' | 'registro') => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('tab', newTab);
-        // Usamos push o replace para cambiar la URL sin recargar la página
         router.push(`${pathname}?${params.toString()}`);
     };
 
@@ -63,6 +60,7 @@ export default function AuthPage() {
                     {/* Tabs */}
                     <div className="flex gap-1 mb-6 border-b border-[#003C43]/10">
                         <button
+                            type="button"
                             onClick={() => setTab('login')}
                             className={`pb-2 mr-6 border-b-2 text-sm transition-colors ${tab === 'login'
                                 ? 'text-[#003C43] border-[#003C43]'
@@ -73,6 +71,7 @@ export default function AuthPage() {
                         </button>
 
                         <button
+                            type="button"
                             onClick={() => setTab('registro')}
                             className={`pb-2 border-b-2 text-sm transition-colors ${tab === 'registro'
                                 ? 'text-[#003C43] border-[#003C43]'
@@ -83,7 +82,7 @@ export default function AuthPage() {
                         </button>
                     </div>
 
-                    {/* FORMULARIO LOGIN */}
+                    {/* LOGIN */}
                     {tab === 'login' && (
                         <form
                             onSubmit={(e) => {
@@ -161,7 +160,7 @@ export default function AuthPage() {
                         </form>
                     )}
 
-                    {/* FORMULARIO REGISTRO */}
+                    {/* REGISTRO */}
                     {tab === 'registro' && (
                         <form
                             onSubmit={(e) => {
@@ -241,5 +240,18 @@ export default function AuthPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+// Exportación principal envuelta en Suspense para solucionar el error de build en Vercel
+export default function AuthPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen w-full flex items-center justify-center bg-[#f6fafa]">
+                <div className="animate-pulse text-[#003C43] font-medium">Cargando...</div>
+            </div>
+        }>
+            <AuthContent />
+        </Suspense>
     );
 }
