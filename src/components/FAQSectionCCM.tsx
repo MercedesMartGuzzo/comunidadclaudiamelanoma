@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import AuthModal from './AuthModal';
 
 interface FAQItem {
     question: string;
@@ -73,88 +74,61 @@ function FAQCard({ item }: { item: FAQItem }) {
     );
 }
 
+
 function CommunityCTAButton() {
-    const overlayRef = useRef<HTMLSpanElement>(null);
-    const textRef = useRef<HTMLSpanElement>(null);
-    const iconRef = useRef<SVGSVGElement>(null);
+  const [authOpen, setAuthOpen] = useState(false);
 
-    const handleMouseEnter = () => {
-        gsap.to(overlayRef.current, {
-            x: 0,
-            duration: 0.4,
-            ease: 'power2.out',
-        });
+  const overlayRef = useRef<HTMLSpanElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
+  const iconRef = useRef<SVGSVGElement>(null);
 
-        gsap.to(textRef.current, {
-            x: 4,
-            color: '#003C43',
-            duration: 0.4,
-        });
+  const handleMouseEnter = () => {
+    gsap.to(overlayRef.current, { x: 0, duration: 0.4, ease: 'power2.out' });
+    gsap.to(textRef.current, { x: 4, color: '#003C43', duration: 0.4 });
+    gsap.to(iconRef.current, { x: 6, stroke: '#003C43', duration: 0.4 });
+  };
 
-        gsap.to(iconRef.current, {
-            x: 6,
-            stroke: '#003C43',
-            duration: 0.4,
-        });
-    };
+  const handleMouseLeave = () => {
+    gsap.to(overlayRef.current, { x: '-100%', duration: 0.4, ease: 'power2.out' });
+    gsap.to(textRef.current, { x: 0, color: '#E3FEF7', duration: 0.4 });
+    gsap.to(iconRef.current, { x: 0, stroke: '#E3FEF7', duration: 0.4 });
+  };
 
-    const handleMouseLeave = () => {
-        gsap.to(overlayRef.current, {
-            x: '-100%',
-            duration: 0.4,
-            ease: 'power2.out',
-        });
+  return (
+    <>
+      <div className="flex justify-center mt-16">
+        <button
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={() => setAuthOpen(true)}
+          className="relative overflow-hidden bg-[#003C43] border-2 border-[#003C43] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center gap-3 min-w-[220px] shadow-md"
+        >
+          <span ref={overlayRef} className="absolute inset-0 bg-[#E3FEF7] translate-x-[-100%]" />
+          <span ref={textRef} className="relative z-10 text-[#E3FEF7] uppercase text-sm tracking-wide font-bold">
+            Unirme
+          </span>
+          <svg
+            ref={iconRef}
+            className="relative z-10 w-4 h-4 text-[#E3FEF7]"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
 
-        gsap.to(textRef.current, {
-            x: 0,
-            color: '#E3FEF7',
-            duration: 0.4,
-        });
-
-        gsap.to(iconRef.current, {
-            x: 0,
-            stroke: '#E3FEF7',
-            duration: 0.4,
-        });
-    };;
-
-    return (
-        <div className="flex justify-center mt-16">
-            <button
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                className="relative overflow-hidden bg-[#003C43] border-2 border-[#003C43] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center gap-3 min-w-[220px] shadow-md"
-            >
-                <span
-                    ref={overlayRef}
-                    className="absolute inset-0 bg-[#E3FEF7] translate-x-[-100%]"
-                />
-
-                <span
-                    ref={textRef}
-                    className="relative z-10 text-[#E3FEF7] uppercase text-sm tracking-wide font-bold"
-                >
-                    Unirme
-                </span>
-
-                <svg
-                    ref={iconRef}
-                    className="relative z-10 w-4 h-4 text-[#E3FEF7]"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                    />
-                </svg>
-            </button>
-        </div>
-    );
+      <AuthModal
+        isOpen={authOpen}
+        onClose={() => setAuthOpen(false)}
+        defaultTab="registro"
+      />
+    </>
+  );
 }
+
+// el resto del componente FAQSectionCCM queda igual
 
 export default function FAQSectionCCM() {
     return (

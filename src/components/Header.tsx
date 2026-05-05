@@ -1,3 +1,4 @@
+// Header.tsx
 'use client';
 
 import Link from 'next/link';
@@ -6,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { Bell, CircleUserRound } from 'lucide-react';
+import AuthModal from './AuthModal';
 
 const navLinks = [
   { label: 'Inicio', href: '#inicio' },
@@ -18,6 +20,9 @@ const navLinks = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authTab, setAuthTab] = useState<'login' | 'registro'>('login');
+
   const shortTextRef = useRef<HTMLSpanElement>(null);
   const fullTextRef = useRef<HTMLSpanElement>(null);
 
@@ -25,238 +30,192 @@ export default function Header() {
   const router = useRouter();
 
   const handleMouseEnter = () => {
-    gsap.to(shortTextRef.current, {
-      y: -20,
-      opacity: 0,
-      duration: 0.3,
-      ease: 'power2.out',
-    });
-
-    gsap.to(fullTextRef.current, {
-      y: 0,
-      opacity: 1,
-      duration: 0.3,
-      ease: 'power2.out',
-    });
+    gsap.to(shortTextRef.current, { y: -20, opacity: 0, duration: 0.3, ease: 'power2.out' });
+    gsap.to(fullTextRef.current, { y: 0, opacity: 1, duration: 0.3, ease: 'power2.out' });
   };
 
   const handleMouseLeave = () => {
-    gsap.to(shortTextRef.current, {
-      y: 0,
-      opacity: 1,
-      duration: 0.3,
-      ease: 'power2.out',
-    });
-
-    gsap.to(fullTextRef.current, {
-      y: 20,
-      opacity: 0,
-      duration: 0.3,
-      ease: 'power2.out',
-    });
+    gsap.to(shortTextRef.current, { y: 0, opacity: 1, duration: 0.3, ease: 'power2.out' });
+    gsap.to(fullTextRef.current, { y: 20, opacity: 0, duration: 0.3, ease: 'power2.out' });
   };
 
   const scrollToSection = (selector: string) => {
     setTimeout(() => {
       const target = document.querySelector(selector);
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      }
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 300);
   };
 
-  const handleNavClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string
-  ) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith('#')) {
       e.preventDefault();
-
-      if (pathname !== '/') {
-        router.push(`/${href}`);
-      } else {
-        scrollToSection(href);
-      }
-
+      if (pathname !== '/') router.push(`/${href}`);
+      else scrollToSection(href);
       setMenuOpen(false);
       return;
     }
-
     setMenuOpen(false);
   };
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (pathname !== '/') router.push('/#inicio');
+    else window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-    if (pathname !== '/') {
-      router.push('/#inicio');
-    } else {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
-    }
+  const openAuth = (tab: 'login' | 'registro') => {
+    setAuthTab(tab);
+    setAuthOpen(true);
+    setMenuOpen(false);
   };
 
   return (
-    <motion.header
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: 'easeOut' }}
-      className="fixed top-0 w-full bg-white/80 backdrop-blur-[100px] z-50 border-b border-transparent"
-    >
-      <div className="w-full flex justify-center">
-        <nav className="max-w-[1200px] w-full mx-auto px-4 md:px-8 lg:px-0 py-3 flex items-center justify-between relative">
+    <>
+      <motion.header
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+        className="fixed top-0 w-full bg-white/80 backdrop-blur-[100px] z-50 border-b border-transparent"
+      >
+        <div className="w-full flex justify-center">
+          <nav className="max-w-[1200px] w-full mx-auto px-4 md:px-8 lg:px-0 py-3 flex items-center justify-between relative">
 
-          {/* Animated Logo */}
-          <div
-            className="relative h-8 min-w-[200px] lg:min-w-[280px] flex items-center overflow-hidden cursor-pointer"
-            onClick={handleLogoClick}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            <Link
-              href="/"
-              className="relative block text-[#003C43] font-inconsolata leading-none"
+            {/* Logo */}
+            <div
+              className="relative h-8 min-w-[200px] lg:min-w-[280px] flex items-center overflow-hidden cursor-pointer"
+              onClick={handleLogoClick}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             >
-              <span
-                ref={shortTextRef}
-                className="block text-2xl font-bold tracking-[0.08em] leading-none"
-              >
-                CCM
-              </span>
-
-              <span
-                ref={fullTextRef}
-                className="absolute left-0 top-[23%] -translate-y-1/2 text-sm lg:text-base font-bold whitespace-nowrap leading-none opacity-0 font-inconsolata"
-                style={{ transform: 'translateY(20px)' }}
-              >
-                Comunidad Claudia Melanoma
-              </span>
-            </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8 xl:gap-10">
-            {navLinks.map((item, index) => (
-              <motion.div
-                key={item.label}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + index * 0.1 }}
-              >
-                <Link
-                  href={item.href.startsWith('#') ? `/${item.href}` : item.href}
-                  onClick={(e) => handleNavClick(e, item.href)}
-                  className="relative text-sm font-medium text-[#181c1d] hover:text-[#2f6f73] transition-colors duration-300 group pb-1 whitespace-nowrap"
+              <Link href="/" className="relative block text-[#003C43] font-inconsolata leading-none">
+                <span ref={shortTextRef} className="block text-2xl font-bold tracking-[0.08em] leading-none">
+                  CCM
+                </span>
+                <span
+                  ref={fullTextRef}
+                  className="absolute left-0 top-[23%] -translate-y-1/2 text-sm lg:text-base font-bold whitespace-nowrap leading-none opacity-0 font-inconsolata"
+                  style={{ transform: 'translateY(20px)' }}
                 >
-                  {item.label}
-                  <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-[#5d9ca0] transition-all duration-300 group-hover:w-full" />
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+                  Comunidad Claudia Melanoma
+                </span>
+              </Link>
+            </div>
 
-          {/* Desktop Icons */}
-          <div className="hidden lg:flex items-center gap-4">
-            <motion.button whileTap={{ scale: 0.95 }} className="p-2">
-              <Bell className="w-5 h-5 text-[#4a5568] hover:text-[#2f6f73] transition-colors duration-300" />
-            </motion.button>
-
-            <motion.button whileTap={{ scale: 0.95 }} className="p-2">
-              <CircleUserRound className="w-5 h-5 text-[#003C43] hover:text-[#2f6f73] transition-colors duration-300" />
-            </motion.button>
-          </div>
-
-          {/* Hamburger */}
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            className="lg:hidden p-2 z-50"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            <svg
-              className="w-7 h-7 text-[#003C43]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              {menuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </motion.button>
-
-          {/* Mobile + Tablet Menu */}
-          <AnimatePresence>
-            {menuOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.4 }}
-                className="fixed top-0 left-0 w-screen h-screen bg-white z-40 flex flex-col items-center justify-center gap-10 lg:hidden"
-              >
-                {navLinks.map((item, index) => (
-                  <motion.div
-                    key={item.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.08 }}
-                  >
-                    <Link
-                      href={
-                        item.href.startsWith('#')
-                          ? `/${item.href}`
-                          : item.href
-                      }
-                      onClick={(e) => handleNavClick(e, item.href)}
-                      className="text-lg font-medium text-[#181c1d] hover:text-[#2f6f73] transition-colors duration-300"
-                    >
-                      {item.label}
-                    </Link>
-                  </motion.div>
-                ))}
-
-                {/* Mobile CTA */}
+            {/* Desktop Nav */}
+            <div className="hidden lg:flex items-center gap-8 xl:gap-10">
+              {navLinks.map((item, index) => (
                 <motion.div
-                  initial={{ opacity: 0, y: 30 }}
+                  key={item.label}
+                  initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="w-full flex items-center justify-center py-8 border-t border-gray-100 mt-4"
+                  transition={{ delay: 0.2 + index * 0.1 }}
                 >
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="flex items-center gap-3 px-6 py-3 bg-[#003C43] hover:bg-[#00252a] rounded-full transition-all duration-300"
+                  <Link
+                    href={item.href.startsWith('#') ? `/${item.href}` : item.href}
+                    onClick={(e) => handleNavClick(e, item.href)}
+                    className="relative text-sm font-medium text-[#181c1d] hover:text-[#2f6f73] transition-colors duration-300 group pb-1 whitespace-nowrap"
                   >
-                    <CircleUserRound className="w-6 h-6 text-white" />
-
-                    <span className="text-white font-medium text-sm">
-                      Ingresar / Registrarme
-                    </span>
-                  </motion.button>
+                    {item.label}
+                    <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-[#5d9ca0] transition-all duration-300 group-hover:w-full" />
+                  </Link>
                 </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              ))}
+            </div>
 
-        </nav>
-      </div>
-    </motion.header>
+            {/* Desktop Icons */}
+            <div className="hidden lg:flex items-center gap-4">
+              <motion.button whileTap={{ scale: 0.95 }} className="p-2">
+                <Bell className="w-5 h-5 text-[#4a5568] hover:text-[#2f6f73] transition-colors duration-300" />
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                className="p-2"
+                onClick={() => openAuth('login')}
+              >
+                <CircleUserRound className="w-5 h-5 text-[#003C43] hover:text-[#2f6f73] transition-colors duration-300" />
+              </motion.button>
+            </div>
+
+            {/* Hamburger */}
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              className="lg:hidden p-2 z-50"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <svg className="w-7 h-7 text-[#003C43]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {menuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </motion.button>
+
+            {/* Mobile Menu */}
+            <AnimatePresence>
+              {menuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -30 }}
+                  transition={{ duration: 0.4 }}
+                  className="fixed top-0 left-0 w-screen h-screen bg-white z-40 flex flex-col items-center justify-center gap-10 lg:hidden"
+                >
+                  {navLinks.map((item, index) => (
+                    <motion.div
+                      key={item.label}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.08 }}
+                    >
+                      <Link
+                        href={item.href.startsWith('#') ? `/${item.href}` : item.href}
+                        onClick={(e) => handleNavClick(e, item.href)}
+                        className="text-lg font-medium text-[#181c1d] hover:text-[#2f6f73] transition-colors duration-300"
+                      >
+                        {item.label}
+                      </Link>
+                    </motion.div>
+                  ))}
+
+                  {/* Mobile CTA */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="w-full flex items-center justify-center gap-3 py-8 border-t border-gray-100 mt-4"
+                  >
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => openAuth('login')}
+                      className="px-6 py-3 border border-[#003C43] text-[#003C43] rounded-full font-medium text-sm transition-all duration-300 hover:bg-[#003C43] hover:text-white"
+                    >
+                      Iniciar sesión
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => openAuth('registro')}
+                      className="flex items-center gap-2 px-6 py-3 bg-[#003C43] hover:bg-[#00252a] rounded-full transition-all duration-300"
+                    >
+                      <CircleUserRound className="w-5 h-5 text-white" />
+                      <span className="text-white font-medium text-sm">Registrarme</span>
+                    </motion.button>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+          </nav>
+        </div>
+      </motion.header>
+
+      <AuthModal
+        isOpen={authOpen}
+        onClose={() => setAuthOpen(false)}
+        defaultTab={authTab}
+      />
+    </>
   );
 }
