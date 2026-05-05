@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import React, { useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
-import AuthModal from './AuthModal';
 
 interface FAQItem {
     question: string;
@@ -43,7 +43,7 @@ const faqData: FAQItem[] = [
 ];
 
 function FAQCard({ item }: { item: FAQItem }) {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = React.useState(false);
 
     return (
         <div className="bg-white rounded-xl p-7 flex flex-col self-start transition-shadow hover:shadow-[0_20px_40px_rgba(0,60,67,0.06)]">
@@ -51,10 +51,7 @@ function FAQCard({ item }: { item: FAQItem }) {
                 onClick={() => setOpen(!open)}
                 className="w-full flex justify-between items-start gap-4 text-left"
             >
-                <h3
-                    className="font-inconsolata text-[1.125rem] font-semibold text-[#003C43] leading-snug"
-                    style={{ letterSpacing: '-0.01em' }}
-                >
+                <h3 className="font-inconsolata text-[1.125rem] font-semibold text-[#003C43] leading-snug">
                     {item.question}
                 </h3>
 
@@ -74,61 +71,58 @@ function FAQCard({ item }: { item: FAQItem }) {
     );
 }
 
-
 function CommunityCTAButton() {
-  const [authOpen, setAuthOpen] = useState(false);
+    const router = useRouter();
 
-  const overlayRef = useRef<HTMLSpanElement>(null);
-  const textRef = useRef<HTMLSpanElement>(null);
-  const iconRef = useRef<SVGSVGElement>(null);
+    const overlayRef = useRef<HTMLSpanElement>(null);
+    const textRef = useRef<HTMLSpanElement>(null);
+    const iconRef = useRef<SVGSVGElement>(null);
 
-  const handleMouseEnter = () => {
-    gsap.to(overlayRef.current, { x: 0, duration: 0.4, ease: 'power2.out' });
-    gsap.to(textRef.current, { x: 4, color: '#003C43', duration: 0.4 });
-    gsap.to(iconRef.current, { x: 6, stroke: '#003C43', duration: 0.4 });
-  };
+    const handleMouseEnter = () => {
+        gsap.to(overlayRef.current, { x: 0, duration: 0.4, ease: 'power2.out' });
+        gsap.to(textRef.current, { x: 4, color: '#003C43', duration: 0.4 });
+        gsap.to(iconRef.current, { x: 6, stroke: '#003C43', duration: 0.4 });
+    };
 
-  const handleMouseLeave = () => {
-    gsap.to(overlayRef.current, { x: '-100%', duration: 0.4, ease: 'power2.out' });
-    gsap.to(textRef.current, { x: 0, color: '#E3FEF7', duration: 0.4 });
-    gsap.to(iconRef.current, { x: 0, stroke: '#E3FEF7', duration: 0.4 });
-  };
+    const handleMouseLeave = () => {
+        gsap.to(overlayRef.current, { x: '-100%', duration: 0.4, ease: 'power2.out' });
+        gsap.to(textRef.current, { x: 0, color: '#E3FEF7', duration: 0.4 });
+        gsap.to(iconRef.current, { x: 0, stroke: '#E3FEF7', duration: 0.4 });
+    };
 
-  return (
-    <>
-      <div className="flex justify-center mt-16">
-        <button
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onClick={() => setAuthOpen(true)}
-          className="relative overflow-hidden bg-[#003C43] border-2 border-[#003C43] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center gap-3 min-w-[220px] shadow-md"
-        >
-          <span ref={overlayRef} className="absolute inset-0 bg-[#E3FEF7] translate-x-[-100%]" />
-          <span ref={textRef} className="relative z-10 text-[#E3FEF7] uppercase text-sm tracking-wide font-bold">
-            Unirme
-          </span>
-          <svg
-            ref={iconRef}
-            className="relative z-10 w-4 h-4 text-[#E3FEF7]"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
+    return (
+        <div className="flex justify-center mt-16">
+            <button
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => router.push('/auth?tab=registro')}
+                className="relative overflow-hidden bg-[#003C43] border-2 border-[#003C43] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center gap-3 min-w-[220px] shadow-md"
+            >
+                <span
+                    ref={overlayRef}
+                    className="absolute inset-0 bg-[#E3FEF7] translate-x-[-100%]"
+                />
 
-      <AuthModal
-        isOpen={authOpen}
-        onClose={() => setAuthOpen(false)}
-        defaultTab="registro"
-      />
-    </>
-  );
+                <span
+                    ref={textRef}
+                    className="relative z-10 text-[#E3FEF7] uppercase text-sm tracking-wide font-bold"
+                >
+                    Unirme
+                </span>
+
+                <svg
+                    ref={iconRef}
+                    className="relative z-10 w-4 h-4 text-[#E3FEF7]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    );
 }
-
-// el resto del componente FAQSectionCCM queda igual
 
 export default function FAQSectionCCM() {
     return (
@@ -140,10 +134,7 @@ export default function FAQSectionCCM() {
                             Centro de ayuda
                         </p>
 
-                        <h2
-                            className="font-inconsolata text-3xl sm:text-4xl font-bold text-[#003C43] mb-4"
-                            style={{ letterSpacing: '-0.02em' }}
-                        >
+                        <h2 className="font-inconsolata text-3xl sm:text-4xl font-bold text-[#003C43] mb-4">
                             FAQ
                         </h2>
 

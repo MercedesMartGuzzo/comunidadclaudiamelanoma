@@ -1,4 +1,3 @@
-// Header.tsx
 'use client';
 
 import Link from 'next/link';
@@ -7,7 +6,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { Bell, CircleUserRound } from 'lucide-react';
-import AuthModal from './AuthModal';
 
 const navLinks = [
   { label: 'Inicio', href: '#inicio' },
@@ -20,8 +18,6 @@ const navLinks = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false);
-  const [authTab, setAuthTab] = useState<'login' | 'registro'>('login');
 
   const shortTextRef = useRef<HTMLSpanElement>(null);
   const fullTextRef = useRef<HTMLSpanElement>(null);
@@ -61,12 +57,6 @@ export default function Header() {
     e.preventDefault();
     if (pathname !== '/') router.push('/#inicio');
     else window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const openAuth = (tab: 'login' | 'registro') => {
-    setAuthTab(tab);
-    setAuthOpen(true);
-    setMenuOpen(false);
   };
 
   return (
@@ -125,14 +115,16 @@ export default function Header() {
             {/* Desktop Icons */}
             <div className="hidden lg:flex items-center gap-4">
               <motion.button whileTap={{ scale: 0.95 }} className="p-2">
-                <Bell className="w-5 h-5 text-[#4a5568] hover:text-[#2f6f73] transition-colors duration-300" />
+                <Bell className="w-5 h-5 text-[#4a5568] hover:text-[#2f6f73]" />
               </motion.button>
+
+              {/* 👇 AHORA REDIRIGE */}
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 className="p-2"
-                onClick={() => openAuth('login')}
+                onClick={() => router.push('/auth?tab=registro')}
               >
-                <CircleUserRound className="w-5 h-5 text-[#003C43] hover:text-[#2f6f73] transition-colors duration-300" />
+                <CircleUserRound className="w-5 h-5 text-[#003C43] hover:text-[#2f6f73]" />
               </motion.button>
             </div>
 
@@ -171,7 +163,7 @@ export default function Header() {
                       <Link
                         href={item.href.startsWith('#') ? `/${item.href}` : item.href}
                         onClick={(e) => handleNavClick(e, item.href)}
-                        className="text-lg font-medium text-[#181c1d] hover:text-[#2f6f73] transition-colors duration-300"
+                        className="text-lg font-medium text-[#181c1d] hover:text-[#2f6f73]"
                       >
                         {item.label}
                       </Link>
@@ -183,24 +175,25 @@ export default function Header() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="w-full flex items-center justify-center gap-3 py-8 border-t border-gray-100 mt-4"
+                    className="w-full flex items-center justify-center gap-3 py-8 border-t mt-4"
                   >
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.97 }}
-                      onClick={() => openAuth('login')}
-                      className="px-6 py-3 border border-[#003C43] text-[#003C43] rounded-full font-medium text-sm transition-all duration-300 hover:bg-[#003C43] hover:text-white"
+                      onClick={() => router.push('/auth?tab=login')}
+                      className="px-6 py-3 border border-[#003C43] text-[#003C43] rounded-full"
                     >
                       Iniciar sesión
                     </motion.button>
+
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.97 }}
-                      onClick={() => openAuth('registro')}
-                      className="flex items-center gap-2 px-6 py-3 bg-[#003C43] hover:bg-[#00252a] rounded-full transition-all duration-300"
+                      onClick={() => router.push('/auth?tab=registro')}
+                      className="flex items-center gap-2 px-6 py-3 bg-[#003C43] rounded-full"
                     >
                       <CircleUserRound className="w-5 h-5 text-white" />
-                      <span className="text-white font-medium text-sm">Registrarme</span>
+                      <span className="text-white">Registrarme</span>
                     </motion.button>
                   </motion.div>
                 </motion.div>
@@ -210,12 +203,6 @@ export default function Header() {
           </nav>
         </div>
       </motion.header>
-
-      <AuthModal
-        isOpen={authOpen}
-        onClose={() => setAuthOpen(false)}
-        defaultTab={authTab}
-      />
     </>
   );
 }

@@ -1,13 +1,12 @@
-// HeroSection.tsx
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
-import AuthModal from './AuthModal';
 
 export default function HeroSection() {
-  const [authOpen, setAuthOpen] = useState(false);
+  const router = useRouter();
 
   const { scrollY } = useScroll();
   const titleY = useTransform(scrollY, [0, 500], [0, 120]);
@@ -47,83 +46,76 @@ export default function HeroSection() {
   };
 
   return (
-    <>
-      <section className="bg-gradient-to-br from-[#00252a] to-[#003C43] text-white min-h-screen flex items-center justify-center sm:pt-28 pt-22 pb-4 overflow-hidden">
-        <div className="w-full flex justify-center px-8 sm:px-10 md:px-6">
-          <div className="max-w-[1000px] w-full flex flex-col items-center text-center gap-14 md:gap-10">
+    <section className="bg-gradient-to-br from-[#00252a] to-[#003C43] text-white min-h-screen flex items-center justify-center sm:pt-28 pt-22 pb-4 overflow-hidden">
+      <div className="w-full flex justify-center px-8 sm:px-10 md:px-6">
+        <div className="max-w-[1000px] w-full flex flex-col items-center text-center gap-14 md:gap-10">
 
-            <motion.h1
-              className="font-inconsolata text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-center"
-              style={{ letterSpacing: '-0.02em', y: titleY, opacity }}
-              initial={{ opacity: 0, y: 60 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: 'easeOut' }}
+          <motion.h1
+            className="font-inconsolata text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-center"
+            style={{ letterSpacing: '-0.02em', y: titleY, opacity }}
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: 'easeOut' }}
+          >
+            Bienvenidos a la Comunidad
+            <br />
+            Claudia Melanoma
+          </motion.h1>
+
+          <motion.p
+            className="text-lg text-gray-200 max-w-2xl mx-auto font-noto-sans leading-relaxed text-center"
+            style={{ y: textY, opacity }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 1, ease: 'easeOut' }}
+          >
+            Un espacio digital diseñado para brindar apoyo y conexión. Aquí la información clínica se encuentra con la calidez humana para ofrecerte un refugio de conocimiento y apoyo mutuo.
+          </motion.p>
+
+          <motion.div
+            className="flex flex-col sm:flex-row gap-6 justify-center items-center w-full pt-8"
+            style={{ y: buttonsY, opacity }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 1, ease: 'easeOut' }}
+          >
+
+            {/* Primary — ahora redirige */}
+            <button
+              ref={primaryBtnRef}
+              onMouseEnter={handlePrimaryEnter}
+              onMouseLeave={handlePrimaryLeave}
+              onClick={() => router.push('/auth?tab=registro')}
+              className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center gap-3 min-w-[180px] shadow-md"
             >
-              Bienvenidos a la Comunidad
-              <br />
-              Claudia Melanoma
-            </motion.h1>
-
-            <motion.p
-              className="text-lg text-gray-200 max-w-2xl mx-auto font-noto-sans leading-relaxed text-center"
-              style={{ y: textY, opacity }}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 1, ease: 'easeOut' }}
-            >
-              Un espacio digital diseñado para brindar apoyo y conexión. Aquí la información clínica se encuentra con la calidez humana para ofrecerte un refugio de conocimiento y apoyo mutuo.
-            </motion.p>
-
-            <motion.div
-              className="flex flex-col sm:flex-row gap-6 justify-center items-center w-full pt-8"
-              style={{ y: buttonsY, opacity }}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 1, ease: 'easeOut' }}
-            >
-
-              {/* Primary — abre modal registro */}
-              <button
-                ref={primaryBtnRef}
-                onMouseEnter={handlePrimaryEnter}
-                onMouseLeave={handlePrimaryLeave}
-                onClick={() => setAuthOpen(true)}
-                className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center gap-3 min-w-[180px] shadow-md"
+              <span ref={primaryOverlayRef} className="absolute inset-0 bg-[#003C43] translate-x-[-100%]" />
+              <span ref={primaryTextRef} className="relative z-10 text-[#003C43]">Unirme</span>
+              <svg
+                ref={primaryIconRef}
+                className="relative z-10 w-4 h-4 text-[#003C43]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <span ref={primaryOverlayRef} className="absolute inset-0 bg-[#003C43] translate-x-[-100%]" />
-                <span ref={primaryTextRef} className="relative z-10 text-[#003C43]">Unirme</span>
-                <svg
-                  ref={primaryIconRef}
-                  className="relative z-10 w-4 h-4 text-[#003C43]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
 
-              {/* Secondary — Sobre Claudia */}
-              <button
-                ref={secondaryBtnRef}
-                onMouseEnter={handleSecondaryEnter}
-                onMouseLeave={handleSecondaryLeave}
-                className="relative overflow-hidden bg-white border-2 border-white px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center min-w-[220px] shadow-md"
-              >
-                <span ref={secondaryOverlayRef} className="absolute inset-0 bg-[#003C43] translate-x-[-100%]" />
-                <span ref={secondaryTextRef} className="relative z-10 text-[#003C43]">Sobre Claudia</span>
-              </button>
+            {/* Secondary */}
+            <button
+              ref={secondaryBtnRef}
+              onMouseEnter={handleSecondaryEnter}
+              onMouseLeave={handleSecondaryLeave}
+              onClick={() => router.push('/about-claudia')}
+              className="relative overflow-hidden bg-white border-2 border-white px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center min-w-[220px] shadow-md"
+            >
+              <span ref={secondaryOverlayRef} className="absolute inset-0 bg-[#003C43] translate-x-[-100%]" />
+              <span ref={secondaryTextRef} className="relative z-10 text-[#003C43]">Sobre Claudia</span>
+            </button>
 
-            </motion.div>
-          </div>
+          </motion.div>
         </div>
-      </section>
-
-      <AuthModal
-        isOpen={authOpen}
-        onClose={() => setAuthOpen(false)}
-        defaultTab="registro"
-      />
-    </>
+      </div>
+    </section>
   );
 }
