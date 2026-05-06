@@ -58,7 +58,9 @@ function AuthContent() {
                         style={{ letterSpacing: '-0.02em' }}
                     >
                         {tab === 'login' ? 'Bienvenido de nuevo' : 'Unite a la comunidad'}
+
                     </h1>
+
                     <p className="text-[#E3FEF7]/60 font-noto-sans text-sm">
                         {tab === 'login'
                             ? 'Ingresá tus credenciales para continuar.'

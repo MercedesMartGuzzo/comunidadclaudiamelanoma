@@ -31,7 +31,7 @@ export default function SidebarLeft() {
                     {[
                         { icon: Activity, label: 'Mi Actividad' },
                         { icon: Bookmark, label: 'Mis Favoritos' },
-                        { icon: Users, label: 'Grupos de Apoyo' },
+                        { icon: Users, label: 'Foros' },
                     ].map(({ icon: Icon, label }) => (
                         <button
                             key={label}

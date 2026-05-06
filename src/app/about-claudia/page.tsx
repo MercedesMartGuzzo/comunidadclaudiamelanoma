@@ -1,16 +1,17 @@
 'use client';
 
-import Link from 'next/link';
+
 import { useRef } from 'react';
 import { gsap } from 'gsap';
 import { Rose, HandHeart, Clover } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useRouter } from 'next/navigation';
 
 export default function AboutClaudia() {
     const primaryOverlayRef = useRef<HTMLSpanElement>(null);
     const primaryTextRef = useRef<HTMLSpanElement>(null);
-
+    const router = useRouter();
     /* const secondaryOverlayRef = useRef<HTMLSpanElement>(null);
     const secondaryTextRef = useRef<HTMLSpanElement>(null);
  */
@@ -77,7 +78,6 @@ export default function AboutClaudia() {
 
             <main className="bg-[#f6fafa] min-h-screen">
 
-                {/* HERO */}
                 {/* HERO */}
                 <section className="pt-32 pb-28 px-6 md:px-12 bg-[#f6fafa]">
                     <div className="max-w-[1000px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
@@ -238,10 +238,11 @@ export default function AboutClaudia() {
 
                         <div className="flex justify-center">
 
-                            <Link href="/muro">
+                            <div>
                                 <button
                                     onMouseEnter={handlePrimaryEnter}
                                     onMouseLeave={handlePrimaryLeave}
+                                     onClick={() => router.push('/auth?tab=registro')}
                                     className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-noto-sans min-w-[220px]"
                                 >
                                     <span
@@ -256,7 +257,7 @@ export default function AboutClaudia() {
                                         Quiero ser parte
                                     </span>
                                 </button>
-                            </Link>
+                            </div>
 
                         </div>
                     </div>
