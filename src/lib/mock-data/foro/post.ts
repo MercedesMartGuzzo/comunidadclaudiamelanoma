@@ -1,4 +1,4 @@
-// mock-posts.ts
+/* // mock-posts.ts
 
 export interface Post {
     id: string
@@ -82,4 +82,4 @@ export const mockPosts: Post[] = [
         tags: ['nutrición', 'recursos'],
         isPinned: false,
     },
-]
+] */

@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { mockForums } from '@/lib/mock-data/forums';
-import { mockForumPosts } from '@/lib/mock-data/forum-post';
-import { mockForumReplies } from '@/lib/mock-data/forum-post';
+import { mockForums } from '@/lib/mock-data/foro/forums';
+import { mockForumPosts } from '@/lib/mock-data/foro/forum-post';
+import { mockForumReplies } from '@/lib/mock-data/foro/forum-post';
 import { ArrowLeft, Heart, MessageSquare, Clock } from 'lucide-react';
 
 function timeAgo(dateStr: string) {

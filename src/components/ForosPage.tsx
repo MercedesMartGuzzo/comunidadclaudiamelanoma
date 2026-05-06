@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { mockForums } from '@/lib/mock-data/forums';
+import { mockForums } from '@/lib/mock-data/foro/forums';
 import { Wheat, Leaf, LeafyGreen, Clover, Microscope, Dumbbell, Plus, X } from 'lucide-react';
 
 const iconMap: Record<string, React.ReactNode> = {
