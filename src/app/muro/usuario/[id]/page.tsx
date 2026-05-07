@@ -10,7 +10,7 @@ import {
     ArrowLeft,
     MapPin,
     CalendarDays,
-   Birdhouse,
+    Birdhouse,
     X,
 } from 'lucide-react';
 
@@ -40,7 +40,7 @@ interface Props {
 export default function UserProfilePage({ params }: Props) {
 
     const { id } = use(params);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(false);
     const user = mockUsers.find((u) => u.id === id);
 
     if (!user) {
@@ -184,6 +184,42 @@ export default function UserProfilePage({ params }: Props) {
 
                                 </div>
 
+                                {/* Siguiendo */}
+                                {user.following.length > 0 && (
+                                    <div className="mt-6 pt-6 border-t border-[#003C43]/10">
+                                        <p className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#003C43]/50 mb-4">
+                                            Siguiendo — {user.following.length}
+                                        </p>
+                                        <div className="flex flex-wrap gap-3">
+                                            {user.following.map(followingId => {
+                                                const followedUser = mockUsers.find(u => u.id === followingId);
+                                                if (!followedUser) return null;
+                                                return (
+                                                    <Link
+                                                        key={followingId}
+                                                        href={`/muro/usuario/${followedUser.id}`}
+                                                        className="flex items-center gap-2 bg-[#f6fafa] hover:bg-[#E3FEF7] rounded-xl px-3 py-2 transition-colors"
+                                                    >
+                                                        <div
+                                                            className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-xs"
+                                                            style={{ width: '28px', height: '28px', minWidth: '28px' }}
+                                                        >
+                                                            {followedUser.name.charAt(0)}
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-inconsolata font-bold text-[#003C43] text-xs">
+                                                                {followedUser.name}
+                                                            </p>
+                                                            <p className="text-[0.6rem] text-[#181c1d]/50 font-noto-sans">
+                                                                {followedUser.location}
+                                                            </p>
+                                                        </div>
+                                                    </Link>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
                             </section>
 
                             {/* Crear publicación */}

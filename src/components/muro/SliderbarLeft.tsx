@@ -107,15 +107,10 @@ export default function SidebarLeft() {
 
                 {/* Logout */}
                 <button
-                    className="flex items-center gap-2.5 text-sm text-[#c25f5f] hover:bg-[#fff5f5] rounded-lg px-3 py-2 transition-colors font-noto-sans text-left w-full"
+                    className="flex items-center gap-2.5 text-sm text-[#181c1d]/45 hover:text-[#003C43] hover:bg-[#f6fafa] rounded-lg px-3 py-2 transition-colors font-noto-sans text-left w-full"
                 >
-
-                    <LogOut className="w-4 h-4 shrink-0" />
-
-                    <span>
-                        Cerrar sesión
-                    </span>
-
+                    <LogOut className="w-4 h-4 shrink-0 text-[#003C43]/40" />
+                    <span>Cerrar sesión</span>
                 </button>
 
             </div>

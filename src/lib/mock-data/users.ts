@@ -9,6 +9,7 @@ export interface User {
     bio: string
     postsCount: number
     forumsJoined: string[]
+    following: string[]
 }
 
 export const mockUsers: User[] = [
@@ -23,6 +24,7 @@ export const mockUsers: User[] = [
         bio: 'Mamá de dos, diagnosticada en 2022. Acá para compartir y aprender.',
         postsCount: 34,
         forumsJoined: ['inmunologia', 'nutricion', 'bienestar'],
+        following: ['2', '3'],
     },
     {
         id: '2',
@@ -35,6 +37,7 @@ export const mockUsers: User[] = [
         bio: 'Corredor amateur. El diagnóstico me cambió la perspectiva de todo.',
         postsCount: 18,
         forumsJoined: ['inmunologia', 'actividad-fisica'],
+        following: ['1'],
     },
     {
         id: '3',
@@ -47,6 +50,8 @@ export const mockUsers: User[] = [
         bio: 'Nutricionista y paciente. Comparto lo que sé y lo que aprendo.',
         postsCount: 52,
         forumsJoined: ['nutricion', 'bienestar', 'cuidado-del-cuidador'],
+        following: ['1'],
+
     },
     {
         id: '4',
@@ -59,5 +64,6 @@ export const mockUsers: User[] = [
         bio: 'Cuatro años en este camino. Hoy estoy estable y quiero dar esperanza.',
         postsCount: 97,
         forumsJoined: ['bienestar', 'inmunologia', 'dermatologia'],
+        following: ['1'],
     },
 ]
