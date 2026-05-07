@@ -1,16 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { feedPosts, feedComments, FeedPost, FeedComment } from '@/lib/mock-data/feed/feed-posts';
-import PostCard from '@/components/muro/PostCard';
+import Feed from '@/components/muro/Feed';
 import CreatePost from '@/components/muro/CreatePost';
 import SidebarLeft from '@/components/muro/SliderbarLeft';
 import SidebarRight from '@/components/muro/SliderbarRight';
-
+import { LayoutDashboard, X } from 'lucide-react';
 
 export default function MuroPage() {
     const [localPosts, setLocalPosts] = useState<FeedPost[]>(feedPosts);
     const [localComments, setLocalComments] = useState<FeedComment[]>(feedComments);
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
     const handleAddPost = (content: string) => {
         const newPost: FeedPost = {
@@ -61,30 +63,81 @@ export default function MuroPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
-                    <div className="lg:col-span-1 order-2 lg:order-1">
+                    {/* LEFT — oculto en mobile */}
+                    <div className="hidden lg:block lg:col-span-1">
                         <SidebarLeft />
                     </div>
 
-                    <div className="lg:col-span-2 order-1 lg:order-2 flex flex-col gap-4">
+                    {/* CENTER */}
+                    <div className="lg:col-span-2 flex flex-col gap-4">
                         <CreatePost onPublish={handleAddPost} />
-                        <div className="flex flex-col gap-4">
-                            {localPosts.map(post => (
-                                <PostCard
-                                    key={post.id}
-                                    post={post}
-                                    comments={localComments.filter(c => c.postId === post.id)}
-                                    onAddComment={handleAddComment}
-                                />
-                            ))}
-                        </div>
+                        <Feed
+                            posts={localPosts}
+                            comments={localComments}
+                            onAddComment={handleAddComment}
+                        />
                     </div>
 
-                    <div className="lg:col-span-1 order-3">
+                    {/* RIGHT — oculto en mobile */}
+                    <div className="hidden lg:block lg:col-span-1">
                         <SidebarRight />
                     </div>
 
                 </div>
             </div>
+
+            {/* Botón flotante mobile — abre drawer */}
+            <button
+                onClick={() => setDrawerOpen(true)}
+                className="lg:hidden fixed bottom-6 right-6 z-40 w-12 h-12 bg-[#003C43] text-[#E3FEF7] rounded-full shadow-[0_8px_24px_rgba(0,60,67,0.3)] flex items-center justify-center hover:bg-[#00252a] transition-colors"
+            >
+                <LayoutDashboard className="w-5 h-5" />
+            </button>
+
+            {/* Drawer mobile */}
+            <AnimatePresence>
+                {drawerOpen && (
+                    <>
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="lg:hidden fixed inset-0 z-40 bg-[#00252a]/50 backdrop-blur-sm"
+                            onClick={() => setDrawerOpen(false)}
+                        />
+
+                        {/* Drawer */}
+                        <motion.div
+                            initial={{ x: '-100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '-100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            className="lg:hidden fixed top-0 left-0 z-50 h-full w-[300px] bg-[#f6fafa] shadow-2xl overflow-y-auto"
+                        >
+                            {/* Header del drawer */}
+                            <div className="flex items-center justify-between p-5 border-b border-[#003C43]/10">
+                                <span className="font-inconsolata font-bold text-[#003C43] text-sm uppercase tracking-wide">
+                                    Mi perfil
+                                </span>
+                                <button
+                                    onClick={() => setDrawerOpen(false)}
+                                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#003C43]/10 transition-colors text-[#003C43]/50"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            </div>
+
+                            {/* Contenido del drawer */}
+                            <div className="p-4 flex flex-col gap-4">
+                                <SidebarLeft />
+                                <SidebarRight />
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+
         </main>
     );
 }
