@@ -22,7 +22,7 @@ export default function SidebarLeft() {
             <div className="bg-white rounded-xl p-6 hover:shadow-[0_4px_20px_rgba(0,60,67,0.07)] transition-shadow">
 
                 {/* Avatar + info */}
-                <div className="flex flex-col items-center text-center mb-5">
+                <div className="flex flex-col items-start text-center mb-5">
 
                     <div
                         className="rounded-full bg-[#E3FEF7] flex items-center justify-center font-inconsolata font-bold text-[#003C43] text-lg mb-3"
