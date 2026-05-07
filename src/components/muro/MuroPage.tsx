@@ -7,7 +7,7 @@ import Feed from '@/components/muro/Feed';
 import CreatePost from '@/components/muro/CreatePost';
 import SidebarLeft from '@/components/muro/SliderbarLeft';
 import SidebarRight from '@/components/muro/SliderbarRight';
-import { LayoutDashboard, X } from 'lucide-react';
+import { Birdhouse, X } from 'lucide-react';
 
 export default function MuroPage() {
     const [localPosts, setLocalPosts] = useState<FeedPost[]>(feedPosts);
@@ -91,7 +91,7 @@ export default function MuroPage() {
                 onClick={() => setDrawerOpen(true)}
                 className="lg:hidden fixed bottom-6 right-6 z-40 w-12 h-12 bg-[#003C43] text-[#E3FEF7] rounded-full shadow-[0_8px_24px_rgba(0,60,67,0.3)] flex items-center justify-center hover:bg-[#00252a] transition-colors"
             >
-                <LayoutDashboard className="w-5 h-5" />
+                <Birdhouse className="w-5 h-5" />
             </button>
 
             {/* Drawer mobile */}

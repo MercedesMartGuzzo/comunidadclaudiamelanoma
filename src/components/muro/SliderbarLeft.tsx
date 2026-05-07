@@ -55,7 +55,7 @@ export default function SidebarLeft() {
                         {
                             icon: CircleUserRound,
                             label: 'Mi Perfil',
-                            href: `/usuario/${user.id}`,
+                            href: `/muro/usuario/${user.id}`,
                         },
                         {
                             icon: UserRoundPen,

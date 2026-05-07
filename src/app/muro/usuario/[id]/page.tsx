@@ -10,6 +10,8 @@ import {
     ArrowLeft,
     MapPin,
     CalendarDays,
+   Birdhouse,
+    X,
 } from 'lucide-react';
 
 import Header from '@/components/Header';
@@ -21,6 +23,7 @@ import PostCard from '@/components/muro/PostCard';
 
 import { mockUsers } from '@/lib/mock-data/users';
 
+import { AnimatePresence, motion } from 'framer-motion';
 import {
     feedPosts,
     feedComments,
@@ -37,7 +40,7 @@ interface Props {
 export default function UserProfilePage({ params }: Props) {
 
     const { id } = use(params);
-
+  const [drawerOpen, setDrawerOpen] = useState(false);
     const user = mockUsers.find((u) => u.id === id);
 
     if (!user) {
@@ -247,6 +250,57 @@ export default function UserProfilePage({ params }: Props) {
                     </div>
 
                 </div>
+                {/* Botón flotante mobile — abre drawer */}
+                <button
+                    onClick={() => setDrawerOpen(true)}
+                    className="lg:hidden fixed bottom-6 right-6 z-40 w-12 h-12 bg-[#003C43] text-[#E3FEF7] rounded-full shadow-[0_8px_24px_rgba(0,60,67,0.3)] flex items-center justify-center hover:bg-[#00252a] transition-colors"
+                >
+                    <Birdhouse className="w-5 h-5" />
+                </button>
+
+                {/* Drawer mobile */}
+                <AnimatePresence>
+                    {drawerOpen && (
+                        <>
+                            {/* Backdrop */}
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="lg:hidden fixed inset-0 z-40 bg-[#00252a]/50 backdrop-blur-sm"
+                                onClick={() => setDrawerOpen(false)}
+                            />
+
+                            {/* Drawer */}
+                            <motion.div
+                                initial={{ x: '-100%' }}
+                                animate={{ x: 0 }}
+                                exit={{ x: '-100%' }}
+                                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                                className="lg:hidden fixed top-0 left-0 z-50 h-full w-[300px] bg-[#f6fafa] shadow-2xl overflow-y-auto"
+                            >
+                                {/* Header del drawer */}
+                                <div className="flex items-center justify-between p-5 border-b border-[#003C43]/10">
+                                    <span className="font-inconsolata font-bold text-[#003C43] text-sm uppercase tracking-wide">
+                                        Mi perfil
+                                    </span>
+                                    <button
+                                        onClick={() => setDrawerOpen(false)}
+                                        className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#003C43]/10 transition-colors text-[#003C43]/50"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+
+                                {/* Contenido del drawer */}
+                                <div className="p-4 flex flex-col gap-4">
+                                    <SidebarLeft />
+                                    <SidebarRight />
+                                </div>
+                            </motion.div>
+                        </>
+                    )}
+                </AnimatePresence>
 
             </main>
 
