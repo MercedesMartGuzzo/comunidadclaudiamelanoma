@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 interface InfoCardProps {
   chip: string;
   title: string;
   summary: string;
-  expanded: React.ReactNode;
 }
 
 interface BarDatum {
@@ -22,11 +22,10 @@ interface DonutDatum {
   color: string;
 }
 
-function InfoCard({ chip, title, summary, expanded }: InfoCardProps) {
-  const [open, setOpen] = useState(false);
-
+function InfoCard({ chip, title, summary }: InfoCardProps) {
   return (
     <div className="bg-white rounded-xl p-7 flex flex-col self-start transition-shadow hover:shadow-[0_20px_40px_rgba(0,60,67,0.07)]">
+
       <span className="inline-block self-start bg-[#aaeaf5] text-[#003C43] font-inconsolata text-[0.65rem] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4">
         {chip}
       </span>
@@ -42,18 +41,6 @@ function InfoCard({ chip, title, summary, expanded }: InfoCardProps) {
         {summary}
       </p>
 
-      {open && (
-        <div className="mt-5 pt-4 border-t border-[rgba(0,60,67,0.08)] flex flex-col gap-2 text-[0.82rem] text-[#181c1d]/75 leading-relaxed">
-          {expanded}
-        </div>
-      )}
-
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="mt-4 text-left text-xs font-semibold text-[#003C43] hover:opacity-60 transition-opacity font-noto-sans"
-      >
-        {open ? 'Leer menos ↑' : 'Leer más →'}
-      </button>
     </div>
   );
 }
@@ -272,6 +259,7 @@ export default function ResourcesSection() {
     <section className="bg-[#f6fafa] py-6 px-4">
       <div className="w-full flex justify-center px-6">
         <div className="max-w-[1000px] w-full">
+
           {/* Header */}
           <div className="flex flex-col gap-4 md:flex-row md:items-center justify-between mb-12 mt-8">
             <div>
@@ -291,104 +279,61 @@ export default function ResourcesSection() {
                 melanoma con claridad.
               </p>
             </div>
+
+            <Link
+              href="/resources"
+              className="group flex items-center gap-1 text-sm font-medium text-[#003C43] hover:text-[#00252a] transition font-noto-sans"
+            >
+              Ver todos los recursos
+
+              <svg
+                className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Link>
           </div>
 
           {/* Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-start mb-8">
+
             <InfoCard
               chip="definición"
               title="¿Qué es el Melanoma?"
               summary="Tumor maligno originado en los melanocitos, las células productoras de pigmento. Es el tipo más grave de cáncer de piel."
-              expanded={
-                <>
-                  <p>
-                    Los melanocitos se ubican en la epidermis. Cuando mutan de
-                    forma descontrolada forman lesiones que pueden diseminarse a
-                    ganglios y órganos internos.
-                  </p>
-                  <p className="text-[0.75rem] opacity-70">
-                    Factores de riesgo: exposición UV, piel clara, antecedentes
-                    familiares y lunares atípicos.
-                  </p>
-                </>
-              }
             />
 
             <InfoCard
               chip="tratamientos"
               title="Principales Tratamientos"
               summary="Desde cirugía de resección hasta inmunoterapia y terapia dirigida con inhibidores BRAF/MEK, el abordaje es multidisciplinario."
-              expanded={
-                <ol className="flex flex-col gap-1.5 list-none">
-                  {[
-                    'Cirugía — resección con márgenes amplios',
-                    'Inmunoterapia — anti-PD-1, anti-CTLA-4',
-                    'Terapia dirigida — vemurafenib, dabrafenib',
-                    'Radioterapia — metástasis cerebrales',
-                  ].map((t, i) => (
-                    <li key={i} className="flex gap-2">
-                      <span className="font-inconsolata font-bold text-[#003C43] shrink-0">
-                        0{i + 1}
-                      </span>
-                      <span>{t}</span>
-                    </li>
-                  ))}
-                </ol>
-              }
             />
 
             <InfoCard
               chip="detección"
               title="Regla ABCDE"
               summary="La detección temprana cambia el pronóstico. La regla ABCDE es la herramienta clínica de primera línea para evaluar lesiones."
-              expanded={
-                <ul className="flex flex-col gap-1.5 list-none">
-                  {[
-                    ['A', 'Asimetría de la lesión'],
-                    ['B', 'Bordes irregulares'],
-                    ['C', 'Color no uniforme'],
-                    ['D', 'Diámetro > 6 mm'],
-                    ['E', 'Evolución o cambio reciente'],
-                  ].map(([l, d]) => (
-                    <li key={l} className="flex gap-2">
-                      <span className="font-inconsolata font-bold text-[#003C43]">
-                        {l}
-                      </span>
-                      <span>— {d}</span>
-                    </li>
-                  ))}
-                </ul>
-              }
             />
 
             <InfoCard
               chip="estadísticas"
               title="Tasas de Supervivencia"
               summary="Diagnosticado en estadio I, la supervivencia a 5 años supera el 98%. La detección temprana es decisiva."
-              expanded={
-                <div className="flex flex-col gap-3">
-                  {[
-                    ['98%', 'estadio I'],
-                    ['65%', 'estadio III'],
-                    ['25%', 'estadio IV'],
-                  ].map(([n, d]) => (
-                    <div key={d} className="flex items-center gap-2">
-                      <span className="font-inconsolata text-[1rem] font-bold text-[#003C43] leading-none min-w-[40px]">
-                        {n}
-                      </span>
-
-                      <span className="text-[0.75rem] opacity-65 leading-snug">
-                        supervivencia 5 años — {d}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              }
             />
+
           </div>
 
           {/* Charts */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
             <div className="bg-white rounded-xl p-7 hover:shadow-[0_20px_40px_rgba(0,60,67,0.06)] transition-shadow">
               <p className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-widest text-[#003C43]/50 mb-1">
                 Epidemiología global
@@ -418,6 +363,7 @@ export default function ResourcesSection() {
 
               <DonutChart data={donutData} />
             </div>
+
           </div>
         </div>
       </div>
