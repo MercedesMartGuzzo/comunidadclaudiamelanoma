@@ -725,7 +725,7 @@ export default function ResourcesPage() {
           className="border border-[rgba(0,60,67,0.06)] rounded-xl p-5 bg-white"
         >
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#003C43] text-white flex items-center justify-center font-inconsolata font-bold shrink-0">
+            <div className="w-8 h-8 rounded-full bg-[#003C43] text-white flex items-center justify-center font-inconsolata font-bold shrink-0">
               {stage}
             </div>
 
@@ -883,7 +883,7 @@ export default function ResourcesPage() {
                 key={label}
                 className="bg-white/5 rounded-xl p-5 border border-white/10"
               >
-                <p className="font-inconsolata text-3xl sm:text-4xl font-bold mb-2 leading-none">
+                <p className="font-inconsolata text-2xl  font-bold mb-2 leading-none">
                   {value}
                 </p>
 

@@ -1,12 +1,12 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import Resources from '@/components/Resources';
+import ResourcesPage from '@/components/ResourcesPage';
 export default function Foros() {
   return (
     <div className="bg-[#f6fafa]">
       <Header />
       <main>
-        <Resources/>
+        <ResourcesPage />
       </main>
       <Footer />
     </div>
