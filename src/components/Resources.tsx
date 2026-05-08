@@ -5,12 +5,12 @@ import {
   Search,
   Ruler,
   Microscope,
-  ShieldCheck,
   FlaskConical,
-  CheckCircle2,
   Tablets,
   Pill,
   Earth,
+  Sprout,
+  HandHeart,
 } from 'lucide-react';
 
 export default function ResourcesPage() {
@@ -192,7 +192,7 @@ export default function ResourcesPage() {
                     className="flex items-start justify-between gap-5 p-5"
                   >
                     <div>
-                      <p className="font-inconsolata font-bold text-[#003C43] mb-2">
+                      <p className="font-inconsolata font-bold text-[#003C43] mb-1">
                         {title}
                       </p>
 
@@ -202,7 +202,7 @@ export default function ResourcesPage() {
                     </div>
 
                     <div className="shrink-0">
-                      <span className="font-inconsolata text-lg font-bold text-[#003C43]">
+                      <span className="font-inconsolata text-sm font-bold text-[#003C43]">
                         {pct}
                       </span>
                     </div>
@@ -219,25 +219,25 @@ export default function ResourcesPage() {
                 Factores de riesgo principales
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-[#E3FEF7]/80">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-[#E3FEF7]/80 mt-4">
 
                 <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#aaeaf5] mt-2 shrink-0" />
+                  <div className="w-2 h-2 rounded-full bg-[#aaeaf5] mt-1.5 shrink-0" />
                   <p>Exposición intensa a radiación ultravioleta</p>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#aaeaf5] mt-2 shrink-0" />
+                  <div className="w-2 h-2 rounded-full bg-[#aaeaf5] mt-1.5 shrink-0" />
                   <p>Antecedentes familiares de melanoma</p>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#aaeaf5] mt-2 shrink-0" />
+                  <div className="w-2 h-2 rounded-full bg-[#aaeaf5] mt-1.5 shrink-0" />
                   <p>Piel clara y sensibilidad solar elevada</p>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#aaeaf5] mt-2 shrink-0" />
+                  <div className="w-2 h-2 rounded-full bg-[#aaeaf5] mt-1.5 shrink-0" />
                   <p>Presencia de múltiples nevos atípicos</p>
                 </div>
 
@@ -507,275 +507,254 @@ export default function ResourcesPage() {
           </div>
         </article>
       </section>
-      {/* ABCDE + AUTOEXAMEN */}
-      <section className="mb-16">
+    {/* ABCDE + AUTOEXAMEN */}
+<section className="mb-16">
+  <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
+    {/* ABCDE */}
+    <article className="bg-white rounded-xl p-7 hover:shadow-[0_20px_40px_rgba(0,60,67,0.07)] transition-shadow h-full">
+      <Ruler className="w-8 h-8 text-[#003C43] mb-5" />
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
+      <span className="inline-block bg-[#aaeaf5] text-[#003C43] font-inconsolata text-[0.65rem] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4">
+        detección temprana
+      </span>
 
-          {/* ABCDE */}
-          <article className="bg-white rounded-xl p-7 hover:shadow-[0_20px_40px_rgba(0,60,67,0.07)] transition-shadow h-full">
+      <h2 className="font-inconsolata text-2xl font-bold text-[#003C43] mb-5">
+        Regla ABCDE
+      </h2>
 
-            <Ruler className="w-8 h-8 text-[#003C43] mb-5" />
+      <p className="text-sm text-[#181c1d]/70 leading-relaxed mb-6 font-noto-sans">
+        La regla ABCDE es una herramienta clínica utilizada para identificar
+        lesiones sospechosas de melanoma. Permite reconocer cambios que
+        requieren evaluación dermatológica temprana.
+      </p>
 
-            {<span className="inline-block bg-[#aaeaf5] text-[#003C43] font-inconsolata text-[0.65rem] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4">
-              detección temprana
-            </span>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {[
+          [
+            'A',
+            'Asimetría',
+            'Una mitad de la lesión no coincide con la otra.',
+          ],
+          [
+            'B',
+            'Bordes irregulares',
+            'Los bordes son desparejos, dentados o poco definidos.',
+          ],
+          [
+            'C',
+            'Color desigual',
+            'Presencia de varios tonos marrones, negros, rojizos o azulados.',
+          ],
+          [
+            'D',
+            'Diámetro > 6 mm',
+            'Lesiones mayores a 6 mm deben ser evaluadas.',
+          ],
+          [
+            'E',
+            'Evolución',
+            'Cambios recientes en tamaño, forma, color o síntomas.',
+          ],
+        ].map(([letter, title, desc]) => (
+          <div
+            key={letter}
+            className="border border-[rgba(0,60,67,0.06)] rounded-xl p-5 bg-[#f6fafa] h-full"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-7 h-7 rounded-full bg-[#003C43] text-white flex items-center justify-center font-inconsolata text-sm font-bold shrink-0">
+                {letter}
+              </div>
 
-            <h2 className="font-inconsolata text-2xl font-bold text-[#003C43] mb-5">
-              Regla ABCDE
-            </h2>
+              <div className="min-w-0">
+                <h3 className="font-inconsolata text-base font-bold text-[#003C43] mb-1 mt-1 leading-tight">
+                  {title}
+                </h3>
 
-            <p className="text-sm text-[#181c1d]/70 leading-relaxed mb-6 font-noto-sans">
-              La regla ABCDE es una herramienta clínica utilizada para identificar
-              lesiones sospechosas de melanoma. Permite reconocer cambios que
-              requieren evaluación dermatológica temprana.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-              {[
-                [
-                  'A',
-                  'Asimetría',
-                  'Una mitad de la lesión no coincide con la otra.',
-                ],
-                [
-                  'B',
-                  'Bordes irregulares',
-                  'Los bordes son desparejos, dentados o poco definidos.',
-                ],
-                [
-                  'C',
-                  'Color desigual',
-                  'Presencia de varios tonos marrones, negros, rojizos o azulados.',
-                ],
-                [
-                  'D',
-                  'Diámetro > 6 mm',
-                  'Lesiones mayores a 6 mm deben ser evaluadas.',
-                ],
-                [
-                  'E',
-                  'Evolución',
-                  'Cambios recientes en tamaño, forma, color o síntomas.',
-                ],
-              ].map(([letter, title, desc]) => (
-                <div
-                  key={letter}
-                  className="flex flex-col items-center text-center gap-4 border border-[rgba(0,60,67,0.06)] rounded-xl p-5 bg-[#f6fafa]"
-                >
-
-                  <div className="w-8 h-8 rounded-full bg-[#003C43] text-white flex items-center justify-center font-inconsolata text-sm font-bold shrink-0">
-                    {letter}
-                  </div>
-
-                  <div>
-                    <p className="font-inconsolata font-bold text-[#003C43] mb-2">
-                      {title}
-                    </p>
-
-                    <p className="text-sm text-[#181c1d]/70 leading-relaxed">
-                      {desc}
-                    </p>
-                  </div>
-
-                </div>
-              ))}
-
-            </div>
-
-          </article>
-
-          {/* AUTOEXAMEN */}
-          <article className="bg-white rounded-xl p-7 hover:shadow-[0_20px_40px_rgba(0,60,67,0.07)] transition-shadow h-full">
-
-            <Search className="w-8 h-8 text-[#003C43] mb-5" />
-            {<span className="inline-block bg-[#aaeaf5] text-[#003C43] font-inconsolata text-[0.65rem] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4">
-              Autoevaluacíon
-            </span>}
-
-
-            <h2 className="font-inconsolata text-2xl font-bold text-[#003C43] mb-5">
-              Autoexamen de la piel
-            </h2>
-
-            <p className="text-[#181c1d]/70 leading-relaxed font-noto-sans mb-6">
-              El autoexamen mensual ayuda a detectar cambios sospechosos de manera
-              temprana. Se recomienda realizarlo frente a un espejo, observando toda
-              la superficie corporal y prestando atención a nuevas lesiones o cambios
-              en lunares existentes.
-            </p>
-
-            <div className="flex flex-col gap-4">
-
-              {[
-                [
-                  '01',
-                  'Rostro y cuero cabelludo',
-                  'Examinar cara, cuello, orejas y cuero cabelludo utilizando espejo de mano o ayuda externa.',
-                ],
-                [
-                  '02',
-                  'Tronco y extremidades',
-                  'Revisar brazos, torso, espalda, axilas y manos observando cambios de color, forma o tamaño.',
-                ],
-                [
-                  '03',
-                  'Piernas, pies y uñas',
-                  'Controlar piernas, plantas de los pies, uñas y espacios interdigitales donde también puede aparecer melanoma.',
-                ],
-              ].map(([n, title, desc]) => (
-                <div
-                  key={title}
-                  className="border border-[rgba(0,60,67,0.06)] rounded-xl p-5 bg-[#f6fafa]"
-                >
-
-                  <div className="flex items-start gap-4">
-
-                    <div className="w-9 h-9 rounded-full bg-[#003C43] text-white flex items-center justify-center font-inconsolata text-sm font-bold shrink-0">
-                      {n}
-                    </div>
-
-                    <div>
-                      <h3 className="font-inconsolata text-base font-bold text-[#003C43] mb-2">
-                        {title}
-                      </h3>
-
-                      <p className="text-sm text-[#181c1d]/70 leading-relaxed font-noto-sans">
-                        {desc}
-                      </p>
-                    </div>
-
-                  </div>
-
-                </div>
-              ))}
-
-            </div>
-
-          </article>
-
-        </div>
-
-      </section>
-      <section className="mb-16 bg-white rounded-2xl p-8 border border-[rgba(0,60,67,0.06)]">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-8">
-          <Microscope className="w-7 h-7 text-[#003C43] shrink-0" />
-
-          <h2 className="font-inconsolata text-2xl sm:text-3xl font-bold text-[#003C43] leading-tight">
-            Diagnóstico y Estadificación
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-          <div className="flex flex-col gap-6">
-
-            <div className="bg-[#f6fafa] rounded-xl p-6 border border-[rgba(0,60,67,0.05)]">
-              <h3 className="font-inconsolata text-lg font-bold text-[#003C43] mb-4">
-                Sistema TNM · AJCC 8ª Edición
-              </h3>
-
-              <div className="flex flex-col gap-5 text-sm text-[#181c1d]/70 leading-relaxed">
-
-                <div>
-                  <p className="font-inconsolata font-bold text-[#003C43] mb-2">
-                    T (Tumor) · Espesor de Breslow
-                  </p>
-
-                  <p>
-                    T1: &lt;1.0mm · T2: 1.01-2.0mm · T3: 2.01-4.0mm · T4: &gt;4.0mm
-                  </p>
-
-                  <p className="mt-2">
-                    a: sin ulceración · b: con ulceración
-                  </p>
-                </div>
-
-                <div>
-                  <p className="font-inconsolata font-bold text-[#003C43] mb-2">
-                    N (Nodos) · Ganglios Linfáticos
-                  </p>
-
-                  <p>
-                    N0: sin metástasis · N1: 1 nodo · N2: 2-3 nodos · N3: 4+ nodos
-                  </p>
-                </div>
-
-                <div>
-                  <p className="font-inconsolata font-bold text-[#003C43] mb-2">
-                    M (Metástasis) · Distante
-                  </p>
-
-                  <p>
-                    M0: sin metástasis · M1: metástasis a distancia
-                  </p>
-                </div>
-
+                <p className="text-sm text-[#181c1d]/70 leading-relaxed font-noto-sans">
+                  {desc}
+                </p>
               </div>
             </div>
+          </div>
+        ))}
+      </div>
+    </article>
 
-            <div className="bg-[#f6fafa] rounded-xl p-6 border border-[rgba(0,60,67,0.05)]">
-              <h3 className="font-inconsolata text-lg font-bold text-[#003C43] mb-3">
-                Biopsia Excisional
+    {/* AUTOEXAMEN */}
+    <article className="bg-white rounded-xl p-7 hover:shadow-[0_20px_40px_rgba(0,60,67,0.07)] transition-shadow h-full">
+      <Search className="w-8 h-8 text-[#003C43] mb-5" />
+
+      <span className="inline-block bg-[#aaeaf5] text-[#003C43] font-inconsolata text-[0.65rem] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4">
+        autoevaluación
+      </span>
+
+      <h2 className="font-inconsolata text-2xl font-bold text-[#003C43] mb-5">
+        Autoexamen de la piel
+      </h2>
+
+      <p className="text-[#181c1d]/70 leading-relaxed font-noto-sans mb-6">
+        El autoexamen mensual ayuda a detectar cambios sospechosos de manera
+        temprana. Se recomienda realizarlo frente a un espejo, observando toda
+        la superficie corporal y prestando atención a nuevas lesiones o cambios
+        en lunares existentes.
+      </p>
+
+      <div className="flex flex-col gap-4">
+        {[
+          [
+            '1',
+            'Rostro y cuero cabelludo',
+            'Examinar cara, cuello, orejas y cuero cabelludo utilizando espejo de mano o ayuda externa.',
+          ],
+          [
+            '2',
+            'Tronco y extremidades',
+            'Revisar brazos, torso, espalda, axilas y manos observando cambios de color, forma o tamaño.',
+          ],
+          [
+            '3',
+            'Piernas, pies y uñas',
+            'Controlar piernas, plantas de los pies, uñas y espacios interdigitales donde también puede aparecer melanoma.',
+          ],
+        ].map(([n, title, desc]) => (
+          <div
+            key={title}
+            className="border border-[rgba(0,60,67,0.06)] rounded-xl p-5 bg-[#f6fafa]"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-7 h-7 rounded-full bg-[#003C43] text-white flex items-center justify-center font-inconsolata text-sm font-bold shrink-0">
+                {n}
+              </div>
+
+              <div className="min-w-0">
+                <h3 className="font-inconsolata text-base font-bold text-[#003C43] mb-1 mt-1 leading-tight">
+                  {title}
+                </h3>
+
+                <p className="text-sm text-[#181c1d]/70 leading-relaxed font-noto-sans">
+                  {desc}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </article>
+  </div>
+</section>
+
+{/* DIAGNÓSTICO Y ESTADIFICACIÓN */}
+<section className="mb-16 bg-white rounded-2xl p-8 border border-[rgba(0,60,67,0.06)]">
+  <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-8">
+    <Microscope className="w-7 h-7 text-[#003C43] shrink-0" />
+
+    <h2 className="font-inconsolata text-2xl sm:text-3xl font-bold text-[#003C43] leading-tight">
+      Diagnóstico y Estadificación
+    </h2>
+  </div>
+
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="flex flex-col gap-6">
+      <div className="bg-[#f6fafa] rounded-xl p-6 border border-[rgba(0,60,67,0.05)]">
+        <h3 className="font-inconsolata text-lg font-bold text-[#003C43] mb-4">
+          Sistema TNM · AJCC 8ª Edición
+        </h3>
+
+        <div className="flex flex-col gap-5 text-sm text-[#181c1d]/70 leading-relaxed">
+          <div>
+            <p className="font-inconsolata font-bold text-[#003C43] mb-2">
+              T (Tumor) · Espesor de Breslow
+            </p>
+
+            <p>
+              T1: &lt;1.0 mm · T2: 1.01–2.0 mm · T3: 2.01–4.0 mm · T4:
+              &gt;4.0 mm
+            </p>
+
+            <p className="mt-2">
+              a: sin ulceración · b: con ulceración
+            </p>
+          </div>
+
+          <div>
+            <p className="font-inconsolata font-bold text-[#003C43] mb-2">
+              N (Nodos) · Ganglios Linfáticos
+            </p>
+
+            <p>
+              N0: sin metástasis · N1: 1 nodo · N2: 2–3 nodos · N3:
+              4 o más nodos
+            </p>
+          </div>
+
+          <div>
+            <p className="font-inconsolata font-bold text-[#003C43] mb-2">
+              M (Metástasis) · Distante
+            </p>
+
+            <p>
+              M0: sin metástasis · M1: metástasis a distancia
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-[#f6fafa] rounded-xl p-6 border border-[rgba(0,60,67,0.05)]">
+        <h3 className="font-inconsolata text-lg font-bold text-[#003C43] mb-3">
+          Biopsia Excisional
+        </h3>
+
+        <p className="text-sm text-[#181c1d]/70 leading-relaxed">
+          Gold standard para diagnóstico. Se extirpa toda la lesión
+          sospechosa con un pequeño margen de piel sana para su análisis
+          histopatológico.
+        </p>
+      </div>
+    </div>
+
+    <div className="flex flex-col gap-4">
+      {[
+        ['0', 'In situ (Tis)', 'Confinado a la epidermis'],
+        ['I', 'T1a–T2b, N0, M0', 'Tumor localizado'],
+        ['II', 'T3a–T4b, N0, M0', 'Tumor grueso, sin ganglios'],
+        ['III', 'Cualquier T, N1–N3, M0', 'Metástasis ganglionares'],
+        ['IV', 'Cualquier T, cualquier N, M1', 'Metástasis a distancia'],
+      ].map(([stage, title, desc]) => (
+        <div
+          key={stage}
+          className="border border-[rgba(0,60,67,0.06)] rounded-xl p-5 bg-white"
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-full bg-[#003C43] text-white flex items-center justify-center font-inconsolata font-bold shrink-0">
+              {stage}
+            </div>
+
+            <div className="min-w-0">
+              <h3 className="font-inconsolata text-base font-bold text-[#003C43] mb-1 leading-tight">
+                {title}
               </h3>
 
-              <p className="text-sm text-[#181c1d]/70 leading-relaxed">
-                Gold standard para diagnóstico. Se extirpa todo el lunar sospechoso
-                con margen de piel normal para análisis histopatológico.
+              <p className="text-sm text-[#181c1d]/65 leading-relaxed">
+                {desc}
               </p>
             </div>
-
           </div>
-
-          <div className="flex flex-col gap-4">
-
-            {[
-              ['0', 'In Situ (Tis)', 'Confinado a epidermis'],
-              ['I', 'T1a-T2b, N0, M0', 'Tumor localizado'],
-              ['II', 'T3a-T4b, N0, M0', 'Tumor grueso, sin ganglios'],
-              ['III', 'Cualquier T, N1-3, M0', 'Metástasis a ganglios'],
-              ['IV', 'Cualquier T, cualquier N, M1', 'Metástasis a distancia'],
-            ].map(([stage, title, desc]) => (
-              <div
-                key={stage}
-                className="border border-[rgba(0,60,67,0.06)] rounded-xl p-5"
-              >
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-10 h-10 rounded-full bg-[#003C43] text-white flex items-center justify-center font-inconsolata font-bold">
-                    {stage}
-                  </div>
-
-                  <div>
-                    <p className="font-inconsolata font-bold text-[#003C43]">
-                      {title}
-                    </p>
-
-                    <p className="text-sm text-[#181c1d]/65">
-                      {desc}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            <div className="bg-[#003C43] rounded-xl p-5 text-[#E3FEF7]">
-              <p className="font-inconsolata font-bold mb-2">
-                Biopsia de Ganglio Centinela
-              </p>
-
-              <p className="text-sm text-[#E3FEF7]/75 leading-relaxed">
-                Indicada para melanomas T1b y mayores. Permite detectar propagación
-                temprana hacia ganglios linfáticos.
-              </p>
-            </div>
-
-          </div>
-
         </div>
-      </section>
+      ))}
 
-      <section className="mb-16">
+      <div className="bg-[#003C43] rounded-xl p-5 text-[#E3FEF7]">
+        <p className="font-inconsolata font-bold mb-2">
+          Biopsia de Ganglio Centinela
+        </p>
+
+        <p className="text-sm text-[#E3FEF7]/75 leading-relaxed">
+          Indicada en melanomas T1b o superiores. Permite detectar
+          diseminación microscópica hacia los ganglios linfáticos.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>      <section className="mb-16">
 
         <div className="mb-8">
           <p className="font-inconsolata text-[0.7rem] font-bold uppercase tracking-[0.12em] text-[#003C43]/55 mb-3">
@@ -1018,7 +997,7 @@ export default function ResourcesPage() {
 
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-6">
-            <ShieldCheck className="w-7 h-7" />
+            <HandHeart className="w-7 h-7" />
 
             <h2 className="font-inconsolata text-3xl font-bold">
               Prevención
@@ -1039,7 +1018,7 @@ export default function ResourcesPage() {
                 key={item}
                 className="bg-white/5 border border-white/10 rounded-xl p-5 flex items-start gap-3"
               >
-                <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
+                <Sprout className="w-5 h-5 shrink-0 mt-0.5" />
 
                 <p className="text-sm leading-relaxed text-[#E3FEF7]/80">
                   {item}
@@ -1050,9 +1029,9 @@ export default function ResourcesPage() {
           </div>
         </div>
 
-        <span className="absolute right-8 bottom-0 font-inconsolata text-[180px] font-bold text-white/5 leading-none select-none">
-          CCM
-        </span>
+      {/*   <span className="absolute right-8 bottom-0 font-inconsolata text-[180px] font-bold text-white/5 leading-none select-none">
+     
+        </span> */}
       </section>
 
     </div>
