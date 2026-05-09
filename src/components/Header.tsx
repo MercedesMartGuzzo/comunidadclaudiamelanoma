@@ -65,10 +65,10 @@ export default function Header() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="fixed top-0 w-full bg-white/80 backdrop-blur-[100px] z-50 border-b border-transparent"
+        className="fixed top-0 w-full bg-white/70 backdrop-blur-[1px] z-50 border-b border-transparent"
       >
         <div className="w-full flex justify-center">
-          <nav className="max-w-[1200px] w-full mx-auto px-4 md:px-8 lg:px-0 py-3 flex items-center justify-between relative">
+          <nav className="max-w-[1200px] w-full mx-auto px-4 md:px-8 lg:px-4 py-2 flex items-center justify-between relative">
 
             {/* Logo */}
             <div
@@ -78,13 +78,13 @@ export default function Header() {
               onMouseLeave={handleMouseLeave}
             >
               <Link href="/" className="relative block text-[#003C43] font-inconsolata leading-none">
-                <span ref={shortTextRef} className="block text-2xl font-bold tracking-[0.08em] leading-none">
-                  CCM
+                <span ref={shortTextRef} className="block text-sm font-bold tracking-[0.08em] pt-[2px] leading-none">
+                  Comunidad Claudia Melanoma
                 </span>
                 <span
                   ref={fullTextRef}
-                  className="absolute left-0 top-[23%] -translate-y-1/2 text-sm lg:text-base font-bold whitespace-nowrap leading-none opacity-0 font-inconsolata"
-                  style={{ transform: 'translateY(20px)' }}
+                  className="absolute left-0 top-[50%] -translate-y-1/2 text-sm tracking-[0.08em] font-bold whitespace-nowrap leading-none opacity-0 font-inconsolata"
+
                 >
                   Comunidad Claudia Melanoma
                 </span>
@@ -118,7 +118,7 @@ export default function Header() {
                 <Bell className="w-5 h-5 text-[#4a5568] hover:text-[#2f6f73]" />
               </motion.button>
 
-              {/* 👇 AHORA REDIRIGE */}
+              {/* AHORA REDIRIGE */}
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 className="p-2"
@@ -175,7 +175,7 @@ export default function Header() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="w-full flex items-center justify-center gap-3 py-8 border-t mt-4"
+                    className="w-full flex flex-col items-center justify-center gap-8"
                   >
                     <motion.button
                       whileHover={{ scale: 1.05 }}
