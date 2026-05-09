@@ -4,6 +4,8 @@ import React, { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
 
+import { ArrowRight } from 'lucide-react';
+
 interface FAQItem {
     question: string;
     answer: string;
@@ -71,23 +73,54 @@ function FAQCard({ item }: { item: FAQItem }) {
     );
 }
 
+
 function CommunityCTAButton() {
     const router = useRouter();
 
     const overlayRef = useRef<HTMLSpanElement>(null);
     const textRef = useRef<HTMLSpanElement>(null);
-    const iconRef = useRef<SVGSVGElement>(null);
+    const iconRef = useRef<HTMLSpanElement>(null);
 
     const handleMouseEnter = () => {
-        gsap.to(overlayRef.current, { x: 0, duration: 0.4, ease: 'power2.out' });
-        gsap.to(textRef.current, { x: 4, color: '#003C43', duration: 0.4 });
-        gsap.to(iconRef.current, { x: 6, stroke: '#003C43', duration: 0.4 });
+        gsap.to(overlayRef.current, {
+            x: 0,
+            duration: 0.4,
+            ease: 'power2.out',
+        });
+
+       
+        gsap.to(textRef.current, {
+            color: '#003C43',
+            duration: 0.4,
+        });
+
+        
+        gsap.to(iconRef.current, {
+            x: 20,
+            color: '#003C43',
+            duration: 0.4,
+        });
     };
 
     const handleMouseLeave = () => {
-        gsap.to(overlayRef.current, { x: '-100%', duration: 0.4, ease: 'power2.out' });
-        gsap.to(textRef.current, { x: 0, color: '#E3FEF7', duration: 0.4 });
-        gsap.to(iconRef.current, { x: 0, stroke: '#E3FEF7', duration: 0.4 });
+        gsap.to(overlayRef.current, {
+            x: '-100%',
+            duration: 0.4,
+            ease: 'power2.out',
+        });
+
+        // El texto vuelve a su color original
+        gsap.to(textRef.current, {
+            color: '#E3FEF7',
+            duration: 0.4,
+        });
+
+        // El ícono vuelve a su posición original
+        gsap.to(iconRef.current, {
+            x: 0,
+            color: '#E3FEF7',
+            duration: 0.4,
+        });
     };
 
     return (
@@ -96,7 +129,7 @@ function CommunityCTAButton() {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onClick={() => router.push('/auth?tab=registro')}
-                className="relative overflow-hidden bg-[#003C43] border-2 border-[#003C43] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center gap-3 min-w-[220px] shadow-md"
+                className="relative overflow-hidden bg-[#003C43] border-2 border-[#003C43] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center gap-3 min-w-[180px] shadow-md"
             >
                 <span
                     ref={overlayRef}
@@ -105,20 +138,17 @@ function CommunityCTAButton() {
 
                 <span
                     ref={textRef}
-                    className="relative z-10 text-[#E3FEF7] uppercase text-sm tracking-wide font-bold"
+                    className="relative z-10 text-[#E3FEF7] tracking-wider font-bold"
                 >
-                    Unirme
+                    UNIRME
                 </span>
 
-                <svg
+                <span
                     ref={iconRef}
-                    className="relative z-10 w-4 h-4 text-[#E3FEF7]"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                    className="relative z-10 flex items-center text-[#E3FEF7]"
                 >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+                    <ArrowRight className="w-5 h-5" />
+                </span>
             </button>
         </div>
     );

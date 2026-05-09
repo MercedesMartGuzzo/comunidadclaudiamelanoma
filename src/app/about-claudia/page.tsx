@@ -1,9 +1,8 @@
 'use client';
 
-
 import { useRef } from 'react';
 import { gsap } from 'gsap';
-import { Rose, HandHeart, Clover } from 'lucide-react';
+import { Rose, HandHeart, Clover, ArrowRight } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useRouter } from 'next/navigation';
@@ -11,10 +10,9 @@ import { useRouter } from 'next/navigation';
 export default function AboutClaudia() {
     const primaryOverlayRef = useRef<HTMLSpanElement>(null);
     const primaryTextRef = useRef<HTMLSpanElement>(null);
+    const primaryIconRef = useRef<SVGSVGElement>(null);
     const router = useRouter();
-    /* const secondaryOverlayRef = useRef<HTMLSpanElement>(null);
-    const secondaryTextRef = useRef<HTMLSpanElement>(null);
- */
+
     // HANDLE PRIMARY
     const handlePrimaryEnter = () => {
         gsap.to(primaryOverlayRef.current, {
@@ -23,9 +21,16 @@ export default function AboutClaudia() {
             ease: 'power2.out',
         });
 
+        // El texto solo cambia de color
         gsap.to(primaryTextRef.current, {
-            x: 4,
             color: '#E3FEF7',
+            duration: 0.4,
+        });
+
+        // Solo el ícono se desplaza hacia la derecha
+        gsap.to(primaryIconRef.current, {
+            x: 20,
+            stroke: '#E3FEF7',
             duration: 0.4,
         });
     };
@@ -37,40 +42,19 @@ export default function AboutClaudia() {
             ease: 'power2.out',
         });
 
+        // El texto vuelve únicamente a su color original
         gsap.to(primaryTextRef.current, {
-            x: 0,
             color: '#003C43',
             duration: 0.4,
         });
-    };
 
-    /*     const handleSecondaryEnter = () => {
-            gsap.to(secondaryOverlayRef.current, {
-                x: 0,
-                duration: 0.4,
-                ease: 'power2.out',
-            });
-    
-            gsap.to(secondaryTextRef.current, {
-                x: 4,
-                color: '#E3FEF7',
-                duration: 0.4,
-            });
-        };
-    
-        const handleSecondaryLeave = () => {
-            gsap.to(secondaryOverlayRef.current, {
-                x: '-100%',
-                duration: 0.4,
-                ease: 'power2.out',
-            });
-    
-            gsap.to(secondaryTextRef.current, {
-                x: 0,
-                color: '#003C43',
-                duration: 0.4,
-            });
-        }; */
+        // El ícono vuelve a su posición original
+        gsap.to(primaryIconRef.current, {
+            x: 0,
+            stroke: '#003C43',
+            duration: 0.4,
+        });
+    };
 
     return (
         <>
@@ -120,39 +104,6 @@ export default function AboutClaudia() {
 
                     </div>
                 </section>
-
-                {/* LEGADO */}
-                {/*                 <section className="py-28 px-6 md:px-12 bg-[#f0f4f4]">
-                    <div className="max-w-[1000px] mx-auto grid grid-cols-1 lg:grid-cols-5 gap-14">
-
-                        <div className="lg:col-span-2">
-                            <h2
-                                className="font-inconsolata text-3xl sm:text-4xl font-bold text-[#003C43]"
-                                style={{ letterSpacing: '-0.02em' }}
-                            >
-                                Un puente para quienes necesitan compañía
-                            </h2>
-
-                            <div className="mt-6 w-14 h-1 bg-[#5d9ca0] rounded-full"></div>
-                        </div>
-
-                        <div className="lg:col-span-3">
-                            <div className="bg-white rounded-lg p-10">
-                                <p className="font-noto-sans text-base text-[#181c1d] leading-relaxed mb-6">
-                                    Claudia comprendió que el acceso a una comunidad puede marcar profundamente
-                                    la experiencia del tratamiento. Sus vínculos internacionales le brindaron
-                                    información, apoyo emocional y contención en momentos clave.
-                                </p>
-
-                                <p className="font-noto-sans text-base text-[#181c1d] leading-relaxed">
-                                    Inspirados en su recorrido, este espacio busca ofrecer esa misma posibilidad
-                                    a pacientes y familias hispanohablantes, creando una red donde compartir
-                                    experiencias, recursos y humanidad.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </section> */}
 
                 {/* PRINCIPIOS */}
                 <section className="py-28 px-6 md:px-12 bg-[#f6fafa]">
@@ -237,28 +188,32 @@ export default function AboutClaudia() {
                         </p>
 
                         <div className="flex justify-center">
+                            <button
+                                onMouseEnter={handlePrimaryEnter}
+                                onMouseLeave={handlePrimaryLeave}
+                                onClick={() => router.push('/auth?tab=registro')}
+                                className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center gap-3 min-w-[180px]"
+                            >
+                                {/* Overlay animado */}
+                                <span
+                                    ref={primaryOverlayRef}
+                                    className="absolute inset-0 bg-[#003C43] translate-x-[-100%]"
+                                />
 
-                            <div>
-                                <button
-                                    onMouseEnter={handlePrimaryEnter}
-                                    onMouseLeave={handlePrimaryLeave}
-                                     onClick={() => router.push('/auth?tab=registro')}
-                                    className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-noto-sans min-w-[220px]"
+                                {/* Texto */}
+                                <span
+                                    ref={primaryTextRef}
+                                    className="relative z-10 text-[#003C43] uppercase"
                                 >
-                                    <span
-                                        ref={primaryOverlayRef}
-                                        className="absolute inset-0 bg-[#003C43] translate-x-[-100%]"
-                                    />
+                                    Unirme
+                                </span>
 
-                                    <span
-                                        ref={primaryTextRef}
-                                        className="relative z-10 text-[#003C43]"
-                                    >
-                                        Quiero ser parte
-                                    </span>
-                                </button>
-                            </div>
-
+                                {/* Ícono ArrowRight */}
+                                <ArrowRight
+                                    ref={primaryIconRef}
+                                    className="relative z-10 w-5 h-5 text-[#003C43] shrink-0 pt-"
+                                />
+                            </button>
                         </div>
                     </div>
                 </section>

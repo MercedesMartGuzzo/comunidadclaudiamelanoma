@@ -113,7 +113,7 @@ export default function Header() {
             </div>
 
             {/* Desktop Icons */}
-            <div className="hidden lg:flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-0">
               <motion.button whileTap={{ scale: 0.95 }} className="p-2">
                 <Bell className="w-5 h-5 text-[#4a5568] hover:text-[#2f6f73]" />
               </motion.button>

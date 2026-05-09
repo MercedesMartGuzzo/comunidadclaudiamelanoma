@@ -7,9 +7,7 @@ export default function Muro() {
     return (
         <div className="bg-[#f6fafa]">
             <Header />
-
             <MuroPage />
-
             <Footer />
         </div>
     );

@@ -12,45 +12,47 @@ export default function AboutClaudiaSection() {
   const textRef = useRef<HTMLSpanElement>(null);
   const iconRef = useRef<SVGSVGElement>(null);
 
-  const handleMouseEnter = () => {
-    gsap.to(overlayRef.current, {
-      x: 0,
-      duration: 0.4,
-      ease: 'power2.out',
-    });
+const handleMouseEnter = () => {
+  gsap.to(overlayRef.current, {
+    x: 0,
+    duration: 0.4,
+    ease: 'power2.out',
+  });
 
-    gsap.to(textRef.current, {
-      x: 4,
-      color: '#E3FEF7',
-      duration: 0.4,
-    });
+  // El texto no se desplaza, solo cambia de color
+  gsap.to(textRef.current, {
+    color: '#E3FEF7',
+    duration: 0.4,
+  });
 
-    gsap.to(iconRef.current, {
-      x: 6,
-      stroke: '#E3FEF7',
-      duration: 0.4,
-    });
-  };
+  // Solo el ícono se mueve hacia la derecha
+  gsap.to(iconRef.current, {
+    x: 20,
+    stroke: '#E3FEF7',
+    duration: 0.4,
+  });
+};
 
-  const handleMouseLeave = () => {
-    gsap.to(overlayRef.current, {
-      x: '-100%',
-      duration: 0.4,
-      ease: 'power2.out',
-    });
+const handleMouseLeave = () => {
+  gsap.to(overlayRef.current, {
+    x: '-100%',
+    duration: 0.4,
+    ease: 'power2.out',
+  });
 
-    gsap.to(textRef.current, {
-      x: 0,
-      color: '#003C43',
-      duration: 0.4,
-    });
+  // El texto vuelve únicamente a su color original
+  gsap.to(textRef.current, {
+    color: '#003C43',
+    duration: 0.4,
+  });
 
-    gsap.to(iconRef.current, {
-      x: 0,
-      stroke: '#003C43',
-      duration: 0.4,
-    });
-  };
+  // El ícono vuelve a su posición original
+  gsap.to(iconRef.current, {
+    x: 0,
+    stroke: '#003C43',
+    duration: 0.4,
+  });
+};
 
   return (
     <section className="bg-gradient-to-br from-[#003C43] to-[#135D66] text-white py-32 relative overflow-hidden">
