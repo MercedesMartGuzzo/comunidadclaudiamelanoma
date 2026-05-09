@@ -49,10 +49,8 @@ export default function Footer() {
           {/* Divider */}
           <div className="border-t border-[#E3FEF7] pt-2">
             <div className="flex flex-col sm:flex-row justify-between items-center px-0 py-2">
-              <p className="text-xs text-[#181c1d]/60 font-noto-sans">
-                © 2026 Comunidad Claudia Melanoma. Todos los derechos reservados.
-              </p>
-              <div className="flex gap-4 mt-2 sm:mt-0 px-0 py-2 pr-8 md:pr-14 ">
+            
+              <div className="flex gap-4 mt-2 sm:mt-0 px-0 py-2 pr-8 md:pr-14">
                 <Leaf className="w-4 h-4 text-[#003C43]" />
                 <Clover className="w-4 h-4 text-[#003C43]" />
                 <LeafyGreen className="w-4 h-4 text-[#003C43]" />
@@ -62,6 +60,9 @@ export default function Footer() {
                 <Wheat className="w-4 h-4 text-[#003C43]" />
                 <Flower className="w-4 h-4 text-[#003C43]" />
               </div>
+                <p className="text-xs text-[#181c1d]/60 font-noto-sans">
+                © 2026 Comunidad Claudia Melanoma. Todos los derechos reservados.
+              </p>
             </div>
           </div>
         </div>
