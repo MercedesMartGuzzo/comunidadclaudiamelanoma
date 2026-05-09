@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, Leaf, Clover, LeafyGreen, Rose, Flower2, Wheat, Flower, Sprout } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import Link from 'next/link';
@@ -36,7 +36,7 @@ function AuthContent() {
         <div className="min-h-screen w-full bg-[#f6fafa] flex flex-col">
 
             {/* Hero superior */}
-            <div className="w-full bg-gradient-to-br from-[#00252a] to-[#003c43] py-16 px-4 relative overflow-hidden">
+            <div className="w-full bg-gradient-to-br from-[#00252a] to-[#003c43] py-10 px-4 relative overflow-hidden">
                 <div className="absolute top-[-10%] right-[-5%] w-80 h-80 bg-[#aaeaf5]/10 rounded-full blur-[80px] pointer-events-none" />
                 <div className="absolute bottom-[-20%] left-[-5%] w-60 h-60 bg-[#E3FEF7]/5 rounded-full blur-[60px] pointer-events-none" />
 
@@ -66,7 +66,18 @@ function AuthContent() {
                             ? 'Ingresá tus credenciales para continuar.'
                             : 'Creá tu cuenta gratuitamente y empezá a ser parte.'}
                     </p>
+                   
                 </div>
+             {    <div className="max-w-5xl mx-auto relative z-10 flex gap-4 mt-2 px-0 py-2 pr-0 md:pr-14 mt-4">
+                        <Leaf className="w-4 h-4 text-white" />
+                        <Clover className="w-4 h-4 text-white" />
+                        <LeafyGreen className="w-4 h-4 text-white" />
+                        <Sprout className="w-4 h-4 text-white" />
+                        <Rose className="w-4 h-4 text-white" />
+                        <Flower2 className="w-4 h-4 text-white" />
+                        <Wheat className="w-4 h-4 text-white" />
+                        <Flower className="w-4 h-4 text-white" />
+                    </div>}
             </div>
 
             {/* Formulario */}
