@@ -141,8 +141,8 @@ export default function HeroSection() {
               </span>
             </button>
           </motion.div>
-        {  <motion.div
-            className="flex gap-4 mt-8 sm:mt-14  px-0 py-2 pr-0 md:pr-14 justify-end items-end w-full"
+          <motion.div
+            className="hidden lg:flex gap-4 mt-4 px-0 py-2 pr-0 md:pr-14 justify-end items-end w-full"
             style={{ y: buttonsY, opacity }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -156,7 +156,7 @@ export default function HeroSection() {
             <Flower2 className="w-4 h-4 text-white" />
             <Wheat className="w-4 h-4 text-white" />
             <Flower className="w-4 h-4 text-white" />
-          </motion.div>}
+          </motion.div>
         </div>
 
       </div>
