@@ -68,7 +68,7 @@ function AuthContent() {
                     </p>
                    
                 </div>
-             {    <div className="max-w-5xl mx-auto relative z-10 flex gap-4 mt-2 px-0 py-2 pr-0 md:pr-14 mt-4">
+                 <div className="max-w-5xl mx-auto relative z-10 flex gap-4 mt-2 px-0 py-2 pr-0 md:pr-14 mt-4">
                         <Leaf className="w-4 h-4 text-white" />
                         <Clover className="w-4 h-4 text-white" />
                         <LeafyGreen className="w-4 h-4 text-white" />
@@ -77,7 +77,7 @@ function AuthContent() {
                         <Flower2 className="w-4 h-4 text-white" />
                         <Wheat className="w-4 h-4 text-white" />
                         <Flower className="w-4 h-4 text-white" />
-                    </div>}
+                    </div>
             </div>
 
             {/* Formulario */}

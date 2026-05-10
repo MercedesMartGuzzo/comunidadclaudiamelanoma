@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
-import { ArrowRight, HandHeart } from 'lucide-react';
+import { ArrowRight, Clover, Flower, Flower2, Leaf, LeafyGreen, Rose, Sprout, Wheat } from 'lucide-react';
 
 export default function HeroSection() {
   const router = useRouter();
@@ -25,46 +25,46 @@ export default function HeroSection() {
   const secondaryTextRef = useRef<HTMLSpanElement>(null);
 
   const handlePrimaryEnter = () => {
-  gsap.to(primaryOverlayRef.current, {
-    x: 0,
-    duration: 0.4,
-    ease: 'power2.out',
-  });
+    gsap.to(primaryOverlayRef.current, {
+      x: 0,
+      duration: 0.4,
+      ease: 'power2.out',
+    });
 
-  // El texto ya no se mueve, solo cambia de color
-  gsap.to(primaryTextRef.current, {
-    color: '#E3FEF7',
-    duration: 0.4,
-  });
+    // El texto ya no se mueve, solo cambia de color
+    gsap.to(primaryTextRef.current, {
+      color: '#E3FEF7',
+      duration: 0.4,
+    });
 
-  // Solo el ícono se desplaza hacia la derecha
-  gsap.to(primaryIconRef.current, {
-    x: 25,
-    color: '#E3FEF7',
-    duration: 0.4,
-  });
-};
+    // Solo el ícono se desplaza hacia la derecha
+    gsap.to(primaryIconRef.current, {
+      x: 25,
+      color: '#E3FEF7',
+      duration: 0.4,
+    });
+  };
 
-const handlePrimaryLeave = () => {
-  gsap.to(primaryOverlayRef.current, {
-    x: '-100%',
-    duration: 0.4,
-    ease: 'power2.out',
-  });
+  const handlePrimaryLeave = () => {
+    gsap.to(primaryOverlayRef.current, {
+      x: '-100%',
+      duration: 0.4,
+      ease: 'power2.out',
+    });
 
-  // El texto vuelve solo al color original
-  gsap.to(primaryTextRef.current, {
-    color: '#003C43',
-    duration: 0.4,
-  });
+    // El texto vuelve solo al color original
+    gsap.to(primaryTextRef.current, {
+      color: '#003C43',
+      duration: 0.4,
+    });
 
-  // El ícono vuelve a su posición original
-  gsap.to(primaryIconRef.current, {
-    x: 0,
-    color: '#003C43',
-    duration: 0.4,
-  });
-};
+    // El ícono vuelve a su posición original
+    gsap.to(primaryIconRef.current, {
+      x: 0,
+      color: '#003C43',
+      duration: 0.4,
+    });
+  };
 
   const handleSecondaryEnter = () => {
     gsap.to(secondaryOverlayRef.current, { x: 0, duration: 0.4, ease: 'power2.out' });
@@ -77,24 +77,23 @@ const handlePrimaryLeave = () => {
   };
 
   return (
-    <section className="bg-gradient-to-br from-[#00252a] to-[#003C43] text-white min-h-screen flex items-center justify-center sm:pt-28 pt-22 pb-4 overflow-hidden">
+    <section className="bg-gradient-to-br from-[#00252a] to-[#003C43] text-white min-h-screen sm:flex items-center justify-center sm:pt-28 pt-22 pb-4 overflow-hidden">
       <div className="w-full flex justify-center px-8 sm:px-10 md:px-6">
-        <div className="max-w-[1000px] w-full flex flex-col items-center text-center gap-14 md:gap-10">
+        <div className="max-w-[1000px] w-full flex flex-col items-start text-center gap-14 md:gap-10">
 
           <motion.h1
-            className=" text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-center"
+            className=" text-4xl sm:text-5xl lg:text-5xl font-bold leading-tight text-start"
             style={{ letterSpacing: '-0.02em', y: titleY, opacity }}
             initial={{ opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: 'easeOut' }}
           >
             Bienvenidos a la Comunidad
-            <br />
             Claudia Melanoma
           </motion.h1>
 
           <motion.p
-            className="text-lg text-gray-200 max-w-2xl mx-auto font-noto-sans leading-relaxed text-center"
+            className="text-lg text-gray-200 max-w-2xl justify-start font-noto-sans leading-relaxed text-start"
             style={{ y: textY, opacity }}
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -104,7 +103,7 @@ const handlePrimaryLeave = () => {
           </motion.p>
 
           <motion.div
-            className="flex flex-col sm:flex-row gap-6 justify-center items-center w-full pt-0 pb-2 md:pt-8"
+            className="flex flex-col md:flex-row gap-6 justify-start items-start w-full pt-0 md:pt-8"
             style={{ y: buttonsY, opacity }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -117,14 +116,14 @@ const handlePrimaryLeave = () => {
               onMouseEnter={handlePrimaryEnter}
               onMouseLeave={handlePrimaryLeave}
               onClick={() => router.push('/auth?tab=registro')}
-              className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-8 py-3 rounded-md text-[#003C43] font-bold text-[1.2rem] tracking-wider font-inconsolata flex items-center gap-6 min-w-[180px] shadow-md md:gap-3"
+              className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-6 py-1 rounded-md text-[#003C43] font-bold text-[1.2rem] tracking-wider font-inconsolata flex items-center gap-6 min-w-[180px] shadow-md md:gap-3"
             >
               <span ref={primaryOverlayRef} className="absolute inset-0 bg-[#003C43] translate-x-[-100%]" />
               <span ref={primaryTextRef} className="relative z-10 ">
                 Unirme
               </span>
               <span ref={primaryIconRef} className="relative z-10 text-[#003C43] flex items-center">
-                <ArrowRight className="w-5 h-5 pt-[1px] shrink-0"/>
+                <ArrowRight className="w-5 h-5 pt-[1px] shrink-0" />
               </span>
             </button>
 
@@ -134,17 +133,34 @@ const handlePrimaryLeave = () => {
               onMouseEnter={handleSecondaryEnter}
               onMouseLeave={handleSecondaryLeave}
               onClick={() => router.push('/about-claudia')}
-              className="relative overflow-hidden bg-white border-2 border-white md:px-8 md:-py-3 py-3 px-6 rounded-md font-bold text-[1.2rem] tracking-wider font-inconsolata flex items-center justify-center min-w-[180px] shadow-md"
+              className="relative overflow-hidden bg-white border-2 border-white sm:px-2 sm:-py-1 py-1 px-3 rounded-md font-bold text-[1.2rem] tracking-wider font-inconsolata flex items-center justify-center min-w-[180px] shadow-md"
             >
               <span ref={secondaryOverlayRef} className="absolute inset-0 bg-[#003C43] translate-x-[-100%]" />
-              <span ref={secondaryTextRef} className="relative z-10 text-[#003C43] "> 
+              <span ref={secondaryTextRef} className="relative z-10 text-[#003C43] ">
                 Sobre Claudia
               </span>
             </button>
-
           </motion.div>
+        {  <motion.div
+            className="flex gap-4 mt-4 px-0 py-2 pr-0 md:pr-14 justify-end items-end w-full"
+            style={{ y: buttonsY, opacity }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 1, ease: 'easeOut' }}
+          >
+            <Leaf className="w-4 h-4 text-white" />
+            <Clover className="w-4 h-4 text-white" />
+            <LeafyGreen className="w-4 h-4 text-white" />
+            <Sprout className="w-4 h-4 text-white" />
+            <Rose className="w-4 h-4 text-white" />
+            <Flower2 className="w-4 h-4 text-white" />
+            <Wheat className="w-4 h-4 text-white" />
+            <Flower className="w-4 h-4 text-white" />
+          </motion.div>}
         </div>
+
       </div>
+
     </section>
   );
 }
