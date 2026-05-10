@@ -79,7 +79,7 @@ export default function HeroSection() {
   return (
     <section className="bg-gradient-to-br from-[#00252a] to-[#003C43] text-white min-h-screen sm:flex items-center justify-center sm:pt-28 pt-22 pb-4 overflow-hidden">
       <div className="w-full flex justify-center px-8 sm:px-10 md:px-6">
-        <div className="max-w-[1000px] w-full flex flex-col items-start text-center gap-14 md:gap-10">
+        <div className="max-w-[1000px] w-full flex flex-col items-start text-center gap-8 md:gap-10">
 
           <motion.h1
             className=" text-4xl sm:text-5xl lg:text-5xl font-bold leading-tight text-start"
@@ -142,7 +142,7 @@ export default function HeroSection() {
             </button>
           </motion.div>
         {  <motion.div
-            className="flex gap-4 mt-4 px-0 py-2 pr-0 md:pr-14 justify-end items-end w-full"
+            className="flex gap-4 mt-8 sm:mt-14  px-0 py-2 pr-0 md:pr-14 justify-end items-end w-full"
             style={{ y: buttonsY, opacity }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
