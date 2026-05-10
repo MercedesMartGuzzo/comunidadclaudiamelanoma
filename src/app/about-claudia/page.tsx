@@ -192,7 +192,7 @@ export default function AboutClaudia() {
                                 onMouseEnter={handlePrimaryEnter}
                                 onMouseLeave={handlePrimaryLeave}
                                 onClick={() => router.push('/auth?tab=registro')}
-                                className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center gap-3 min-w-[180px]"
+                                className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-8 py-3 rounded-md font-noto-sans text-[1.2rem] tracking-widest font-bold flex items-center justify-center gap-3 min-w-[180px]"
                             >
                                 {/* Overlay animado */}
                                 <span
@@ -203,7 +203,7 @@ export default function AboutClaudia() {
                                 {/* Texto */}
                                 <span
                                     ref={primaryTextRef}
-                                    className="relative z-10 text-[#003C43] uppercase"
+                                    className="relative z-10 text-[#003C43]"
                                 >
                                     Unirme
                                 </span>
@@ -211,7 +211,7 @@ export default function AboutClaudia() {
                                 {/* Ícono ArrowRight */}
                                 <ArrowRight
                                     ref={primaryIconRef}
-                                    className="relative z-10 w-5 h-5 text-[#003C43] shrink-0 pt-"
+                                    className="relative z-10 w-5 h-5 text-[#003C43] shrink-0 pt-[1px]"
                                 />
                             </button>
                         </div>

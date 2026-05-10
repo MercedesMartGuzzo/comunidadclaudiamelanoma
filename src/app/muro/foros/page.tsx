@@ -21,7 +21,7 @@ export default function MisForosPage() {
     );
 
     return (
-        <main className="bg-[#f6fafa] min-h-screen pt-28 pb-20 px-4">
+        <main className="bg-[#f6fafa] min-h-screen pt-14 pb-20 px-4">
 
             <div className="max-w-[1000px] mx-auto">
 

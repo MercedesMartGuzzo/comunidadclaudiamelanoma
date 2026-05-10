@@ -103,8 +103,9 @@ export default function ForosPage() {
                         onClick={() => setModalOpen(true)}
                         className="bg-[#E3FEF7] text-[#003C43] font-inconsolata text-xs sm:text-sm font-bold uppercase tracking-wide px-4 sm:px-8 py-3 sm:py-3 rounded-md hover:opacity-90 transition-opacity flex items-center gap-2"
                     >
-                        <Plus className="w-4 h-4" />
+
                         Proponer nuevo foro
+                        <Plus className="w-4 h-4" />
                     </button>
                 </div>
             </div>

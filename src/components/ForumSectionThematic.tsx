@@ -81,7 +81,7 @@ export default function ForumSectionThematic() {
             >
               <span
                 ref={overlayRef}
-                className="absolute -inset-[2px] bg-[#E3FEF7] translate-x-[-101%] rounded-md"
+                className="absolute -inset-[2px] bg-[#f6fafa] translate-x-[-101%] rounded-md"
               />
               <span ref={textRef} className="relative z-10 text-[#E3FEF7] tracking-wider font-bold text-[1rem] leading-none">
                 Ver todos los foros

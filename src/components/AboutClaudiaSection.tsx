@@ -12,47 +12,47 @@ export default function AboutClaudiaSection() {
   const textRef = useRef<HTMLSpanElement>(null);
   const iconRef = useRef<SVGSVGElement>(null);
 
-const handleMouseEnter = () => {
-  gsap.to(overlayRef.current, {
-    x: 0,
-    duration: 0.4,
-    ease: 'power2.out',
-  });
+  const handleMouseEnter = () => {
+    gsap.to(overlayRef.current, {
+      x: 0,
+      duration: 0.4,
+      ease: 'power2.out',
+    });
 
-  // El texto no se desplaza, solo cambia de color
-  gsap.to(textRef.current, {
-    color: '#E3FEF7',
-    duration: 0.4,
-  });
+    // El texto no se desplaza, solo cambia de color
+    gsap.to(textRef.current, {
+      color: '#E3FEF7',
+      duration: 0.4,
+    });
 
-  // Solo el ícono se mueve hacia la derecha
-  gsap.to(iconRef.current, {
-    x: 20,
-    stroke: '#E3FEF7',
-    duration: 0.4,
-  });
-};
+    // Solo el ícono se mueve hacia la derecha
+    gsap.to(iconRef.current, {
+      x: 20,
+      stroke: '#E3FEF7',
+      duration: 0.4,
+    });
+  };
 
-const handleMouseLeave = () => {
-  gsap.to(overlayRef.current, {
-    x: '-100%',
-    duration: 0.4,
-    ease: 'power2.out',
-  });
+  const handleMouseLeave = () => {
+    gsap.to(overlayRef.current, {
+      x: '-100%',
+      duration: 0.4,
+      ease: 'power2.out',
+    });
 
-  // El texto vuelve únicamente a su color original
-  gsap.to(textRef.current, {
-    color: '#003C43',
-    duration: 0.4,
-  });
+    // El texto vuelve únicamente a su color original
+    gsap.to(textRef.current, {
+      color: '#003C43',
+      duration: 0.4,
+    });
 
-  // El ícono vuelve a su posición original
-  gsap.to(iconRef.current, {
-    x: 0,
-    stroke: '#003C43',
-    duration: 0.4,
-  });
-};
+    // El ícono vuelve a su posición original
+    gsap.to(iconRef.current, {
+      x: 0,
+      stroke: '#003C43',
+      duration: 0.4,
+    });
+  };
 
   return (
     <section className="bg-gradient-to-br from-[#003C43] to-[#135D66] text-white py-32 relative overflow-hidden">
@@ -63,7 +63,7 @@ const handleMouseLeave = () => {
 
       <div className="w-full flex justify-center px-6">
         <div className="max-w-[1000px] w-full relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
+
           {/* Left Content */}
           <div>
             <p className="text-sm font-medium uppercase tracking-wider text-[#E3FEF7] mb-6">
@@ -82,14 +82,14 @@ const handleMouseLeave = () => {
             </p>
 
             <p className="text-base text-gray-200 mb-8 font-noto-sans leading-relaxed">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam sed soluta itaque facere quos? Fugit rem excepturi distinctio praesentium temporibus. Necessitatibus repellat ad eos facilis blanditiis dignissimos natus? Iure, aperiam.
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam sed soluta itaque facere quos? Fugit rem excepturi distinctio praesentium temporibus. Necessitatibus repellat ad eos facilis blanditiis dignissimos natus? Iure, aperiam.
             </p>
 
             <button
               onClick={() => router.push('/about-claudia')}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
-              className="relative overflow-hidden bg-[#E3FEF7] border border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-inconsolata  font-bold tracking-wide flex items-center gap-3 cursor-pointer"
+              className="relative overflow-hidden bg-[#E3FEF7] border border-[#E3FEF7] px-8 py-3 rounded-md text-[.9rem] sm:text-[1.2rem] tracking-wider font-inconsolata font-bold tracking-wide flex items-center gap-3 cursor-pointer"
             >
               {/* Animated overlay */}
               <span
@@ -100,7 +100,7 @@ const handleMouseLeave = () => {
               {/* Button text */}
               <span
                 ref={textRef}
-                className="relative z-10 text-[#003C43] text-[.8rem] md:text-[1rem] tracking-wider font-bold"
+                className="relative z-10 text-[#003C43]  font-bold"
               >
                 Conocer su historia completa
               </span>

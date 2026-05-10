@@ -216,7 +216,7 @@ export default function ResourcesSection() {
               onClick={() => router.push('/resources')}
               className="relative overflow-hidden bg-[#003C43] border-2 border-[#003C43] px-4 py-3 rounded-md font-medium font-inconsolata   flex items-center justify-center gap-2 shadow-md self-start md:self-auto"
             >
-              <span ref={overlayRef} className="absolute inset-[-2px] bg-[#E3FEF7] translate-x-[-100%]" />
+              <span ref={overlayRef} className="absolute inset-[-2px] bg-[#f6fafa] translate-x-[-100%]" />
               <span ref={textRef} className="relative z-10 text-[#E3FEF7] font-bold text-[1rem] u tracking-wider font-bold leading-none">
                 Ver todos los recursos
               </span>

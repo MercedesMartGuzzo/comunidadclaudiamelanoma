@@ -42,7 +42,7 @@ const favoritePosts = [
 export default function FavoritosPage() {
 
     return (
-        <main className="bg-[#f6fafa] min-h-screen pt-28 pb-20 px-4">
+        <main className="bg-[#f6fafa] min-h-screen pt-14 pb-20 px-4">
 
             <div className="max-w-[900px] mx-auto">
 

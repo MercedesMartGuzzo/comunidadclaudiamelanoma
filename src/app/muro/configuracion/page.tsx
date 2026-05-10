@@ -61,7 +61,7 @@ export default function ConfiguracionPage() {
     };
 
     return (
-        <main className="bg-[#f6fafa] min-h-screen pt-28 pb-20 px-4">
+        <main className="bg-[#f6fafa] min-h-screen pt-14 pb-20 px-4">
             <div className="max-w-[900px] mx-auto">
 
                 {/* VOLVER */}
@@ -324,23 +324,23 @@ export default function ConfiguracionPage() {
                     </section>
 
                     {/* GUARDAR */}
-                    <div className="flex justify-end">
+                    <div className="flex justify-start sm:justify-end">
                         <div className="relative">
                             <button
                                 onClick={handleSave}
-                                className="h-12 px-6 rounded-xl bg-[#003C43] text-white font-medium font-noto-sans flex items-center gap-2 hover:bg-[#00252a] transition-colors"
+                                className="py-2 px-4 rounded-lg bg-[#003C43] text-white flex items-center gap-2 hover:bg-[#00252a] transition-colors"
                             >
+                                Guardar cambios
                                 <Save className="w-4 h-4" />
-                                Guardar configuración
                             </button>
+
                             {saved && (
-                                <div className="absolute top-[calc(100%+10px)] right-0 whitespace-nowrap bg-[#E3FEF7] text-[#003C43] text-sm px-4 py-2 rounded-lg shadow-lg font-noto-sans">
-                                    ✓ Configuración guardada
+                                <div className="absolute top-[calc(100%+10px)] left-0 sm:left-auto sm:right-0 whitespace-nowrap bg-[#E3FEF7] text-[#003C43] text-sm px-4 py-2 rounded-lg shadow-lg font-noto-sans">
+                                    ✓ Cambios guardados
                                 </div>
                             )}
                         </div>
                     </div>
-
                     {/* ZONA DE PELIGRO */}
                     <section className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,60,67,0.04)] border border-red-100">
                         <div className="flex items-center gap-3 mb-4">
@@ -357,7 +357,7 @@ export default function ConfiguracionPage() {
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between bg-red-50 rounded-xl p-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-red-50 rounded-xl p-4 gap-4">
                             <div>
                                 <p className="font-medium text-[#181c1d] font-noto-sans text-sm">
                                     Eliminar cuenta
@@ -366,9 +366,10 @@ export default function ConfiguracionPage() {
                                     Esta acción es permanente e irreversible.
                                 </p>
                             </div>
+
                             <button
                                 onClick={() => setDeleteModalOpen(true)}
-                                className="font-inconsolata text-xs font-bold uppercase tracking-wide text-red-400 hover:text-red-600 border border-red-200 hover:border-red-400 px-4 py-2 rounded-lg transition-colors"
+                                className="font-inconsolata text-xs font-bold uppercase tracking-wide text-red-400 hover:text-red-600 border border-red-200 hover:border-red-400 px-4 py-2 rounded-lg transition-colors self-start sm:self-auto"
                             >
                                 Eliminar cuenta
                             </button>

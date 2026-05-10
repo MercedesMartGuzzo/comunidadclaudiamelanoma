@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, HandHeart } from 'lucide-react';
 
 export default function HeroSection() {
   const router = useRouter();
@@ -117,10 +117,10 @@ const handlePrimaryLeave = () => {
               onMouseEnter={handlePrimaryEnter}
               onMouseLeave={handlePrimaryLeave}
               onClick={() => router.push('/auth?tab=registro')}
-              className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-inconsolata flex items-center gap-6 min-w-[180px] shadow-md md:gap-3"
+              className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-8 py-3 rounded-md text-[#003C43] font-bold text-[1.2rem] tracking-wider font-inconsolata flex items-center gap-6 min-w-[180px] shadow-md md:gap-3"
             >
               <span ref={primaryOverlayRef} className="absolute inset-0 bg-[#003C43] translate-x-[-100%]" />
-              <span ref={primaryTextRef} className="relative z-10 text-[#003C43] font-bold text-[1.2rem] md:tracking-wider ">
+              <span ref={primaryTextRef} className="relative z-10 ">
                 Unirme
               </span>
               <span ref={primaryIconRef} className="relative z-10 text-[#003C43] flex items-center">
@@ -134,10 +134,10 @@ const handlePrimaryLeave = () => {
               onMouseEnter={handleSecondaryEnter}
               onMouseLeave={handleSecondaryLeave}
               onClick={() => router.push('/about-claudia')}
-              className="relative overflow-hidden bg-white border-2 border-white md:px-8 md:-py-3 py-3 px-6 rounded-md font-medium font-inconsolata flex items-center justify-center min-w-[180px] shadow-md"
+              className="relative overflow-hidden bg-white border-2 border-white md:px-8 md:-py-3 py-3 px-6 rounded-md font-bold text-[1.2rem] tracking-wider font-inconsolata flex items-center justify-center min-w-[180px] shadow-md"
             >
               <span ref={secondaryOverlayRef} className="absolute inset-0 bg-[#003C43] translate-x-[-100%]" />
-              <span ref={secondaryTextRef} className="relative z-10 text-[#003C43] font-bold text-[1.2rem] md:tracking-wider]"> 
+              <span ref={secondaryTextRef} className="relative z-10 text-[#003C43] "> 
                 Sobre Claudia
               </span>
             </button>
