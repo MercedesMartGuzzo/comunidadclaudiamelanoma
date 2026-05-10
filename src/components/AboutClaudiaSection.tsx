@@ -89,7 +89,7 @@ const handleMouseLeave = () => {
               onClick={() => router.push('/about-claudia')}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
-              className="relative overflow-hidden bg-[#E3FEF7] border border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-noto-sans uppercase text-sm font-bold tracking-wide flex items-center gap-3 cursor-pointer"
+              className="relative overflow-hidden bg-[#E3FEF7] border border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-inconsolata  font-bold tracking-wide flex items-center gap-3 cursor-pointer"
             >
               {/* Animated overlay */}
               <span
@@ -100,7 +100,7 @@ const handleMouseLeave = () => {
               {/* Button text */}
               <span
                 ref={textRef}
-                className="relative z-10 text-[#003C43]"
+                className="relative z-10 text-[#003C43] text-[.8rem] md:text-[1rem] tracking-wider font-bold"
               >
                 Conocer su historia completa
               </span>
@@ -108,7 +108,7 @@ const handleMouseLeave = () => {
               {/* Lucide icon */}
               <ArrowRight
                 ref={iconRef}
-                className="relative z-10 w-4 h-4 text-[#003C43]"
+                className="relative z-10 w-5 h-5 text-[#003C43] pt-[2px]"
               />
             </button>
           </div>

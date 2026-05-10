@@ -51,7 +51,7 @@ export default function ForosPage() {
                     <Link
                         key={forum.id}
                         href={`/foros/${forum.slug}`}
-                        className="group w-full bg-[var(--clr-surface-low)] rounded-lg p-6 gap-6 hover:shadow-[0_20px_40px_rgba(0,80,70,0.1)] transition-shadow flex flex-col"
+                        className="group w-full bg-[var(--clr-surface-low)] rounded-lg p-6 gap-6 hover:shadow-[0_20px_40px_rgba(0,80,70,0.1)] transition-shadow flex flex-col font-inconsolata"
                     >
                         <div className="mb-6">{iconMap[forum.slug]}</div>
 

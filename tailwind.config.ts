@@ -9,15 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        inconsolata: ['var(--ff-inconsolata)', 'monospace'],
+        "inconsolata": ['var(--ff-inconsolata)', 'monospace'],
         'noto-sans': ['var(--ff-noto-sans)', 'sans-serif'],
       },
       colors: {
-        primary: '#00252a',
+        "primary": '#00252a',
         'primary-container': '#003C43',
-        secondary: '#aaeaf5',
-        accent: '#E3FEF7',
-        surface: '#f6fafa',
+        "secondary": '#aaeaf5',
+        "accent": '#E3FEF7',
+        "surface": '#f6fafa',
         'surface-low': '#f0f4f4',
         'surface-lowest': '#ffffff',
         'on-surface': '#181c1d',

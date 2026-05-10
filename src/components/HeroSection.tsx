@@ -82,7 +82,7 @@ const handlePrimaryLeave = () => {
         <div className="max-w-[1000px] w-full flex flex-col items-center text-center gap-14 md:gap-10">
 
           <motion.h1
-            className="font-inconsolata text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-center"
+            className=" text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-center"
             style={{ letterSpacing: '-0.02em', y: titleY, opacity }}
             initial={{ opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
@@ -117,10 +117,10 @@ const handlePrimaryLeave = () => {
               onMouseEnter={handlePrimaryEnter}
               onMouseLeave={handlePrimaryLeave}
               onClick={() => router.push('/auth?tab=registro')}
-              className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center gap-3 min-w-[180px] shadow-md"
+              className="relative overflow-hidden bg-[#E3FEF7] border-2 border-[#E3FEF7] px-8 py-3 rounded-md font-medium font-inconsolata flex items-center gap-6 min-w-[180px] shadow-md md:gap-3"
             >
               <span ref={primaryOverlayRef} className="absolute inset-0 bg-[#003C43] translate-x-[-100%]" />
-              <span ref={primaryTextRef} className="relative z-10 text-[#003C43] font-[1rem]">
+              <span ref={primaryTextRef} className="relative z-10 text-[#003C43] font-bold text-[1.2rem] md:tracking-wider ">
                 Unirme
               </span>
               <span ref={primaryIconRef} className="relative z-10 text-[#003C43] flex items-center">
@@ -134,10 +134,10 @@ const handlePrimaryLeave = () => {
               onMouseEnter={handleSecondaryEnter}
               onMouseLeave={handleSecondaryLeave}
               onClick={() => router.push('/about-claudia')}
-              className="relative overflow-hidden bg-white border-2 border-white px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center min-w-[180px] shadow-md"
+              className="relative overflow-hidden bg-white border-2 border-white md:px-8 md:-py-3 py-3 px-6 rounded-md font-medium font-inconsolata flex items-center justify-center min-w-[180px] shadow-md"
             >
               <span ref={secondaryOverlayRef} className="absolute inset-0 bg-[#003C43] translate-x-[-100%]" />
-              <span ref={secondaryTextRef} className="relative z-10 text-[#003C43] font-[1rem]">
+              <span ref={secondaryTextRef} className="relative z-10 text-[#003C43] font-bold text-[1.2rem] md:tracking-wider]"> 
                 Sobre Claudia
               </span>
             </button>

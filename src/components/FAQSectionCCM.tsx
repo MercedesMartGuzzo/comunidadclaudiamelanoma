@@ -129,7 +129,7 @@ function CommunityCTAButton() {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onClick={() => router.push('/auth?tab=registro')}
-                className="relative overflow-hidden bg-[#003C43] border-2 border-[#003C43] px-8 py-3 rounded-md font-medium font-noto-sans flex items-center justify-center gap-3 min-w-[180px] shadow-md"
+                className="relative overflow-hidden bg-[#003C43] border-2 border-[#003C43] px-8 py-3 rounded-md font-medium  flex items-center justify-center gap-3 min-w-[180px] shadow-md"
             >
                 <span
                     ref={overlayRef}
@@ -138,7 +138,7 @@ function CommunityCTAButton() {
 
                 <span
                     ref={textRef}
-                    className="relative z-10 text-[#E3FEF7] tracking-wider font-bold"
+                    className="relative z-10 text-[#E3FEF7] tracking-wider font-bold text-[1rem]"
                 >
                     UNIRME
                 </span>
