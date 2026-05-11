@@ -46,12 +46,12 @@ export default function ForosPage() {
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20 ">
                 {mockForums.map((forum) => (
                     <Link
                         key={forum.id}
                         href={`/foros/${forum.slug}`}
-                        className="group w-full bg-[var(--clr-surface-low)] rounded-lg p-6 gap-6 hover:shadow-[0_20px_40px_rgba(0,80,70,0.1)] transition-shadow flex flex-col font-inconsolata"
+                        className="group w-full bg-[var(--clr-surface-low)] rounded-lg p-6 gap-2 hover:shadow-[0_20px_40px_rgba(0,80,70,0.1)] transition-shadow flex flex-col font-inconsolata"
                     >
                         <div className="mb-6">{iconMap[forum.slug]}</div>
 
@@ -169,7 +169,7 @@ export default function ForosPage() {
                                 />
                             </div>
 
-                            <div className="flex items-center justify-end gap-3 pt-2">
+                            <div className="flex justify-start items-center md:justify-end gap-3 pt-2">
                                 <button
                                     onClick={handleClose}
                                     className="font-inconsolata text-xs font-bold uppercase tracking-wide text-[#003C43]/55 hover:text-[#003C43] transition-colors px-4 py-2.5"
@@ -181,8 +181,8 @@ export default function ForosPage() {
                                     disabled={!nombre.trim() || !descripcion.trim()}
                                     className="bg-[#003C43] text-[#E3FEF7] font-inconsolata text-xs sm:text-sm font-bold uppercase tracking-wide px-4 sm:px-8 py-3 sm:py-3 rounded-md hover:bg-[#00252a] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                                 >
-                                    <Plus className="w-3.5 h-3.5" />
                                     Enviar sugerencia
+                                    <Plus className="w-3.5 h-3.5" />
                                 </button>
                             </div>
                         </div>

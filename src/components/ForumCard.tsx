@@ -8,7 +8,7 @@ interface ForumCardProps {
 
 export default function ForumCard({ icon, title, description, tags, showButton = true }: ForumCardProps) {
   return (
-    <div className="group w-full bg-[var(--clr-surface-low)] rounded-lg p-6 gap-6 hover:shadow-[0_20px_40px_rgba(0,80,70,0.1)] transition-shadow">
+    <div className="group w-full bg-[var(--clr-surface-low)] rounded-lg p-4 gap-6 hover:shadow-[0_20px_40px_rgba(0,80,70,0.1)] transition-shadow">
       <div className="mb-6">{icon}</div>
       <h3 className="font-inconsolata text-lg font-semibold text-[#003C43] mb-2">{title}</h3>
       <p className="text-sm text-[#181c1d] mb-3 font-noto-sans leading-relaxed">{description}</p>

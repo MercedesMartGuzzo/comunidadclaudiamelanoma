@@ -77,7 +77,8 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="bg-gradient-to-br from-[#00252a] to-[#003C43] text-white min-h-screen sm:flex items-center justify-center sm:pt-28 pt-22 pb-4 overflow-hidden">
+    // La section necesita relative:
+    <section className="bg-gradient-to-br from-[#00252a] to-[#003C43] text-white min-h-screen sm:flex items-center justify-center sm:pt-28 pt-22 pb-4 overflow-hidden relative">
       <div className="w-full flex justify-center px-8 sm:px-10 md:px-6">
         <div className="max-w-[1000px] w-full flex flex-col items-start text-center gap-8 md:gap-10">
 
@@ -142,20 +143,19 @@ export default function HeroSection() {
             </button>
           </motion.div>
           <motion.div
-            className="hidden lg:flex gap-4 mt-4 px-0 py-2 pr-0 md:pr-14 justify-end items-end w-full"
-            style={{ y: buttonsY, opacity }}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-row gap-3 absolute right-8 bottom-8"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.9, duration: 1, ease: 'easeOut' }}
           >
-            <Leaf className="w-4 h-4 text-white" />
-            <Clover className="w-4 h-4 text-white" />
-            <LeafyGreen className="w-4 h-4 text-white" />
-            <Sprout className="w-4 h-4 text-white" />
-            <Rose className="w-4 h-4 text-white" />
-            <Flower2 className="w-4 h-4 text-white" />
-            <Wheat className="w-4 h-4 text-white" />
-            <Flower className="w-4 h-4 text-white" />
+            <Leaf className="w-4 h-4 text-white/50" />
+            <Clover className="w-4 h-4 text-white/50" />
+            <LeafyGreen className="w-4 h-4 text-white/50" />
+            <Sprout className="w-4 h-4 text-white/50" />
+            <Rose className="w-4 h-4 text-white/50" />
+            <Flower2 className="w-4 h-4 text-white/50" />
+            <Wheat className="w-4 h-4 text-white/50" />
+            <Flower className="w-4 h-4 text-white/50" />
           </motion.div>
         </div>
 

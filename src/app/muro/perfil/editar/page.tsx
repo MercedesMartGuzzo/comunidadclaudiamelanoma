@@ -190,13 +190,10 @@ export default function EditProfilePage() {
                             <button
                                 onClick={handleSave}
                                 disabled={isSaving}
-                                className="h-12 px-6 rounded-xl bg-[#003C43] text-white font-medium font-noto-sans flex items-center gap-2 hover:bg-[#00252a] transition-colors disabled:opacity-60"
+                                className="py-2 px-4 rounded-xl bg-[#003C43] text-white font-medium font-noto-sans flex items-center gap-2 hover:bg-[#00252a] transition-colors disabled:opacity-60"
                             >
-
-                                <Save className="w-4 h-4" />
-
                                 {isSaving ? 'Guardando...' : 'Guardar cambios'}
-
+                                <Save className="w-4 h-4" />
                             </button>
 
                         </div>
