@@ -195,15 +195,10 @@ export default function EditProfilePage() {
                                 {isSaving ? 'Guardando...' : 'Guardar cambios'}
                                 <Save className="w-4 h-4" />
                             </button>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </main>
-
             <Footer />
         </>
     );

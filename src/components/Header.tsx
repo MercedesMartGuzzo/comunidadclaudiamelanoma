@@ -6,10 +6,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { Bell, CircleUserRound } from 'lucide-react';
+import { supabase } from '@/lib/supabase/client';
 
 const navLinks = [
   { label: 'Inicio', href: '#inicio' },
-  { label: 'Muro', href: '/muro' },
+  { label: 'Muro', href: '/muro', requiresAuth: true },
   { label: 'Foros', href: '#foros' },
   { label: 'Acerca del Melanoma', href: '#melanoma' },
   { label: 'Sobre Claudia', href: '/about-claudia' },
@@ -26,37 +27,99 @@ export default function Header() {
   const router = useRouter();
 
   const handleMouseEnter = () => {
-    gsap.to(shortTextRef.current, { y: -20, opacity: 0, duration: 0.3, ease: 'power2.out' });
-    gsap.to(fullTextRef.current, { y: 0, opacity: 1, duration: 0.3, ease: 'power2.out' });
+    gsap.to(shortTextRef.current, {
+      y: -20,
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+
+    gsap.to(fullTextRef.current, {
+      y: 0,
+      opacity: 1,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
   };
 
   const handleMouseLeave = () => {
-    gsap.to(shortTextRef.current, { y: 0, opacity: 1, duration: 0.3, ease: 'power2.out' });
-    gsap.to(fullTextRef.current, { y: 20, opacity: 0, duration: 0.3, ease: 'power2.out' });
+    gsap.to(shortTextRef.current, {
+      y: 0,
+      opacity: 1,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+
+    gsap.to(fullTextRef.current, {
+      y: 20,
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
   };
 
   const scrollToSection = (selector: string) => {
     setTimeout(() => {
       const target = document.querySelector(selector);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }
     }, 300);
   };
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleNavClick = async (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+    requiresAuth?: boolean
+  ) => {
+    // Si la ruta requiere autenticación
+    if (requiresAuth) {
+      e.preventDefault();
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        router.push('/auth?tab=registro');
+        setMenuOpen(false);
+        return;
+      }
+    }
+
+    // Scroll interno a secciones de la landing
     if (href.startsWith('#')) {
       e.preventDefault();
-      if (pathname !== '/') router.push(`/${href}`);
-      else scrollToSection(href);
+
+      if (pathname !== '/') {
+        router.push(`/${href}`);
+      } else {
+        scrollToSection(href);
+      }
+
       setMenuOpen(false);
       return;
     }
+
+    // Navegación normal
     setMenuOpen(false);
   };
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (pathname !== '/') router.push('/#inicio');
-    else window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (pathname !== '/') {
+      router.push('/#inicio');
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
   };
 
   return (
@@ -69,7 +132,6 @@ export default function Header() {
       >
         <div className="w-full flex justify-center">
           <nav className="max-w-[1200px] w-full mx-auto px-4 md:px-8 lg:px-4 py-2 flex items-center justify-between relative">
-
             {/* Logo */}
             <div
               className="relative h-8 min-w-[200px] lg:min-w-[280px] flex items-center overflow-hidden cursor-pointer"
@@ -77,14 +139,20 @@ export default function Header() {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <Link href="/" className="relative block text-[#003C43] font-inconsolata leading-none">
-                <span ref={shortTextRef} className="block text-sm font-bold tracking-[0.08em] pt-[2px] leading-none">
+              <Link
+                href="/"
+                className="relative block text-[#003C43] font-inconsolata leading-none"
+              >
+                <span
+                  ref={shortTextRef}
+                  className="block text-sm font-bold tracking-[0.08em] pt-[2px] leading-none"
+                >
                   Comunidad Claudia Melanoma
                 </span>
+
                 <span
                   ref={fullTextRef}
                   className="absolute left-0 top-[50%] -translate-y-1/2 text-sm tracking-[0.08em] font-bold whitespace-nowrap leading-none opacity-0 font-inconsolata"
-
                 >
                   Comunidad Claudia Melanoma
                 </span>
@@ -101,11 +169,22 @@ export default function Header() {
                   transition={{ delay: 0.2 + index * 0.1 }}
                 >
                   <Link
-                    href={item.href.startsWith('#') ? `/${item.href}` : item.href}
-                    onClick={(e) => handleNavClick(e, item.href)}
+                    href={
+                      item.href.startsWith('#')
+                        ? `/${item.href}`
+                        : item.href
+                    }
+                    onClick={(e) =>
+                      handleNavClick(
+                        e,
+                        item.href,
+                        item.requiresAuth
+                      )
+                    }
                     className="relative text-sm font-medium text-[#181c1d] hover:text-[#2f6f73] transition-colors duration-300 group pb-1 whitespace-nowrap"
                   >
                     {item.label}
+
                     <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-[#5d9ca0] transition-all duration-300 group-hover:w-full" />
                   </Link>
                 </motion.div>
@@ -114,15 +193,19 @@ export default function Header() {
 
             {/* Desktop Icons */}
             <div className="hidden lg:flex items-center gap-0">
-              <motion.button whileTap={{ scale: 0.95 }} className="p-2">
-                <Bell className="w-5 h-5 text-[#4a5568] hover:text-[#2f6f73]" />
-              </motion.button>
-
-              {/* AHORA REDIRIGE */}
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 className="p-2"
-                onClick={() => router.push('/auth?tab=registro')}
+              >
+                <Bell className="w-5 h-5 text-[#4a5568] hover:text-[#2f6f73]" />
+              </motion.button>
+
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                className="p-2"
+                onClick={() =>
+                  router.push('/auth?tab=registro')
+                }
               >
                 <CircleUserRound className="w-5 h-5 text-[#003C43] hover:text-[#2f6f73]" />
               </motion.button>
@@ -134,11 +217,26 @@ export default function Header() {
               className="lg:hidden p-2 z-50"
               onClick={() => setMenuOpen(!menuOpen)}
             >
-              <svg className="w-7 h-7 text-[#003C43]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-7 h-7 text-[#003C43]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 {menuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 )}
               </svg>
             </motion.button>
@@ -161,8 +259,18 @@ export default function Header() {
                       transition={{ delay: index * 0.08 }}
                     >
                       <Link
-                        href={item.href.startsWith('#') ? `/${item.href}` : item.href}
-                        onClick={(e) => handleNavClick(e, item.href)}
+                        href={
+                          item.href.startsWith('#')
+                            ? `/${item.href}`
+                            : item.href
+                        }
+                        onClick={(e) =>
+                          handleNavClick(
+                            e,
+                            item.href,
+                            item.requiresAuth
+                          )
+                        }
                         className="text-lg font-medium text-[#181c1d] hover:text-[#2f6f73]"
                       >
                         {item.label}
@@ -180,7 +288,9 @@ export default function Header() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.97 }}
-                      onClick={() => router.push('/auth?tab=login')}
+                      onClick={() =>
+                        router.push('/auth?tab=login')
+                      }
                       className="px-6 py-3 border border-[#003C43] text-[#003C43] rounded-full"
                     >
                       Iniciar sesión
@@ -189,17 +299,20 @@ export default function Header() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.97 }}
-                      onClick={() => router.push('/auth?tab=registro')}
+                      onClick={() =>
+                        router.push('/auth?tab=registro')
+                      }
                       className="flex items-center gap-2 px-6 py-3 bg-[#003C43] rounded-full"
                     >
                       <CircleUserRound className="w-5 h-5 text-white" />
-                      <span className="text-white">Registrarme</span>
+                      <span className="text-white">
+                        Registrarme
+                      </span>
                     </motion.button>
                   </motion.div>
                 </motion.div>
               )}
             </AnimatePresence>
-
           </nav>
         </div>
       </motion.header>
