@@ -110,7 +110,7 @@ export default function UserProfilePage({ params }: Props) {
                     >
                         <ArrowLeft className="w-4 h-4" />
 
-                        Volver al muro
+                        Volver a la comunidad
                     </Link>
 
                     {/* GRID */}
@@ -166,9 +166,9 @@ export default function UserProfilePage({ params }: Props) {
                                                 {user.diagnosis}
                                             </span>
 
-                                            <span className="bg-[#f6fafa] text-[#003C43] text-xs font-inconsolata uppercase tracking-wider px-3 py-1 rounded-full">
+                                      {/*       <span className="bg-[#f6fafa] text-[#003C43] text-xs font-inconsolata uppercase tracking-wider px-3 py-1 rounded-full">
                                                 {user.stage}
-                                            </span>
+                                            </span> */}
 
                                         </div>
 

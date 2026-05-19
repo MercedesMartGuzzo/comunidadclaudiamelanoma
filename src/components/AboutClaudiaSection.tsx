@@ -74,7 +74,7 @@ export default function AboutClaudiaSection() {
               className="font-inconsolata text-4xl sm:text-5xl font-bold mb-8 leading-tight"
               style={{ letterSpacing: '-0.02em' }}
             >
-              Sobre Claudia
+              Sobre Nosotros
             </h2>
 
             <p className="text-lg text-gray-100 mb-8 font-noto-sans leading-relaxed">
@@ -102,7 +102,7 @@ export default function AboutClaudiaSection() {
                 ref={textRef}
                 className="relative z-10 text-[#003C43]  font-bold"
               >
-                Conocer su historia completa
+                Conocer nuestra historia
               </span>
 
               {/* Lucide icon */}

@@ -25,13 +25,13 @@ export default function MiembrosPage() {
                 className="flex items-center gap-2 text-sm text-[#003C43]/55 hover:text-[#003C43] transition font-noto-sans mb-8 group w-fit"
             >
                 <ArrowLeft className="w-4 h-4 shrink-0 group-hover:-translate-x-1 transition-transform" />
-                <span className="leading-none">Volver al muro</span>
+                <span className="leading-none">Volver a </span>
             </Link>
 
             {/* Header */}
             <div className="mb-10">
                 <p className="font-inconsolata text-[0.7rem] font-bold uppercase tracking-[0.12em] text-[#003C43]/55 mb-3">
-                    Comunidad CCM
+                    Comunidad RLM
                 </p>
                 <h1
                     className="font-inconsolata text-4xl sm:text-5xl font-bold text-[#003C43] mb-4"
@@ -86,9 +86,9 @@ export default function MiembrosPage() {
                                 <span className="font-inconsolata text-[0.6rem] font-bold uppercase tracking-wider text-[#003C43] bg-[#E3FEF7] px-2.5 py-1 rounded-full">
                                     {user.diagnosis}
                                 </span>
-                                <span className="font-inconsolata text-[0.6rem] font-bold uppercase tracking-wider text-[#003C43] bg-[#f6fafa] px-2.5 py-1 rounded-full">
+                               {/*  <span className="font-inconsolata text-[0.6rem] font-bold uppercase tracking-wider text-[#003C43] bg-[#f6fafa] px-2.5 py-1 rounded-full">
                                     {user.stage}
-                                </span>
+                                </span> */}
                             </div>
 
                             {/* Botón seguir */}

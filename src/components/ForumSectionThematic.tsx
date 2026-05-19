@@ -110,7 +110,7 @@ export default function ForumSectionThematic() {
                 className="font-inconsolata text-3xl sm:text-4xl font-bold text-[#003C43] mb-4"
                 style={{ letterSpacing: '-0.02em' }}
               >
-                Foros Temáticos
+                Grupos
               </h2>
 
               <p className="text-[#181c1d] text-base font-noto-sans max-w-lg">
@@ -135,7 +135,7 @@ export default function ForumSectionThematic() {
                 ref={textRef}
                 className="relative z-10 text-[#E3FEF7] tracking-wider font-bold text-[1rem] leading-none"
               >
-                Ver todos los foros
+                Ver todos los grupos
               </span>
 
               <span

@@ -97,10 +97,10 @@ export default function PostCard({ post, comments, onAddComment }: Props) {
                     {post.commentsCount}
                 </button>
 
-                <button className="flex items-center gap-1.5 hover:text-[#003C43] transition-colors ml-auto">
+             {/*    <button className="flex items-center gap-1.5 hover:text-[#003C43] transition-colors ml-auto">
                     <Share2 className="w-4 h-4" />
                     Compartir
-                </button>
+                </button> */}
             </div>
 
             {/* Comentarios */}

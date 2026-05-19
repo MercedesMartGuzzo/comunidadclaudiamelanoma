@@ -20,9 +20,9 @@ export default function SidebarRight() {
         <div className="flex flex-col gap-4">
 
             {/* Tip del día */}
-            <div className="bg-gradient-to-br from-[#00252a] to-[#003c43] text-white p-6 rounded-xl relative overflow-hidden">
+           {/*  <div className="bg-gradient-to-br from-[#00252a] to-[#003c43] text-white p-6 rounded-xl relative overflow-hidden">
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 font-inconsolata text-[60px] font-bold text-white/5 select-none leading-none">
-                    CCM
+                    RML
                 </span>
                 <p className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#E3FEF7]/50 mb-2 relative z-10">
                     Tip del día
@@ -31,7 +31,7 @@ export default function SidebarRight() {
                     La hidratación constante ayuda a que tu piel se recupere mejor durante el tratamiento.
                 </p>
             </div>
-
+ */}
             {/* Miembros sugeridos */}
             <div className="bg-white rounded-xl p-5 hover:shadow-[0_4px_20px_rgba(0,60,67,0.07)] transition-shadow">
                 <p className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#003C43]/50 mb-4">

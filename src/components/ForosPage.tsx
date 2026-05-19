@@ -31,13 +31,13 @@ export default function ForosPage() {
             {/* Header */}
             <div className="mb-12">
                 <p className="font-inconsolata text-[0.7rem] font-bold uppercase tracking-[0.12em] text-[#003C43]/55 mb-3">
-                    Comunidad CCM
+                    Comunidad RLM
                 </p>
                 <h1
                     className="font-inconsolata text-4xl sm:text-5xl font-bold text-[#003C43] mb-4"
                     style={{ letterSpacing: '-0.02em' }}
                 >
-                    Directorio de Foros
+                    Directorio de Grupos
                 </h1>
                 <p className="text-[#181c1d]/70 text-lg font-noto-sans max-w-2xl leading-relaxed">
                     Espacios de encuentro, aprendizaje y apoyo. Conectate con especialistas
@@ -85,9 +85,9 @@ export default function ForosPage() {
 
             {/* CTA Banner */}
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#00252a] to-[#003c43] p-12">
-                <span className="absolute right-8 top-1/2 -translate-y-1/2 font-inconsolata text-[120px] font-bold text-white/5 select-none leading-none">
-                    CCM
-                </span>
+                {/* <span className="absolute right-8 top-1/2 -translate-y-1/2 font-inconsolata text-[120px] font-bold text-white/5 select-none leading-none">
+                    RLM
+                </span> */}
                 <div className="relative z-10 max-w-xl">
                     <h2
                         className="font-inconsolata text-2xl sm:text-3xl font-bold text-[#E3FEF7] mb-4"
@@ -104,7 +104,7 @@ export default function ForosPage() {
                         className="bg-[#E3FEF7] text-[#003C43] font-inconsolata text-xs sm:text-sm font-bold uppercase tracking-wide px-4 sm:px-8 py-3 sm:py-3 rounded-md hover:opacity-90 transition-opacity flex items-center gap-2"
                     >
 
-                        Proponer nuevo foro
+                        Proponer nuevo grupo
                         <Plus className="w-4 h-4" />
                     </button>
                 </div>
@@ -123,13 +123,13 @@ export default function ForosPage() {
                         <div className="flex items-center justify-between mb-6">
                             <div>
                                 <p className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#003C43]/50 mb-1">
-                                    Comunidad CCM
+                                    Comunidad RLM
                                 </p>
                                 <h2
                                     className="font-inconsolata text-xl font-bold text-[#003C43] "
                                     style={{ letterSpacing: '-0.02em' }}
                                 >
-                                    Proponer nuevo foro
+                                    Proponer nuevo grupo
                                 </h2>
                             </div>
                             <button
@@ -145,7 +145,7 @@ export default function ForosPage() {
 
                             <div className="flex flex-col gap-1.5">
                                 <label className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#003C43]/55">
-                                    Nombre del foro
+                                    Nombre del grupo
                                 </label>
                                 <input
                                     type="text"

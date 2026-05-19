@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense  } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import {
     Mail,
@@ -74,7 +74,8 @@ function AuthContent() {
             return;
         }
 
-        router.push('/muro');
+        router.push('/');
+        router.refresh();
     };
 
     // =========================
@@ -180,7 +181,7 @@ function AuthContent() {
                     </Link>
 
                     <p className="font-inconsolata text-[0.7rem] font-bold uppercase tracking-[0.12em] text-[#E3FEF7]/40 mb-3">
-                        Comunidad Claudia Melanoma
+                        Red Melanoma Latam
                     </p>
 
                     <h1

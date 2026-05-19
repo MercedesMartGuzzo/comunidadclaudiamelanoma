@@ -70,7 +70,7 @@ export default function ConfiguracionPage() {
                     className="inline-flex items-center gap-2 text-sm text-[#003C43]/60 hover:text-[#003C43] transition-colors mb-8 font-noto-sans group"
                 >
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                    Volver al muro
+                    Volver a la comunidad   
                 </Link>
 
                 {/* HEADER */}

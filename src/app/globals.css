@@ -69,4 +69,8 @@
 
     font-family: var(--ff-noto-sans);
   }
+  img{
+    max-width: 100%;
+
+  }
 }

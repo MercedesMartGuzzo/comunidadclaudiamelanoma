@@ -42,10 +42,10 @@ export default function SidebarLeft() {
                         {user.location}
                     </p>
 
-                    <span className="mt-2 font-inconsolata text-[0.6rem] font-bold uppercase tracking-wider text-[#003C43] bg-[#E3FEF7] px-2.5 py-1 rounded-full">
+                 {/*    <span className="mt-2 font-inconsolata text-[0.6rem] font-bold uppercase tracking-wider text-[#003C43] bg-[#E3FEF7] px-2.5 py-1 rounded-full">
                         {user.stage}
                     </span>
-
+ */}
                 </div>
 
                 {/* ACCIONES */}
@@ -79,7 +79,7 @@ export default function SidebarLeft() {
                         },
                         {
                             icon: Users,
-                            label: 'Foros',
+                            label: 'Mis grupos',
                             href: '/muro/foros',
                         },
                     ].map(({ icon: Icon, label, href }) => (

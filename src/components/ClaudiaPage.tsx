@@ -71,7 +71,7 @@ export default function ClaudiaPage() {
                             className="font-inconsolata text-3xl sm:text-4xl font-bold text-[#003C43] leading-tight"
                             style={{ letterSpacing: '-0.02em' }}
                         >
-                            Sobre Claudia
+                            Sobre Nosotros
                         </h1>
 
                         <p className="font-noto-sans text-base text-[#181c1d] leading-relaxed max-w-2xl">

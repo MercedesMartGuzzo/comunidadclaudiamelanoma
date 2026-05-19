@@ -202,7 +202,7 @@ export default function ResourcesSection() {
                 className="font-inconsolata text-3xl sm:text-4xl font-bold text-[#003C43] mb-4"
                 style={{ letterSpacing: '-0.02em' }}
               >
-                Acerca del Melanoma
+                Información Importante
               </h2>
               <p className="text-[#181c1d] text-base font-noto-sans max-w-lg">
                 Artículos, datos y fundamentos científicos para comprender el melanoma con claridad.
@@ -218,7 +218,7 @@ export default function ResourcesSection() {
             >
               <span ref={overlayRef} className="absolute inset-[-2px] bg-[#f6fafa] translate-x-[-100%]" />
               <span ref={textRef} className="relative z-10 text-[#E3FEF7] font-bold text-[1rem] u tracking-wider font-bold leading-none">
-                Ver todos los recursos
+                Ver más información
               </span>
               <span ref={iconRef} className="relative z-10 flex items-center text-[#E3FEF7] leading-none">
                 <ArrowRight className="w-5 h-5" />

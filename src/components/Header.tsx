@@ -10,10 +10,10 @@ import { supabase } from '@/lib/supabase/client';
 
 const navLinks = [
   { label: 'Inicio', href: '#inicio' },
-  { label: 'Muro', href: '/muro', requiresAuth: true },
-  { label: 'Foros', href: '#foros' },
-  { label: 'Acerca del Melanoma', href: '#melanoma' },
-  { label: 'Sobre Claudia', href: '/about-claudia' },
+  { label: 'Comunidad', href: '/muro', requiresAuth: true },
+  { label: 'Grupos', href: '#foros' },
+  { label: 'Informacion importante', href: '#melanoma' },
+  { label: 'Sobre Nosotros', href: '/about-claudia' },
   { label: 'FAQ', href: '#faq' },
 ];
 
@@ -71,43 +71,44 @@ export default function Header() {
     }, 300);
   };
 
-  const handleNavClick = async (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string,
-    requiresAuth?: boolean
-  ) => {
-    // Si la ruta requiere autenticación
-    if (requiresAuth) {
-      e.preventDefault();
+const handleNavClick = async (
+  e: React.MouseEvent<HTMLAnchorElement>,
+  href: string,
+  requiresAuth?: boolean
+) => {
+  // 1. Siempre cerramos el menú mobile primero
+  setMenuOpen(false);
 
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+  // 2. Si requiere autenticación, verificamos sesión
+  if (requiresAuth) {
+    e.preventDefault(); // Detenemos el Link para validar
 
-      if (!session) {
-        router.push('/auth?tab=registro');
-        setMenuOpen(false);
-        return;
-      }
-    }
+    const { data: { session } } = await supabase.auth.getSession();
 
-    // Scroll interno a secciones de la landing
-    if (href.startsWith('#')) {
-      e.preventDefault();
-
-      if (pathname !== '/') {
-        router.push(`/${href}`);
-      } else {
-        scrollToSection(href);
-      }
-
-      setMenuOpen(false);
+    if (!session) {
+      router.push('/auth?tab=registro');
       return;
     }
+    
+    // Si HAY sesión, navegamos manualmente ya que detuvimos el evento
+    router.push(href);
+    return;
+  }
 
-    // Navegación normal
-    setMenuOpen(false);
-  };
+  // 3. Manejo de hashes (#inicio, #faq, etc.)
+  if (href.startsWith('#')) {
+    e.preventDefault();
+    if (pathname !== '/') {
+      router.push(`/${href}`);
+    } else {
+      scrollToSection(href);
+    }
+    return;
+  }
+
+  // 4. Si es un link normal (como /about-claudia), dejamos que el <Link> actúe solo
+  // o navegamos con router si e.preventDefault fue llamado por error.
+};
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -147,14 +148,14 @@ export default function Header() {
                   ref={shortTextRef}
                   className="block text-sm font-bold tracking-[0.08em] pt-[2px] leading-none"
                 >
-                  Comunidad Claudia Melanoma
+                  RedMelanomaLatam
                 </span>
 
                 <span
                   ref={fullTextRef}
                   className="absolute left-0 top-[50%] -translate-y-1/2 text-sm tracking-[0.08em] font-bold whitespace-nowrap leading-none opacity-0 font-inconsolata"
                 >
-                  Comunidad Claudia Melanoma
+                  RedMelanomaLatam
                 </span>
               </Link>
             </div>

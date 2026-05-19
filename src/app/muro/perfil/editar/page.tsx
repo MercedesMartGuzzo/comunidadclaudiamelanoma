@@ -51,14 +51,14 @@ export default function EditProfilePage() {
                         <span className="text-base">←</span>
 
                         <span>
-                            Volver al muro
+                            Volver a la comunidad
                         </span>
                     </Link>
                     {/* TOP */}
                     <div className="mb-10">
 
                         <p className="font-inconsolata text-[0.7rem] font-bold uppercase tracking-[0.12em] text-[#003C43]/55 mb-3">
-                            Comunidad CCM
+                            Comunidad RLM
                         </p>
 
                         <h1
@@ -100,9 +100,9 @@ export default function EditProfilePage() {
                                 {user.name}
                             </p>
 
-                            <span className="mt-2 font-inconsolata text-[0.65rem] font-bold uppercase tracking-wider text-[#003C43] bg-[#E3FEF7] px-3 py-1 rounded-full">
+                        {/*     <span className="mt-2 font-inconsolata text-[0.65rem] font-bold uppercase tracking-wider text-[#003C43] bg-[#E3FEF7] px-3 py-1 rounded-full">
                                 {user.stage}
-                            </span>
+                            </span> */}
 
                         </div>
 

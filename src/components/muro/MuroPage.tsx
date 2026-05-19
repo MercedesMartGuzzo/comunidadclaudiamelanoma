@@ -48,13 +48,13 @@ export default function MuroPage() {
                 {/* Header */}
                 <div className="mb-8">
                     <p className="font-inconsolata text-[0.7rem] font-bold uppercase tracking-[0.12em] text-[#003C43]/55 mb-3">
-                        Comunidad CCM
+                        Comunidad RLM
                     </p>
                     <h1
                         className="font-inconsolata text-4xl sm:text-5xl font-bold text-[#003C43] mb-4"
                         style={{ letterSpacing: '-0.02em' }}
                     >
-                        Muro
+                        Comunidad
                     </h1>
                     <p className="text-[#181c1d]/70 text-lg font-noto-sans max-w-2xl leading-relaxed">
                         Compartí tu experiencia, leé las historias de la comunidad y conectate con otras personas.
@@ -70,7 +70,7 @@ export default function MuroPage() {
 
                     {/* CENTER */}
                     <div className="lg:col-span-2 flex flex-col gap-4">
-                        <CreatePost onPublish={handleAddPost} />
+                  {/*       <CreatePost onPublish={handleAddPost} /> */}
                         <Feed
                             posts={localPosts}
                             comments={localComments}

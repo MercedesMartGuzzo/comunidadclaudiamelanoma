@@ -62,14 +62,14 @@ export default function ActividadPage() {
                     className="inline-flex items-center gap-2 text-sm text-[#003C43]/60 hover:text-[#003C43] transition-colors mb-8 font-noto-sans"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    Volver al muro
+                    Volver a la comunidad
                 </Link>
 
                 {/* HEADER */}
                 <div className="mb-10">
 
                     <p className="font-inconsolata text-[0.7rem] font-bold uppercase tracking-[0.14em] text-[#003C43]/55 mb-3">
-                        Comunidad CCM
+                        Comunidad RLM
                     </p>
 
                     <h1
