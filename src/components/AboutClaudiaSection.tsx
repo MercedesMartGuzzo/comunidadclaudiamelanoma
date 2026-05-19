@@ -119,7 +119,6 @@ export default function AboutClaudiaSection() {
               Imagen de Claudia
             </span>
           </div>
-
         </div>
       </div>
     </section>
