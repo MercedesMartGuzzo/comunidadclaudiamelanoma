@@ -17,7 +17,7 @@ const sections = [
     description:
       'Un espacio digital diseñado para brindar apoyo, información y conexión a toda la comunidad.',
     // Usamos unsplash como placeholder — reemplazá por tus imágenes
-    image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=900&q=80',
+    image: '/images/hero/bienvenida.png',
     tag: 'Inicio',
   },
   {
@@ -26,7 +26,7 @@ const sections = [
     title: 'Una comunidad que te acompaña',
     description:
       'Historias reales, escucha activa y contención mutua. Un espacio construido desde la empatía para quienes más lo necesitan.',
-    image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=900&q=80',
+    image: '/images/hero/personas.png',
     tag: 'Comunidad',
   },
   {
@@ -35,7 +35,7 @@ const sections = [
     title: 'Grupos temáticos de bienestar',
     description:
       'Espacios de nutrición, dermatología, actividad física y más. Conectate con personas que comparten tu camino.',
-    image: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=900&q=80',
+    image: '/images/hero/ronda.png',
     tag: 'Grupos',
   },
   {
@@ -44,7 +44,7 @@ const sections = [
     title: 'Información clínica confiable',
     description:
       'Recursos validados para comprender diagnósticos, tratamientos y cuidados. La información correcta en el momento justo.',
-    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=900&q=80',
+    image: '/images/hero/informacion.png',
     tag: 'Recursos',
   },
   {
@@ -53,7 +53,7 @@ const sections = [
     title: 'La historia detrás de la red',
     description:
       'Una red creada para transformar la experiencia del melanoma en compañía. Conocé quiénes somos y por qué lo hacemos.',
-    image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=900&q=80',
+    image: "/images/hero/clau-dibu.png", // Reemplazá con tu imagen real',
     tag: 'Sobre nosotros',
   },
 ];
