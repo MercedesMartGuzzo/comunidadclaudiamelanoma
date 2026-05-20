@@ -327,7 +327,7 @@ export default function HeroSection() {
       {/* ================================================================
           MOBILE (<sm): columna única, imágenes apiladas
           ================================================================ */}
-      <div className="sm:hidden max-w-[480px] mx-auto px-6 pb-16 pt-10">
+      <div className="sm:hidden max-w-[480px] mx-auto px-6 pb-16 pt-28">
       <LeftText
   router={router}
   handlePrimaryEnter={handlePrimaryEnter}
@@ -346,7 +346,7 @@ export default function HeroSection() {
       {/* ================================================================
           TABLET (sm → lg): texto arriba + grid de imágenes
           ================================================================ */}
-      <div className="hidden sm:block lg:hidden max-w-[900px] mx-auto px-6 sm:px-10 pb-16 pt-10">
+    <div className="hidden sm:block lg:hidden max-w-[900px] mx-auto px-6 sm:px-10 pb-16 pt-28">
       <LeftText
   router={router}
   handlePrimaryEnter={handlePrimaryEnter}
