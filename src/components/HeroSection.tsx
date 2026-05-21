@@ -23,7 +23,7 @@ const sections = [
     label: 'Comunidad',
     title: 'Una comunidad que te acompaña',
     description: 'Historias reales, escucha activa y contención mutua. Un espacio construido desde la empatía para quienes más lo necesitan.',
-    image: '/images/hero/personas.png',
+    image: '/images/hero/comunidad-nueva.png',
     tag: 'Comunidad',
   },
   {
@@ -363,7 +363,7 @@ export default function HeroSection() {
       </div>
 
       {/* ================================================================
-          DESKTOP (lg+): dos columnas, izquierda sticky — original intacto
+          DESKTOP (lg+): dos columnas, izquierda sticky
           ================================================================ */}
       <div className="hidden lg:flex max-w-[1300px] mx-auto px-6 sm:px-10 flex-row gap-4 lg:gap-16">
 
