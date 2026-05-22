@@ -81,20 +81,20 @@ export default function Header() {
     setMenuOpen(false);
 
     // 2. Si requiere autenticación (como /muro), verificamos sesión en el cliente
-  if (requiresAuth) {
-    e.preventDefault(); 
+    if (requiresAuth) {
+      e.preventDefault(); 
 
-    const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
 
-    if (!session) {
-      // Le avisamos a la pantalla de Auth que después del login queremos ir al href correspondiente (ej: /muro)
-      router.push(`/auth?tab=login&redirectTo=${href}`);
+      if (!session) {
+        // Redirección inteligente al link privado que clickeó (ej: /muro)
+        router.push(`/auth?tab=login&redirectTo=${href}`);
+        return;
+      }
+      
+      router.push(href);
       return;
     }
-    
-    router.push(href);
-    return;
-  }
 
     // 3. Manejo de hashes internos (#inicio, #foros, #faq, etc.)
     if (href.startsWith('#')) {
@@ -202,7 +202,8 @@ export default function Header() {
                 whileTap={{ scale: 0.95 }}
                 className="p-2"
                 onClick={() =>
-                  router.push('/auth?tab=registro')
+                  // Forzamos a que tras registrarse/loguearse de forma voluntaria vaya a Inicio (/)
+                  router.push('/auth?tab=registro&redirectTo=/')
                 }
               >
                 <CircleUserRound className="w-5 h-5 text-[#003C43] hover:text-[#2f6f73]" />
@@ -284,7 +285,8 @@ export default function Header() {
                       whileTap={{ scale: 0.97 }}
                       onClick={() => {
                         setMenuOpen(false);
-                        router.push('/auth?tab=login');
+                        // Forzamos a que tras loguearse desde el botón de la nav vaya a Inicio (/)
+                        router.push('/auth?tab=login&redirectTo=/');
                       }}
                       className="px-6 py-3 border border-[#003C43] text-[#003C43] rounded-full"
                     >
@@ -296,7 +298,8 @@ export default function Header() {
                       whileTap={{ scale: 0.97 }}
                       onClick={() => {
                         setMenuOpen(false);
-                        router.push('/auth?tab=registro');
+                        // Forzamos a que tras registrarse desde el botón de la nav vaya a Inicio (/)
+                        router.push('/auth?tab=registro&redirectTo=/');
                       }}
                       className="flex items-center gap-2 px-6 py-3 bg-[#003C43] rounded-full"
                     >
