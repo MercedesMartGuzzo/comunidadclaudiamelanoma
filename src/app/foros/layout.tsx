@@ -1,7 +1,7 @@
-import { createClient } from '@/lib/supabase/server'; // <-- Asegurate de que esta ruta apunte bien a tu archivo del paso 2
+import { createClient } from '@/lib/supabase/server'; // Ajustá la ruta si es necesario
 import { redirect } from 'next/navigation';
 
-export default async function MuroLayout({
+export default async function ForosLayout({
     children,
 }: {
     children: React.ReactNode;
@@ -14,11 +14,11 @@ export default async function MuroLayout({
         data: { user },
     } = await supabaseServer.auth.getUser();
 
-    // 3. Si NO hay usuario, lo mandamos al login al instante
+    // 3. Si NO hay usuario, lo mandamos al login
     if (!user) {
         redirect('/auth?tab=login');
     }
 
-    // Si hay usuario, renderiza el muro directamente sin pantallas de carga
+    // Si está autenticado, renderiza el foro de una
     return <>{children}</>;
 }

@@ -8,11 +8,12 @@ import { gsap } from 'gsap';
 import { Bell, CircleUserRound } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 
+// Configuración de los links: "Grupos" se mantiene como hash (#foros) para scrollear en la Landing
 const navLinks = [
   { label: 'Inicio', href: '#inicio' },
   { label: 'Comunidad', href: '/muro', requiresAuth: true },
-  { label: 'Grupos', href: '#foros' },
-  { label: 'Informacion importante', href: '#melanoma' },
+  { label: 'Grupos', href: '#foros' }, 
+  { label: 'Información importante', href: '#melanoma' },
   { label: 'Sobre Nosotros', href: '/about-claudia' },
   { label: 'FAQ', href: '#faq' },
 ];
@@ -71,44 +72,44 @@ export default function Header() {
     }, 300);
   };
 
-const handleNavClick = async (
-  e: React.MouseEvent<HTMLAnchorElement>,
-  href: string,
-  requiresAuth?: boolean
-) => {
-  // 1. Siempre cerramos el menú mobile primero
-  setMenuOpen(false);
+  const handleNavClick = async (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+    requiresAuth?: boolean
+  ) => {
+    // 1. Siempre cerramos el menú mobile primero
+    setMenuOpen(false);
 
-  // 2. Si requiere autenticación, verificamos sesión
+    // 2. Si requiere autenticación (como /muro), verificamos sesión en el cliente
   if (requiresAuth) {
-    e.preventDefault(); // Detenemos el Link para validar
+    e.preventDefault(); 
 
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
-      router.push('/auth?tab=registro');
+      // Le avisamos a la pantalla de Auth que después del login queremos ir al href correspondiente (ej: /muro)
+      router.push(`/auth?tab=login&redirectTo=${href}`);
       return;
     }
     
-    // Si HAY sesión, navegamos manualmente ya que detuvimos el evento
     router.push(href);
     return;
   }
 
-  // 3. Manejo de hashes (#inicio, #faq, etc.)
-  if (href.startsWith('#')) {
-    e.preventDefault();
-    if (pathname !== '/') {
-      router.push(`/${href}`);
-    } else {
-      scrollToSection(href);
+    // 3. Manejo de hashes internos (#inicio, #foros, #faq, etc.)
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      
+      if (pathname !== '/') {
+        // Si estás en otra página (/muro, /about-claudia), te redirige al home con el hash de forma limpia
+        router.push(`/${href}`);
+      } else {
+        // Si ya estás en el home, hace el scroll suave
+        scrollToSection(href);
+      }
+      return;
     }
-    return;
-  }
-
-  // 4. Si es un link normal (como /about-claudia), dejamos que el <Link> actúe solo
-  // o navegamos con router si e.preventDefault fue llamado por error.
-};
+  };
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -170,11 +171,7 @@ const handleNavClick = async (
                   transition={{ delay: 0.2 + index * 0.1 }}
                 >
                   <Link
-                    href={
-                      item.href.startsWith('#')
-                        ? `/${item.href}`
-                        : item.href
-                    }
+                    href={item.href}
                     onClick={(e) =>
                       handleNavClick(
                         e,
@@ -260,11 +257,7 @@ const handleNavClick = async (
                       transition={{ delay: index * 0.08 }}
                     >
                       <Link
-                        href={
-                          item.href.startsWith('#')
-                            ? `/${item.href}`
-                            : item.href
-                        }
+                        href={item.href}
                         onClick={(e) =>
                           handleNavClick(
                             e,
@@ -289,9 +282,10 @@ const handleNavClick = async (
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.97 }}
-                      onClick={() =>
-                        router.push('/auth?tab=login')
-                      }
+                      onClick={() => {
+                        setMenuOpen(false);
+                        router.push('/auth?tab=login');
+                      }}
                       className="px-6 py-3 border border-[#003C43] text-[#003C43] rounded-full"
                     >
                       Iniciar sesión
@@ -300,9 +294,10 @@ const handleNavClick = async (
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.97 }}
-                      onClick={() =>
-                        router.push('/auth?tab=registro')
-                      }
+                      onClick={() => {
+                        setMenuOpen(false);
+                        router.push('/auth?tab=registro');
+                      }}
                       className="flex items-center gap-2 px-6 py-3 bg-[#003C43] rounded-full"
                     >
                       <CircleUserRound className="w-5 h-5 text-white" />

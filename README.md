@@ -35,6 +35,7 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
+
 ```
 comunidadclaudiamelanoma
 ├─ css.d.ts
@@ -47,7 +48,17 @@ comunidadclaudiamelanoma
 │  ├─ file.svg
 │  ├─ globe.svg
 │  ├─ images
-│  │  └─ clau-leyendo.jpeg
+│  │  └─ hero
+│  │     ├─ bienvenida.png
+│  │     ├─ clau-dibu.png
+│  │     ├─ clau-leyendo.jpeg
+│  │     ├─ clauperfil.jpeg
+│  │     ├─ comunidad-nueva.png
+│  │     ├─ comunidad.png
+│  │     ├─ grupos.png
+│  │     ├─ informacion.png
+│  │     ├─ personas.png
+│  │     └─ ronda.png
 │  └─ window.svg
 ├─ README.md
 ├─ src
@@ -67,8 +78,6 @@ comunidadclaudiamelanoma
 │  │  ├─ globals.d.ts
 │  │  ├─ layout.tsx
 │  │  ├─ muro
-│  │  │  ├─ miembros
-            └─ page.tsx
 │  │  │  ├─ actividad
 │  │  │  │  └─ page.tsx
 │  │  │  ├─ configuracion
@@ -76,6 +85,9 @@ comunidadclaudiamelanoma
 │  │  │  ├─ favoritos
 │  │  │  │  └─ page.tsx
 │  │  │  ├─ foros
+│  │  │  │  └─ page.tsx
+│  │  │  ├─ layout.tsx
+│  │  │  ├─ miembros
 │  │  │  │  └─ page.tsx
 │  │  │  ├─ page.tsx
 │  │  │  ├─ perfil
@@ -101,91 +113,6 @@ comunidadclaudiamelanoma
 │  │  ├─ HeroSection.tsx
 │  │  ├─ muro
 │  │  │  ├─ CreatePost.tsx
-│  │  │  ├─ MiembrosPage.tsx
-│  │  │  ├─ Feed.tsx
-│  │  │  ├─ MuroPage.tsx
-│  │  │  ├─ PostCard.tsx
-│  │  │  ├─ SliderbarLeft.tsx
-│  │  │  └─ SliderbarRight.tsx
-│  │  ├─ Resources.tsx
-│  │  └─ ResourcesSection.tsx
-│  └─ lib
-│     └─ mock-data
-│        ├─ feed
-│        │  └─ feed-posts.ts
-│        ├─ foro
-│        │  ├─ forum-post.ts
-│        │  ├─ forums.ts 
-│        └─ users.ts
-├─ tailwind.config.ts
-└─ tsconfig.json
-
-```
-```
-comunidadclaudiamelanoma
-├─ css.d.ts
-├─ eslint.config.mjs
-├─ next.config.ts
-├─ package-lock.json
-├─ package.json
-├─ postcss.config.js
-├─ public
-│  ├─ file.svg
-│  ├─ globe.svg
-│  ├─ images
-│  │  └─ clau-leyendo.jpeg
-│  └─ window.svg
-├─ README.md
-├─ src
-│  ├─ app
-│  │  ├─ about-claudia
-│  │  │  └─ page.tsx
-│  │  ├─ auth
-│  │  │  └─ page.tsx
-│  │  ├─ favicon.ico
-│  │  ├─ foros
-│  │  │  ├─ page.tsx
-│  │  │  └─ [slug]
-│  │  │     ├─ page.tsx
-│  │  │     └─ [postId]
-│  │  │        └─ page.tsx
-│  │  ├─ globals.css
-│  │  ├─ globals.d.ts
-│  │  ├─ layout.tsx
-│  │  ├─ muro
-│  │  │  ├─ actividad
-│  │  │  │  └─ page.tsx
-│  │  │  ├─ configuracion
-│  │  │  │  └─ page.tsx
-│  │  │  ├─ favoritos
-│  │  │  │  └─ page.tsx
-│  │  │  ├─ foros
-│  │  │  │  └─ page.tsx
-│  │  │  ├─ miembros
-│  │  │  │  └─ page.tsx
-│  │  │  ├─ page.tsx
-│  │  │  ├─ perfil
-│  │  │  │  └─ editar
-│  │  │  │     └─ page.tsx
-│  │  │  └─ usuario
-│  │  │     └─ [id]
-│  │  │        └─ page.tsx
-│  │  ├─ page.tsx
-│  │  └─ resources
-│  │     └─ page.tsx
-│  ├─ components
-│  │  ├─ AboutClaudiaSection.tsx
-│  │  ├─ FAQSectionCCM.tsx
-│  │  ├─ Footer.tsx
-│  │  ├─ ForoDetallePage.tsx
-│  │  ├─ ForoPostPage.tsx
-│  │  ├─ ForosPage.tsx
-│  │  ├─ ForumCard.tsx
-│  │  ├─ ForumSectionThematic.tsx
-│  │  ├─ Header.tsx
-│  │  ├─ HeroSection.tsx
-│  │  ├─ muro
-│  │  │  ├─ CreatePost.tsx
 │  │  │  ├─ Feed.tsx
 │  │  │  ├─ MiembrosPage.tsx
 │  │  │  ├─ MuroPage.tsx
@@ -195,13 +122,17 @@ comunidadclaudiamelanoma
 │  │  ├─ ResourcesPage.tsx
 │  │  └─ ResourcesSection.tsx
 │  └─ lib
-│     └─ mock-data
-│        ├─ feed
-│        │  └─ feed-posts.ts
-│        ├─ foro
-│        │  ├─ forum-post.ts
-│        │  └─ forums.ts
-│        └─ users.ts
+│     ├─ auth.ts
+│     ├─ mock-data
+│     │  ├─ feed
+│     │  │  └─ feed-posts.ts
+│     │  ├─ foro
+│     │  │  ├─ forum-post.ts
+│     │  │  └─ forums.ts
+│     │  └─ users.ts
+│     └─ supabase
+│        ├─ client.ts
+│        └─ server.ts
 ├─ tailwind.config.ts
 └─ tsconfig.json
 

@@ -11,8 +11,7 @@ import {
 import { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
-import { isAuthenticated } from '@/lib/auth';
-
+import { supabase } from '@/lib/supabase/client';
 export default function ForumSectionThematic() {
   const router = useRouter();
 
@@ -58,13 +57,14 @@ export default function ForumSectionThematic() {
     });
   };
 
-  const handleForumsClick = async () => {
-    const loggedIn = await isAuthenticated();
+const handleForumsClick = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
 
-    if (loggedIn) {
-      router.push('/foros');
+    if (session) {
+      router.push('/foros'); 
     } else {
-      router.push('/auth?tab=registro');
+      // Le avisamos a la pantalla de Auth que después del login queremos ir a /foros
+      router.push('/auth?tab=login&redirectTo=/foros');
     }
   };
 

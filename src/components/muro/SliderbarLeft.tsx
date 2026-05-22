@@ -1,5 +1,9 @@
+'use client';
+
 import { mockUsers } from '@/lib/mock-data/users';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { logout } from '@/lib/auth';
 
 import {
     Activity,
@@ -14,6 +18,13 @@ import {
 export default function SidebarLeft() {
 
     const user = mockUsers[0];
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        await logout();
+        router.push('/');
+        router.refresh();
+    };
 
     return (
         <div className="flex flex-col gap-4">
@@ -42,10 +53,6 @@ export default function SidebarLeft() {
                         {user.location}
                     </p>
 
-                 {/*    <span className="mt-2 font-inconsolata text-[0.6rem] font-bold uppercase tracking-wider text-[#003C43] bg-[#E3FEF7] px-2.5 py-1 rounded-full">
-                        {user.stage}
-                    </span>
- */}
                 </div>
 
                 {/* ACCIONES */}
@@ -89,13 +96,8 @@ export default function SidebarLeft() {
                             href={href}
                             className="flex items-center gap-2.5 text-sm text-[#181c1d]/70 hover:text-[#003C43] hover:bg-[#f6fafa] rounded-lg px-3 py-2 transition-colors font-noto-sans text-left w-full"
                         >
-
                             <Icon className="w-4 h-4 shrink-0 text-[#003C43]/50" />
-
-                            <span>
-                                {label}
-                            </span>
-
+                            <span>{label}</span>
                         </Link>
 
                     ))}
@@ -107,6 +109,7 @@ export default function SidebarLeft() {
 
                 {/* Logout */}
                 <button
+                    onClick={handleLogout}
                     className="flex items-center gap-2.5 text-sm text-[#181c1d]/45 hover:text-[#003C43] hover:bg-[#f6fafa] rounded-lg px-3 py-2 transition-colors font-noto-sans text-left w-full"
                 >
                     <LogOut className="w-4 h-4 shrink-0 text-[#003C43]/40" />
@@ -139,15 +142,12 @@ export default function SidebarLeft() {
                             key={label}
                             className="flex items-center justify-between"
                         >
-
                             <span className="text-xs text-[#181c1d]/60 font-noto-sans">
                                 {label}
                             </span>
-
                             <span className="font-inconsolata font-bold text-[#003C43] text-sm">
                                 {value}
                             </span>
-
                         </div>
 
                     ))}
