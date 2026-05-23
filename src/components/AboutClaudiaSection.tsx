@@ -1,5 +1,4 @@
 'use client';
-
 import { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
@@ -27,7 +26,7 @@ export default function AboutClaudiaSection() {
 
     // Solo el ícono se mueve hacia la derecha
     gsap.to(iconRef.current, {
-      x: 20,
+      x: 10,
       stroke: '#E3FEF7',
       duration: 0.4,
     });
@@ -55,14 +54,14 @@ export default function AboutClaudiaSection() {
   };
 
   return (
-    <section className="bg-gradient-to-br from-[#003C43] to-[#135D66] text-white py-32 relative overflow-hidden">
+    <section className="bg-gradient-to-br from-[#003C43] to-[#135D66] text-white py-12 relative overflow-hidden">
       {/* Decorative element */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#E3FEF7] rounded-full blur-3xl"></div>
       </div>
 
       <div className="w-full flex justify-center px-6">
-        <div className="max-w-[1000px] w-full relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="max-w-[1000px] w-full relative z-10 grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center">
 
           {/* Left Content */}
           <div>
@@ -71,17 +70,17 @@ export default function AboutClaudiaSection() {
             </p>
 
             <h2
-              className="font-inconsolata text-4xl sm:text-5xl font-bold mb-8 leading-tight"
+            className="font-inconsolata text-3xl sm:text-4xl font-bold text-white mb-4"
               style={{ letterSpacing: '-0.02em' }}
             >
               Sobre Nosotros
             </h2>
 
-            <p className="text-lg text-gray-100 mb-8 font-noto-sans leading-relaxed">
+            <p className="text-[#E3FEF7]/90 text-base font-noto-sans leading-relaxed max-w-lg mb-8">
               Capa Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci quia commodi soluta quibusdam provident iure optio et maxime qui perspiciatis nihil, modi pariatur alias! Iure, corrupti labore? Animi, vel voluptatum!
             </p>
 
-            <p className="text-base text-gray-200 mb-8 font-noto-sans leading-relaxed">
+            <p className="text-[#E3FEF7]/70 text-base font-noto-sans leading-relaxed max-w-lg mb-12">
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam sed soluta itaque facere quos? Fugit rem excepturi distinctio praesentium temporibus. Necessitatibus repellat ad eos facilis blanditiis dignissimos natus? Iure, aperiam.
             </p>
 
@@ -89,7 +88,7 @@ export default function AboutClaudiaSection() {
               onClick={() => router.push('/about-claudia')}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
-              className="relative overflow-hidden bg-[#E3FEF7] border border-[#E3FEF7] px-8 py-3 rounded-md text-[.9rem] sm:text-[1.2rem] tracking-wider font-inconsolata font-bold tracking-wide flex items-center gap-3 cursor-pointer"
+              className="relative overflow-hidden bg-[#E3FEF7] border border-[#E3FEF7] px-4 py-3 rounded-md font-medium font-inconsolata flex items-center justify-center gap-2 shadow-md"
             >
               {/* Animated overlay */}
               <span
@@ -114,12 +113,19 @@ export default function AboutClaudiaSection() {
           </div>
 
           {/* Right Image Placeholder */}
-          <div className="w-full h-[400px] rounded-lg bg-[#d9e7e7] flex items-center justify-center">
-            <span className="font-inconsolata text-[#003C43] text-sm tracking-widest uppercase">
-              Imagen de Claudia
-            </span>
-          </div>
-        </div>
+      <div className="relative w-full h-[280px] lg:h-[400px] rounded-2xl overflow-hidden">
+
+    <img
+      src="/images/hero/nosotros.png"
+      alt="Nosotros"
+      className="absolute inset-0 w-full h-full object-cover"
+    />
+
+    <div className="absolute inset-0 bg-gradient-to-t from-[#003C43]/30 to-transparent" />
+
+  </div>
+      </div>
+
       </div>
     </section>
   );

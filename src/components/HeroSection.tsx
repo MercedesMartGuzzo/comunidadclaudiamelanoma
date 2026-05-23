@@ -302,7 +302,7 @@ export default function HeroSection() {
   const handlePrimaryEnter = () => {
     gsap.to(primaryOverlayRef.current,  { x: 0, duration: 0.4, ease: 'power2.out' });
     gsap.to(primaryTextRef.current,     { color: '#E3FEF7', duration: 0.4 });
-    gsap.to(primaryIconRef.current,     { x: 25, color: '#E3FEF7', duration: 0.4 });
+    gsap.to(primaryIconRef.current,     { x: 16, color: '#E3FEF7', duration: 0.4 });
   };
   const handlePrimaryLeave = () => {
     gsap.to(primaryOverlayRef.current,  { x: '-100%', duration: 0.4, ease: 'power2.out' });
