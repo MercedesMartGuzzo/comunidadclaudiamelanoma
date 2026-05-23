@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { Rose, HandHeart, Clover, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+
 export default function ClaudiaPage() {
   const primaryOverlayRef = useRef<HTMLSpanElement>(null);
   const primaryTextRef = useRef<HTMLSpanElement>(null);
@@ -93,11 +94,13 @@ export default function ClaudiaPage() {
             </p>
           </div>
 
-          <div className="w-full h-[500px] rounded-lg bg-[#d9e7e7] flex items-center justify-center">
-            <span className="font-inconsolata text-[#003C43] text-sm tracking-widest uppercase">
-              Imagen de Claudia
-            </span>
-          </div>
+         <div className="relative w-full h-[500px] overflow-hidden rounded-lg">
+  <img
+    src="/images/hero/clau-leyendo.jpeg"
+    alt="Claudia"
+    className="object-cover object-center w-full h-full"
+  />
+</div>
         </div>
       </section>
 
