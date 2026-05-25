@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { gsap } from 'gsap';
 import { Rose, HandHeart, Clover, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-
+import Image from 'next/image'; // 1. Importación agregada
 
 export default function ClaudiaPage() {
   const primaryOverlayRef = useRef<HTMLSpanElement>(null);
@@ -94,13 +94,19 @@ export default function ClaudiaPage() {
             </p>
           </div>
 
-         <div className="relative w-full h-[500px] overflow-hidden rounded-lg">
-  <img
-    src="/images/hero/clau-leyendo.jpeg"
-    alt="Claudia"
-    className="object-cover object-center w-full h-full"
-  />
-</div>
+          {/* Contenedor de la Imagen */}
+          <div className="relative w-full h-[500px] overflow-hidden rounded-lg">
+            {/* 2. Reemplazo por componente Image respetando object-cover y object-center */}
+            <Image
+              src="/images/hero/clau-leyendo.jpeg"
+              alt="Claudia"
+              fill
+              sizes="(max-w: 768px) 100vw, 500px"
+              priority={true} // Al ser la sección principal sobre Claudia, forzamos pre-carga para LCP
+              unoptimized={true} // Mantenemos consistencia con las animaciones globales del layout
+              className="object-cover object-center"
+            />
+          </div>
         </div>
       </section>
 
@@ -179,7 +185,7 @@ export default function ClaudiaPage() {
           </h2>
 
           <p className="font-noto-sans text-base text-white/90 max-w-2xl mx-auto mb-14 leading-relaxed">
-            Ser parte de esta comunidad significa preservar el legado de Claudia
+            Ser parte de esta comunidad means preservar el legado de Claudia
             y ampliar una red creada para que pacientes de Argentina y toda la
             comunidad hispanohablante encuentren apoyo, información y compañía.
           </p>

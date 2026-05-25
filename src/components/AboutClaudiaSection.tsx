@@ -1,6 +1,7 @@
 'use client';
 import { useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image'; // 1. Importación agregada
 import { gsap } from 'gsap';
 import { ArrowRight } from 'lucide-react';
 
@@ -18,13 +19,11 @@ export default function AboutClaudiaSection() {
       ease: 'power2.out',
     });
 
-    // El texto no se desplaza, solo cambia de color
     gsap.to(textRef.current, {
       color: '#E3FEF7',
       duration: 0.4,
     });
 
-    // Solo el ícono se mueve hacia la derecha
     gsap.to(iconRef.current, {
       x: 10,
       stroke: '#E3FEF7',
@@ -39,13 +38,11 @@ export default function AboutClaudiaSection() {
       ease: 'power2.out',
     });
 
-    // El texto vuelve únicamente a su color original
     gsap.to(textRef.current, {
       color: '#003C43',
       duration: 0.4,
     });
 
-    // El ícono vuelve a su posición original
     gsap.to(iconRef.current, {
       x: 0,
       stroke: '#003C43',
@@ -70,7 +67,7 @@ export default function AboutClaudiaSection() {
             </p>
 
             <h2
-            className="font-inconsolata text-3xl sm:text-4xl font-bold text-white mb-4"
+              className="font-inconsolata text-3xl sm:text-4xl font-bold text-white mb-4"
               style={{ letterSpacing: '-0.02em' }}
             >
               Sobre Nosotros
@@ -112,20 +109,24 @@ export default function AboutClaudiaSection() {
             </button>
           </div>
 
-          {/* Right Image Placeholder */}
-      <div className="relative w-full h-[280px] lg:h-[400px] rounded-2xl overflow-hidden">
+          {/* Right Image Container */}
+          {/* Mantengo intactas tus alturas responsivas relativas */}
+          <div className="relative w-full h-[280px] lg:h-[400px] rounded-2xl overflow-hidden">
+            {/* 2. Etapa nativa reemplazada con z-0 para no interferir con el degradado */}
+            <Image
+              src="/images/hero/nosotros.png"
+              alt="Nosotros"
+              fill
+              sizes="(max-w: 768px) 100vw, 500px"
+              unoptimized={true}
+              className="object-cover z-0"
+            />
 
-    <img
-      src="/images/hero/nosotros.png"
-      alt="Nosotros"
-      className="absolute inset-0 w-full h-full object-cover"
-    />
+            {/* 3. Ajuste de z-index al gradiente para que se pose sobre la imagen */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#003C43]/30 to-transparent z-10" />
+          </div>
 
-    <div className="absolute inset-0 bg-gradient-to-t from-[#003C43]/30 to-transparent" />
-
-  </div>
-      </div>
-
+        </div>
       </div>
     </section>
   );

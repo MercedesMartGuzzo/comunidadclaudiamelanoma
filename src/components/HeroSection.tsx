@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image'; // 1. Importación agregada
 import { gsap } from 'gsap';
 import { ArrowRight, Clover, Flower, Flower2, Leaf, LeafyGreen, Rose, Sprout, Wheat } from 'lucide-react';
 
@@ -47,7 +48,7 @@ const sections = [
     label: 'Nosotros',
     title: 'La historia detrás de la red',
     description: 'Una red creada para transformar la experiencia del melanoma en compañía. Conocé quiénes somos y por qué lo hacemos.',
-    image: '/images/hero/clau-dibu.png',
+    image: '/images/hero/clau-dibujo.png',
     tag: 'Sobre nosotros',
   },
 ];
@@ -67,14 +68,16 @@ function StaticCard({
       className="relative w-full rounded-2xl overflow-hidden"
       style={{ minHeight }}
     >
-      <img
+      {/* 2. Reemplazo de img nativa por el componente de Next.js */}
+      <Image
         src={section.image}
         alt={section.title}
-        className="absolute inset-0 w-full h-full object-cover"
+        fill
+        sizes="(max-w: 640px) 100vw, (max-w: 1024px) 50vw, 33vw"
+        className="object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-[#001a1d]/75 via-[#001a1d]/20 to-transparent" />
-      {/* padding generoso para que el texto siempre quepa */}
-     <div className="absolute inset-x-0 bottom-0 z-10 p-5">
+      <div className="absolute inset-x-0 bottom-0 z-10 p-5">
         <span className="inline-block font-inconsolata text-[0.55rem] font-bold uppercase tracking-[0.2em] text-[#aaeaf5] bg-[#003C43]/80 border border-[#aaeaf5]/20 px-2.5 py-1 rounded-full mb-2 self-start">
           {section.tag}
         </span>
@@ -107,22 +110,19 @@ function MobileSections() {
    ========================================================================== */
 function TabletGrid() {
   const [first, ...rest] = sections;
-  const middle = rest.slice(0, rest.length - 1); // comunidad, grupos, recursos
-  const last   = rest[rest.length - 1];           // about
+  const middle = rest.slice(0, rest.length - 1);
+  const last   = rest[rest.length - 1];
 
   return (
-    <div className="flex flex-col  gap-4 w-full mt-8">
-      {/* Primera — ancha */}
+    <div className="flex flex-col gap-4 w-full mt-8">
       <StaticCard section={first} minHeight={360} />
 
-      {/* Medio — 2 columnas */}
       <div className="grid grid-cols-3 gap-4">
         {middle.map((section) => (
           <StaticCard key={section.id} section={section} minHeight={280} />
         ))}
       </div>
 
-      {/* Última — ancha */}
       <StaticCard section={last} minHeight={360} />
     </div>
   );
@@ -134,14 +134,14 @@ function TabletGrid() {
 function RightPanel() {
   return (
     <div className="flex flex-col w-full overflow-hidden">
-      {sections.map((section) => (
-        <SectionSlide key={section.id} section={section} />
+      {sections.map((section, index) => (
+        <SectionSlide key={section.id} section={section} index={index} />
       ))}
     </div>
   );
 }
 
-function SectionSlide({ section }: { section: (typeof sections)[0] }) {
+function SectionSlide({ section }: { section: (typeof sections)[0]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -156,16 +156,22 @@ function SectionSlide({ section }: { section: (typeof sections)[0] }) {
   return (
     <motion.div
       ref={ref}
-      className="relative h-[72vh] w-full rounded-2xl overflow-hidden mb-6 last:mb-0"
+      className="relative h-[72vh] w-full rounded-2xl overflow-hidden mb-6 last:mb-0 transform-gpu"
       style={{ opacity, y, scale }}
     >
-      <img
+      <Image
         src={section.image}
         alt={section.title}
-        className="absolute inset-0 w-full h-full object-cover"
+        fill
+        sizes="(max-w: 1300px) 56vw, 730px"
+    
+        unoptimized={true} 
+        className="object-cover z-0" 
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#001a1d]/55 via-[#001a1d]/10 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 p-8">
+      
+      <div className="absolute inset-0 bg-gradient-to-t from-[#001a1d]/55 via-[#001a1d]/10 to-transparent z-10" />
+      
+      <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
         <span className="inline-block font-inconsolata text-[0.6rem] font-bold uppercase tracking-[0.2em] text-[#aaeaf5] bg-[#003C43]/80 border border-[#aaeaf5]/20 px-3 py-1 rounded-full mb-4">
           {section.tag}
         </span>
@@ -179,6 +185,7 @@ function SectionSlide({ section }: { section: (typeof sections)[0] }) {
     </motion.div>
   );
 }
+
 function LeftText({
   router,
   handlePrimaryEnter,
@@ -283,6 +290,7 @@ function LeftText({
     </>
   );
 }
+
 /* ==========================================================================
    HERO SECTION — COMPONENTE PRINCIPAL
    ========================================================================== */
@@ -317,54 +325,45 @@ export default function HeroSection() {
     gsap.to(secondaryOverlayRef.current, { x: '-100%', duration: 0.4, ease: 'power2.out' });
     gsap.to(secondaryTextRef.current,    { x: 0, color: '#003C43', duration: 0.4 });
   };
-  // ─────────────────────────────────────────────────────────────────────────
-
-  // Bloque de texto izquierdo — reutilizado en mobile y tablet
 
   return (
     <section className="bg-gradient-to-br from-[#00252a] to-[#003C43] text-white relative selection:bg-[#E3FEF7]/20">
 
-      {/* ================================================================
-          MOBILE (<sm): columna única, imágenes apiladas
-          ================================================================ */}
+      {/* MOBILE (<sm) */}
       <div className="sm:hidden max-w-[480px] mx-auto px-6 pb-16 pt-28">
-      <LeftText
-  router={router}
-  handlePrimaryEnter={handlePrimaryEnter}
-  handlePrimaryLeave={handlePrimaryLeave}
-  handleSecondaryEnter={handleSecondaryEnter}
-  handleSecondaryLeave={handleSecondaryLeave}
-  primaryOverlayRef={primaryOverlayRef}
-  primaryTextRef={primaryTextRef}
-  primaryIconRef={primaryIconRef}
-  secondaryOverlayRef={secondaryOverlayRef}
-  secondaryTextRef={secondaryTextRef}
-/>
+        <LeftText
+          router={router}
+          handlePrimaryEnter={handlePrimaryEnter}
+          handlePrimaryLeave={handlePrimaryLeave}
+          handleSecondaryEnter={handleSecondaryEnter}
+          handleSecondaryLeave={handleSecondaryLeave}
+          primaryOverlayRef={primaryOverlayRef}
+          primaryTextRef={primaryTextRef}
+          primaryIconRef={primaryIconRef}
+          secondaryOverlayRef={secondaryOverlayRef}
+          secondaryTextRef={secondaryTextRef}
+        />
         <MobileSections />
       </div>
 
-      {/* ================================================================
-          TABLET (sm → lg): texto arriba + grid de imágenes
-          ================================================================ */}
-    <div className="hidden sm:block lg:hidden max-w-[900px] mx-auto px-6 sm:px-10 pb-16 pt-28">
-      <LeftText
-  router={router}
-  handlePrimaryEnter={handlePrimaryEnter}
-  handlePrimaryLeave={handlePrimaryLeave}
-  handleSecondaryEnter={handleSecondaryEnter}
-  handleSecondaryLeave={handleSecondaryLeave}
-  primaryOverlayRef={primaryOverlayRef}
-  primaryTextRef={primaryTextRef}
-  primaryIconRef={primaryIconRef}
-  secondaryOverlayRef={secondaryOverlayRef}
-  secondaryTextRef={secondaryTextRef}
-/>
+      {/* TABLET (sm → lg) */}
+      <div className="hidden sm:block lg:hidden max-w-[900px] mx-auto px-6 sm:px-10 pb-16 pt-28">
+        <LeftText
+          router={router}
+          handlePrimaryEnter={handlePrimaryEnter}
+          handlePrimaryLeave={handlePrimaryLeave}
+          handleSecondaryEnter={handleSecondaryEnter}
+          handleSecondaryLeave={handleSecondaryLeave}
+          primaryOverlayRef={primaryOverlayRef}
+          primaryTextRef={primaryTextRef}
+          primaryIconRef={primaryIconRef}
+          secondaryOverlayRef={secondaryOverlayRef}
+          secondaryTextRef={secondaryTextRef}
+        />
         <TabletGrid />
       </div>
 
-      {/* ================================================================
-          DESKTOP (lg+): dos columnas, izquierda sticky
-          ================================================================ */}
+      {/* DESKTOP (lg+) */}
       <div className="hidden lg:flex max-w-[1300px] mx-auto px-6 sm:px-10 flex-row gap-4 lg:gap-16">
 
         {/* Columna izquierda — sticky */}
@@ -452,13 +451,12 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        {/* Columna derecha — original */}
+        {/* Columna derecha */}
         <div className="lg:w-[56%] pt-0 pb-20 lg:py-28">
           <RightPanel />
         </div>
 
       </div>
-
     </section>
   );
 }
