@@ -1,44 +1,186 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { feedPosts, feedComments, FeedPost, FeedComment } from '@/lib/mock-data/feed/feed-posts';
+import { supabase } from '@/lib/supabase/client';
+import { type PostCardType, type CommentCardType } from '@/components/muro/PostCard';
 import Feed from '@/components/muro/Feed';
 import CreatePost from '@/components/muro/CreatePost';
 import SidebarLeft from '@/components/muro/SliderbarLeft';
 import SidebarRight from '@/components/muro/SliderbarRight';
 import { Birdhouse, X } from 'lucide-react';
 
+interface SupabasePostJoin {
+    id: string;
+    user_id: string;
+    content: string;
+    created_at: string;
+    profiles: {
+        name: string | null;
+        location: string | null;
+        avatar_url: string | null;
+    } | null;
+}
+
+interface SupabaseCommentJoin {
+    id: string;
+    post_id: string;
+    user_id: string;
+    content: string;
+    created_at: string;
+    profiles: {
+        name: string | null;
+    } | null;
+}
+
 export default function MuroPage() {
-    const [localPosts, setLocalPosts] = useState<FeedPost[]>(feedPosts);
-    const [localComments, setLocalComments] = useState<FeedComment[]>(feedComments);
+    const [localPosts, setLocalPosts] = useState<PostCardType[]>([]);
+    const [localComments, setLocalComments] = useState<CommentCardType[]>([]);
+    const [loadingFeed, setLoadingFeed] = useState(true);
     const [drawerOpen, setDrawerOpen] = useState(false);
 
-    const handleAddPost = (content: string) => {
-        const newPost: FeedPost = {
-            id: String(Date.now()),
-            userId: '1',
-            content,
-            tags: [],
-            likesCount: 0,
-            commentsCount: 0,
-            createdAt: new Date().toISOString(),
-        };
-        setLocalPosts(prev => [newPost, ...prev]);
+    async function fetchFeedData() {
+        try {
+            setLoadingFeed(true);
+
+            // 1. Obtener publicaciones cruzadas con perfiles de usuarios (Join)
+            const { data: postsData, error: postsError } = await supabase
+                .from('posts')
+                .select('id, user_id, content, created_at, profiles(name, location, avatar_url)')
+                .order('created_at', { ascending: false });
+
+            if (postsError) throw postsError;
+
+            const mappedPosts: PostCardType[] = ((postsData || []) as unknown as SupabasePostJoin[]).map(p => ({
+                id: p.id,
+                userId: p.user_id,
+                content: p.content,
+                createdAt: p.created_at,
+                likesCount: 0,
+                commentsCount: 0,
+                authorName: p.profiles?.name || 'Usuario',
+                authorLocation: p.profiles?.location || 'Sin ubicación',
+                authorAvatar: p.profiles?.avatar_url || null,
+            }));
+
+            // 2. Obtener comentarios globales trayendo el autor desde profiles
+            const { data: commentsData, error: commentsError } = await supabase
+                .from('comments')
+                .select('id, post_id, user_id, content, created_at, profiles(name)')
+                .order('created_at', { ascending: true });
+
+            if (commentsError) throw commentsError;
+
+            const mappedComments: CommentCardType[] = ((commentsData || []) as unknown as SupabaseCommentJoin[]).map(c => ({
+                id: c.id,
+                postId: c.post_id,
+                authorName: c.profiles?.name || 'Usuario',
+                content: c.content,
+                createdAt: c.created_at,
+            }));
+
+            // Sincronizar recuentos de comentarios por post
+            const postsWithCounts = mappedPosts.map(post => ({
+                ...post,
+                commentsCount: mappedComments.filter(c => c.postId === post.id).length
+            }));
+
+            setLocalPosts(postsWithCounts);
+            setLocalComments(mappedComments);
+        } catch (err: unknown) {
+            let errorMsg = '';
+            if (err instanceof Error) {
+                errorMsg = err.message;
+            } else if (typeof err === 'object' && err !== null) {
+                errorMsg = JSON.stringify(err);
+            } else {
+                errorMsg = String(err);
+            }
+            console.error('Error detallado cargando el feed de comunidad:', errorMsg);
+        } finally {
+            setLoadingFeed(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchFeedData();
+    }, []);
+
+    const handleAddPost = async (content: string) => {
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+
+            const { data: currentProfile } = await supabase
+                .from('profiles')
+                .select('name, location, avatar_url')
+                .eq('id', user.id)
+                .maybeSingle();
+
+            const { data: newPostData, error } = await supabase
+                .from('posts')
+                .insert([{ user_id: user.id, content }])
+                .select('id, user_id, content, created_at')
+                .single();
+
+            if (error) throw error;
+
+            const newPost: PostCardType = {
+                id: newPostData.id,
+                userId: newPostData.user_id,
+                content: newPostData.content,
+                createdAt: newPostData.created_at,
+                likesCount: 0,
+                commentsCount: 0,
+                authorName: currentProfile?.name || user.user_metadata?.name || 'Vos',
+                authorLocation: currentProfile?.location || 'Sin ubicación',
+                authorAvatar: currentProfile?.avatar_url || null,
+            };
+
+            setLocalPosts(prev => [newPost, ...prev]);
+        } catch (err: unknown) {
+            const errorMsg = err instanceof Error ? err.message : String(err);
+            console.error('Error insertando post:', errorMsg);
+        }
     };
 
-    const handleAddComment = (postId: string, content: string) => {
-        const newComment: FeedComment = {
-            id: String(Date.now()),
-            postId,
-            authorName: 'Vos',
-            content,
-            createdAt: new Date().toISOString(),
-        };
-        setLocalComments(prev => [...prev, newComment]);
-        setLocalPosts(prev =>
-            prev.map(p => p.id === postId ? { ...p, commentsCount: p.commentsCount + 1 } : p)
-        );
+    const handleAddComment = async (postId: string, content: string) => {
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('name')
+                .eq('id', user.id)
+                .maybeSingle();
+
+            const currentAuthorName = profile?.name || user.user_metadata?.name || 'Vos';
+
+            const { data: newCommentData, error } = await supabase
+                .from('comments')
+                .insert([{ post_id: postId, user_id: user.id, content }])
+                .select('id, post_id, user_id, content, created_at')
+                .single();
+
+            if (error) throw error;
+
+            const newComment: CommentCardType = {
+                id: newCommentData.id,
+                postId: newCommentData.post_id,
+                authorName: currentAuthorName,
+                content: newCommentData.content,
+                createdAt: newCommentData.created_at,
+            };
+
+            setLocalComments(prev => [...prev, newComment]);
+            setLocalPosts(prev =>
+                prev.map(p => p.id === postId ? { ...p, commentsCount: p.commentsCount + 1 } : p)
+            );
+        } catch (err: unknown) {
+            const errorMsg = err instanceof Error ? err.message : String(err);
+            console.error('Error insertando comentario:', errorMsg);
+        }
     };
 
     return (
@@ -70,12 +212,23 @@ export default function MuroPage() {
 
                     {/* CENTER */}
                     <div className="lg:col-span-2 flex flex-col gap-4">
-                  {/*       <CreatePost onPublish={handleAddPost} /> */}
-                        <Feed
-                            posts={localPosts}
-                            comments={localComments}
-                            onAddComment={handleAddComment}
-                        />
+                        <CreatePost onPublish={handleAddPost} />
+                        
+                        {loadingFeed ? (
+                            <p className="animate-pulse text-[#003C43] font-inconsolata text-sm text-center py-10">
+                                Cargando publicaciones de la comunidad...
+                            </p>
+                        ) : localPosts.length === 0 ? (
+                            <p className="text-[#181c1d]/50 font-noto-sans text-sm text-center py-10">
+                                No hay publicaciones aún. ¡Comenzá la conversación!
+                            </p>
+                        ) : (
+                            <Feed
+                                posts={localPosts}
+                                comments={localComments}
+                                onAddComment={handleAddComment}
+                            />
+                        )}
                     </div>
 
                     {/* RIGHT — oculto en mobile */}

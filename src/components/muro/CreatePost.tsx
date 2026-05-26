@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { mockUsers } from '@/lib/mock-data/users';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase/client';
 import { Image as ImageIcon, Smile, Send } from 'lucide-react';
 
 interface Props {
@@ -10,7 +10,32 @@ interface Props {
 
 export default function CreatePost({ onPublish }: Props) {
     const [content, setContent] = useState('');
-    const user = mockUsers[0];
+    const [userInitial, setUserInitial] = useState('U');
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function getActiveUser() {
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    // Intentamos sacar el nombre desde la metadata de auth o del perfil de profiles
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('name')
+                        .eq('id', user.id)
+                        .maybeSingle();
+
+                    const name = profile?.name || user.user_metadata?.name || user.email || 'U';
+                    setUserInitial(name.charAt(0).toUpperCase());
+                }
+            } catch (err) {
+                console.error('Error obteniendo usuario en CreatePost:', err);
+            } finally {
+                setLoading(false);
+            }
+        }
+        getActiveUser();
+    }, []);
 
     const handleSubmit = () => {
         if (!content.trim()) return;
@@ -22,10 +47,10 @@ export default function CreatePost({ onPublish }: Props) {
         <div className="bg-white rounded-xl p-6 hover:shadow-[0_4px_20px_rgba(0,60,67,0.07)] transition-shadow">
             <div className="flex items-start gap-3">
                 <div
-                    className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-sm"
+                    className={`rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-sm ${loading ? 'animate-pulse' : ''}`}
                     style={{ width: '40px', height: '40px', minWidth: '40px' }}
                 >
-                    {user.name.charAt(0)}
+                    {userInitial}
                 </div>
                 <textarea
                     value={content}
@@ -49,7 +74,7 @@ export default function CreatePost({ onPublish }: Props) {
                 </div>
 
                 <button
-                    disabled={!content.trim()}
+                    disabled={!content.trim() || loading}
                     onClick={handleSubmit}
                     className="bg-[#003C43] text-[#E3FEF7] font-inconsolata text-xs font-bold uppercase tracking-wide px-5 py-2.5 rounded-md hover:bg-[#00252a] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                 >

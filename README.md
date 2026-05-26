@@ -50,13 +50,16 @@ comunidadclaudiamelanoma
 │  ├─ images
 │  │  └─ hero
 │  │     ├─ bienvenida.png
+│  │     ├─ clau-dibu-sinfondo.png
 │  │     ├─ clau-dibu.png
+│  │     ├─ clau-dibujo.png
 │  │     ├─ clau-leyendo.jpeg
 │  │     ├─ clauperfil.jpeg
 │  │     ├─ comunidad-nueva.png
 │  │     ├─ comunidad.png
 │  │     ├─ grupos.png
 │  │     ├─ informacion.png
+│  │     ├─ nosotros.png
 │  │     ├─ personas.png
 │  │     └─ ronda.png
 │  └─ window.svg
@@ -65,10 +68,14 @@ comunidadclaudiamelanoma
 │  ├─ app
 │  │  ├─ about-claudia
 │  │  │  └─ page.tsx
+│  │  ├─ api
+│  │  │  └─ delete-account
+│  │  │     └─ route.ts
 │  │  ├─ auth
 │  │  │  └─ page.tsx
 │  │  ├─ favicon.ico
 │  │  ├─ foros
+│  │  │  ├─ layout.tsx
 │  │  │  ├─ page.tsx
 │  │  │  └─ [slug]
 │  │  │     ├─ page.tsx
@@ -121,18 +128,20 @@ comunidadclaudiamelanoma
 │  │  │  └─ SliderbarRight.tsx
 │  │  ├─ ResourcesPage.tsx
 │  │  └─ ResourcesSection.tsx
-│  └─ lib
-│     ├─ auth.ts
-│     ├─ mock-data
-│     │  ├─ feed
-│     │  │  └─ feed-posts.ts
-│     │  ├─ foro
-│     │  │  ├─ forum-post.ts
-│     │  │  └─ forums.ts
-│     │  └─ users.ts
-│     └─ supabase
-│        ├─ client.ts
-│        └─ server.ts
+│  ├─ lib
+│  │  ├─ auth.ts
+│  │  ├─ mock-data
+│  │  │  ├─ feed
+│  │  │  │  └─ feed-posts.ts
+│  │  │  ├─ foro
+│  │  │  │  ├─ forum-post.ts
+│  │  │  │  └─ forums.ts
+│  │  │  └─ users.ts
+│  │  └─ supabase
+│  │     ├─ actions.ts
+│  │     ├─ client.ts
+│  │     └─ server.ts
+│  └─ middleware.ts
 ├─ tailwind.config.ts
 └─ tsconfig.json
 

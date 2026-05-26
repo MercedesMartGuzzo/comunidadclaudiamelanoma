@@ -1,11 +1,12 @@
+
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // Importado para la redirección post-eliminación
 import {
     ArrowLeft,
     Bell,
-    Shield,
     Moon,
     Save,
     Mail,
@@ -14,20 +15,35 @@ import {
     X,
     AlertTriangle,
 } from 'lucide-react';
-import { mockUsers } from '@/lib/mock-data/users';
+import { supabase } from '@/lib/supabase/client';
+
+interface UserProfile {
+    id: string;
+    name: string;
+    email: string;
+}
 
 export default function ConfiguracionPage() {
-    const user = mockUsers[0];
+    const router = useRouter();
 
+    // Estados para el usuario y la carga de datos
+    const [user, setUser] = useState<UserProfile | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    // Estados de las preferencias (locales por ahora)
     const [emailNotifications, setEmailNotifications] = useState(true);
     const [communityNotifications, setCommunityNotifications] = useState(true);
-    const [privateProfile, setPrivateProfile] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
+    
+    // Estados de UI de guardado
     const [saved, setSaved] = useState(false);
-
-    // Email
-    const [newEmail, setNewEmail] = useState('');
     const [emailSaved, setEmailSaved] = useState(false);
+
+    // Input de Email nuevo
+    const [newEmail, setNewEmail] = useState('');
+
+    // Estado del Toast unificado (Éxito / Error)
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
     // Bloquear usuarios
     const [blockInput, setBlockInput] = useState('');
@@ -36,29 +52,144 @@ export default function ConfiguracionPage() {
     // Eliminar cuenta
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteConfirm, setDeleteConfirm] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false); // Estado para controlar el spinner/bloqueo de borrado
 
-    const handleSave = () => {
+    // Función auxiliar para disparar el Toast elegante
+    const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 4000);
+    };
+
+    // 1. CARGAR DATOS DE SESIÓN DESDE SUPABASE
+    useEffect(() => {
+        async function loadUserData() {
+            setLoading(true);
+            
+            const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+
+            if (authError || !authUser) {
+                console.error('No hay usuario autenticado:', authError?.message);
+                setLoading(false);
+                return;
+            }
+
+            const { data: profileData, error: profileError } = await supabase
+                .from('profiles')
+                .select('name')
+                .eq('id', authUser.id)
+                .single();
+
+            if (profileError) {
+                console.warn('No se encontró perfil en tabla profiles, usando datos de auth:', profileError.message);
+            }
+
+            setUser({
+                id: authUser.id,
+                name: profileData?.name || 'Usuario',
+                email: authUser.email || '',
+            });
+            
+            setLoading(false);
+        }
+
+        loadUserData();
+    }, []);
+
+    // 2. GUARDAR PREFERENCIAS GENERALES
+    const handleSave = async () => {
+        if (!user) return;
         setSaved(true);
+        showToast('Preferencias guardadas correctamente.');
         setTimeout(() => setSaved(false), 2500);
     };
 
-    const handleEmailSave = () => {
+    // 3. ACTUALIZAR EMAIL DE LA CUENTA
+    const handleEmailSave = async () => {
         if (!newEmail.trim()) return;
+
+        const { error } = await supabase.auth.updateUser({ email: newEmail });
+
+        if (error) {
+            console.error('Error al actualizar el email:', error.message);
+            showToast('Error al intentar cambiar el correo electrónico', 'error');
+            return;
+        }
+
         setEmailSaved(true);
         setNewEmail('');
         setTimeout(() => setEmailSaved(false), 2500);
+        showToast('¡Enviamos un correo de confirmación a tu nueva dirección!');
     };
 
+    // 4. FUNCIONES DE BLOQUEO DE USUARIOS (LOCALES)
     const handleBlock = () => {
         const name = blockInput.trim();
         if (!name || blockedUsers.includes(name)) return;
         setBlockedUsers(prev => [...prev, name]);
         setBlockInput('');
+        showToast(`Usuario "${name}" bloqueado.`);
     };
 
     const handleUnblock = (name: string) => {
         setBlockedUsers(prev => prev.filter(u => u !== name));
+        showToast(`Usuario "${name}" desbloqueado.`);
     };
+
+    // 5. EJECUTAR ELIMINACIÓN DE CUENTA EN BACKEND
+    const handleDeleteAccount = async () => {
+        if (deleteConfirm !== 'ELIMINAR' || !user) return;
+
+        setIsDeleting(true);
+
+        try {
+            // Obtenemos el token de la sesión del usuario del cliente
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (!session) {
+                showToast('No se encontró una sesión activa.', 'error');
+                setIsDeleting(false);
+                return;
+            }
+
+            // Llamamos a la API Route pasándole el token en las cabeceras
+            const response = await fetch('/api/delete-account', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${session.access_token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Error al eliminar la cuenta');
+            }
+
+            showToast('Tu cuenta ha sido eliminada con éxito.', 'success');
+            
+            // Forzar el deslogueo en la instancia local del cliente
+            await supabase.auth.signOut();
+            
+            // Esperamos un momento breve para que lea el toast y lo mandamos a la landing
+            setTimeout(() => {
+                router.push('/');
+            }, 2000);
+
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Hubo un problema al eliminar tu cuenta.';
+            showToast(errorMessage, 'error');
+            setIsDeleting(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#f6fafa] flex items-center justify-center font-inconsolata text-[#003C43]">
+                Cargando configuración...
+            </div>
+        );
+    }
 
     return (
         <main className="bg-[#f6fafa] min-h-screen pt-14 pb-20 px-4">
@@ -78,10 +209,7 @@ export default function ConfiguracionPage() {
                     <p className="font-inconsolata text-[0.7rem] font-bold uppercase tracking-[0.14em] text-[#003C43]/55 mb-3">
                         Cuenta
                     </p>
-                    <h1
-                        className="font-inconsolata text-4xl sm:text-5xl font-bold text-[#003C43] mb-4"
-                        style={{ letterSpacing: '-0.02em' }}
-                    >
+                    <h1 className="font-inconsolata text-4xl sm:text-5xl font-bold text-[#003C43] mb-4" style={{ letterSpacing: '-0.02em' }}>
                         Configuración
                     </h1>
                     <p className="text-[#181c1d]/70 text-lg font-noto-sans max-w-2xl leading-relaxed">
@@ -91,7 +219,7 @@ export default function ConfiguracionPage() {
 
                 <div className="flex flex-col gap-6">
 
-                    {/* EMAIL */}
+                    {/* CORREO ELECTRÓNICO */}
                     <section className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,60,67,0.04)]">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="w-11 h-11 rounded-xl bg-[#E3FEF7] flex items-center justify-center">
@@ -113,7 +241,7 @@ export default function ConfiguracionPage() {
                                     Email actual
                                 </label>
                                 <p className="text-sm font-noto-sans text-[#181c1d]/60 bg-[#f6fafa] rounded-lg px-3 py-2.5">
-                                    {user.name.toLowerCase().replace(' ', '.')}@ejemplo.com
+                                    {user?.email}
                                 </p>
                             </div>
 
@@ -194,41 +322,7 @@ export default function ConfiguracionPage() {
                         </div>
                     </section>
 
-                    {/* PRIVACIDAD */}
-                    <section className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,60,67,0.04)]">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="w-11 h-11 rounded-xl bg-[#E3FEF7] flex items-center justify-center">
-                                <Shield className="w-5 h-5 text-[#003C43]" />
-                            </div>
-                            <div>
-                                <h2 className="font-inconsolata text-xl font-bold text-[#003C43]">
-                                    Privacidad
-                                </h2>
-                                <p className="text-sm text-[#181c1d]/60 font-noto-sans">
-                                    Controlá cómo se muestra tu perfil.
-                                </p>
-                            </div>
-                        </div>
-
-                        <label className="flex items-center justify-between cursor-pointer">
-                            <div>
-                                <p className="font-medium text-[#181c1d] font-noto-sans">
-                                    Perfil privado
-                                </p>
-                                <p className="text-sm text-[#181c1d]/55 font-noto-sans">
-                                    Solo miembros registrados podrán ver tu perfil.
-                                </p>
-                            </div>
-                            <input
-                                type="checkbox"
-                                checked={privateProfile}
-                                onChange={() => setPrivateProfile(!privateProfile)}
-                                className="w-5 h-5 accent-[#003C43]"
-                            />
-                        </label>
-                    </section>
-
-                    {/* BLOQUEAR USUARIOS */}
+                    {/* USUARIOS BLOQUEADOS */}
                     <section className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,60,67,0.04)]">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="w-11 h-11 rounded-xl bg-[#E3FEF7] flex items-center justify-center">
@@ -265,10 +359,7 @@ export default function ConfiguracionPage() {
                         {blockedUsers.length > 0 ? (
                             <div className="flex flex-col gap-2">
                                 {blockedUsers.map(name => (
-                                    <div
-                                        key={name}
-                                        className="flex items-center justify-between bg-[#f6fafa] rounded-lg px-3 py-2.5"
-                                    >
+                                    <div key={name} className="flex items-center justify-between bg-[#f6fafa] rounded-lg px-3 py-2.5">
                                         <span className="text-sm font-noto-sans text-[#181c1d]/70">
                                             {name}
                                         </span>
@@ -323,12 +414,12 @@ export default function ConfiguracionPage() {
                         </label>
                     </section>
 
-                    {/* GUARDAR */}
+                    {/* BOTÓN GUARDAR CAMBIOS */}
                     <div className="flex justify-start sm:justify-end">
                         <div className="relative">
                             <button
                                 onClick={handleSave}
-                                className="py-2 px-4 rounded-lg bg-[#003C43] text-white flex items-center gap-2 hover:bg-[#00252a] transition-colors"
+                                className="py-2 px-4 rounded-lg bg-[#003C43] text-white flex items-center gap-2 hover:bg-[#00252a] transition-colors font-inconsolata font-bold uppercase text-xs tracking-wider"
                             >
                                 Guardar cambios
                                 <Save className="w-4 h-4" />
@@ -341,6 +432,7 @@ export default function ConfiguracionPage() {
                             )}
                         </div>
                     </div>
+
                     {/* ZONA DE PELIGRO */}
                     <section className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,60,67,0.04)] border border-red-100">
                         <div className="flex items-center gap-3 mb-4">
@@ -384,10 +476,9 @@ export default function ConfiguracionPage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
                     <div
                         className="absolute inset-0 bg-[#00252a]/60 backdrop-blur-sm"
-                        onClick={() => { setDeleteModalOpen(false); setDeleteConfirm(''); }}
+                        onClick={() => { if (!isDeleting) { setDeleteModalOpen(false); setDeleteConfirm(''); } }}
                     />
                     <div className="relative bg-white rounded-2xl w-full max-w-md p-8 shadow-[0_20px_60px_rgba(0,60,67,0.2)] z-10">
-
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
                                 <AlertTriangle className="w-5 h-5 text-red-400" />
@@ -408,30 +499,50 @@ export default function ConfiguracionPage() {
                             <input
                                 type="text"
                                 value={deleteConfirm}
+                                disabled={isDeleting}
                                 onChange={e => setDeleteConfirm(e.target.value)}
                                 placeholder="ELIMINAR"
-                                className="w-full bg-[#f6fafa] rounded-lg px-3 py-2.5 text-sm font-noto-sans text-[#181c1d] placeholder:text-[#181c1d]/30 outline-none border-2 border-transparent focus:border-red-200 transition-colors"
+                                className="w-full bg-[#f6fafa] rounded-lg px-3 py-2.5 text-sm font-noto-sans text-[#181c1d] placeholder:text-[#181c1d]/30 outline-none border-2 border-transparent focus:border-red-200 transition-colors disabled:opacity-60"
                             />
                         </div>
 
                         <div className="flex items-center justify-end gap-3">
                             <button
+                                type="button"
+                                disabled={isDeleting}
                                 onClick={() => { setDeleteModalOpen(false); setDeleteConfirm(''); }}
-                                className="font-inconsolata text-xs font-bold uppercase tracking-wide text-[#003C43]/55 hover:text-[#003C43] transition-colors px-4 py-2.5"
+                                className="font-inconsolata text-xs font-bold uppercase tracking-wide text-[#003C43]/55 hover:text-[#003C43] transition-colors px-4 py-2.5 disabled:opacity-40"
                             >
                                 Cancelar
                             </button>
                             <button
-                                disabled={deleteConfirm !== 'ELIMINAR'}
+                                type="button"
+                                onClick={handleDeleteAccount}
+                                disabled={deleteConfirm !== 'ELIMINAR' || isDeleting}
                                 className="bg-red-400 text-white font-inconsolata text-xs font-bold uppercase tracking-wide px-6 py-2.5 rounded-lg hover:bg-red-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                             >
                                 <Trash2 className="w-3.5 h-3.5" />
-                                Confirmar eliminación
+                                {isDeleting ? 'Eliminando...' : 'Confirmar eliminación'}
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* TOAST ELEGANTE FLOTANTE (ESTILO EDITAR PERFIL) */}
+            {toast && (
+                <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl shadow-[0_8px_30px_rgba(0,60,67,0.15)] font-noto-sans text-sm tracking-wide border transition-all duration-300 ${
+                    toast.type === 'error' 
+                        ? 'bg-red-50 text-red-600 border-red-100' 
+                        : 'bg-[#003C43] text-[#E3FEF7] border-transparent'
+                }`}>
+                    <div className="flex items-center gap-2">
+                        {toast.type === 'error' && <AlertTriangle className="w-4 h-4" />}
+                        {toast.message}
                     </div>
                 </div>
             )}
         </main>
     );
 }
+

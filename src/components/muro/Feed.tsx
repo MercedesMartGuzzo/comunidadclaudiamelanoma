@@ -1,11 +1,10 @@
 'use client';
 
-import { FeedPost, FeedComment } from '@/lib/mock-data/feed/feed-posts';
-import PostCard from './PostCard';
+import PostCard, { PostCardType, CommentCardType } from './PostCard';
 
 interface Props {
-    posts: FeedPost[];
-    comments: FeedComment[];
+    posts: PostCardType[];
+    comments: CommentCardType[];
     onAddComment: (postId: string, content: string) => void;
 }
 

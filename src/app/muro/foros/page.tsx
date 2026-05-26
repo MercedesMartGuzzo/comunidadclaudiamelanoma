@@ -38,14 +38,14 @@ export default function MisForosPage() {
                 <div className="mb-10">
 
                     <p className="font-inconsolata text-[0.7rem] font-bold uppercase tracking-[0.14em] text-[#003C43]/55 mb-3">
-                        Comunidad CCM
+                        Comunidad RML
                     </p>
 
                     <h1
                         className="font-inconsolata text-4xl sm:text-5xl font-bold text-[#003C43] mb-4"
                         style={{ letterSpacing: '-0.02em' }}
                     >
-                        Mis foros
+                        Mis Grupos
                     </h1>
 
                     <p className="text-[#181c1d]/70 text-lg font-noto-sans max-w-2xl leading-relaxed">

@@ -1,10 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { FeedPost, FeedComment } from '@/lib/mock-data/feed/feed-posts';
-import { mockUsers } from '@/lib/mock-data/users';
 import Image from 'next/image';
-import { Heart, MessageCircle, Share2, Clock, Send } from 'lucide-react';
+import { Heart, MessageCircle, Clock, Send } from 'lucide-react';
 
 function timeAgo(dateStr: string) {
     const diff = Date.now() - new Date(dateStr).getTime();
@@ -14,9 +12,30 @@ function timeAgo(dateStr: string) {
     return `hace ${days} días`;
 }
 
+// Estructuras adaptadas para que dependan puramente de lo inyectado desde Supabase
+export interface PostCardType {
+    id: string;
+    userId: string;
+    content: string;
+    createdAt: string;
+    likesCount: number;
+    commentsCount: number;
+    authorName: string;
+    authorLocation: string;
+    authorAvatar: string | null;
+}
+
+export interface CommentCardType {
+    id: string;
+    postId: string;
+    authorName: string;
+    content: string;
+    createdAt: string;
+}
+
 interface Props {
-    post: FeedPost;
-    comments: FeedComment[];
+    post: PostCardType;
+    comments: CommentCardType[];
     onAddComment: (postId: string, content: string) => void;
 }
 
@@ -24,9 +43,6 @@ export default function PostCard({ post, comments, onAddComment }: Props) {
     const [showComments, setShowComments] = useState(false);
     const [commentInput, setCommentInput] = useState('');
     const [liked, setLiked] = useState(false);
-
-    const user = mockUsers.find(u => u.id === post.userId);
-    if (!user) return null;
 
     const handleComment = () => {
         if (!commentInput.trim()) return;
@@ -40,18 +56,22 @@ export default function PostCard({ post, comments, onAddComment }: Props) {
             {/* Header */}
             <div className="flex items-start gap-3 mb-4">
                 <div
-                    className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-sm"
+                    className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-sm overflow-hidden relative"
                     style={{ width: '40px', height: '40px', minWidth: '40px' }}
                 >
-                    {user.name.charAt(0)}
+                    {post.authorAvatar ? (
+                        <Image src={post.authorAvatar} alt={post.authorName} fill className="object-cover" />
+                    ) : (
+                        post.authorName.charAt(0).toUpperCase()
+                    )}
                 </div>
                 <div className="flex-1 min-w-0">
                     <p className="font-inconsolata font-bold text-[#003C43] text-sm" style={{ letterSpacing: '-0.01em' }}>
-                        {user.name}
+                        {post.authorName}
                     </p>
                     <p className="text-xs text-[#181c1d]/45 font-noto-sans flex items-center gap-1 mt-0.5">
                         <Clock className="w-3 h-3 shrink-0" />
-                        {timeAgo(post.createdAt)} · {user.location}
+                        {timeAgo(post.createdAt)} · {post.authorLocation}
                     </p>
                 </div>
             </div>
@@ -60,24 +80,6 @@ export default function PostCard({ post, comments, onAddComment }: Props) {
             <p className="text-sm text-[#181c1d]/80 font-noto-sans leading-relaxed mb-4">
                 {post.content}
             </p>
-
-            {/* Image */}
-            {post.image && (
-                <div className="relative w-full h-52 rounded-xl overflow-hidden mb-4">
-                    <Image src={post.image} alt="imagen del post" fill className="object-cover" />
-                </div>
-            )}
-
-            {/* Tags */}
-            {post.tags && post.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-4">
-                    {post.tags.map((tag, i) => (
-                        <span key={i} className="font-inconsolata text-[0.6rem] font-bold uppercase tracking-wider text-[#003C43] bg-[#E3FEF7] px-2.5 py-1 rounded-full">
-                            {tag}
-                        </span>
-                    ))}
-                </div>
-            )}
 
             {/* Actions */}
             <div className="flex items-center gap-5 pt-4 border-t border-[#003C43]/08 text-xs text-[#181c1d]/50 font-noto-sans">
@@ -96,11 +98,6 @@ export default function PostCard({ post, comments, onAddComment }: Props) {
                     <MessageCircle className="w-4 h-4" />
                     {post.commentsCount}
                 </button>
-
-             {/*    <button className="flex items-center gap-1.5 hover:text-[#003C43] transition-colors ml-auto">
-                    <Share2 className="w-4 h-4" />
-                    Compartir
-                </button> */}
             </div>
 
             {/* Comentarios */}
@@ -119,7 +116,7 @@ export default function PostCard({ post, comments, onAddComment }: Props) {
                                     className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-xs"
                                     style={{ width: '28px', height: '28px', minWidth: '28px' }}
                                 >
-                                    {comment.authorName.charAt(0)}
+                                    {comment.authorName.charAt(0).toUpperCase()}
                                 </div>
                                 <div className="bg-[#f6fafa] rounded-xl px-3 py-2 flex-1">
                                     <p className="font-inconsolata font-bold text-[#003C43] text-xs mb-0.5">
