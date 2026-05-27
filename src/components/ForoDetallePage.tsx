@@ -2,20 +2,20 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { mockForums } from '@/lib/mock-data/foro/forums';
-import { mockForumPosts } from '@/lib/mock-data/foro/forum-post';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import {
     Wheat, Leaf, LeafyGreen, Clover, Microscope, Dumbbell,
     ArrowLeft, Users, MessageSquare, Heart, Pin, Clock
 } from 'lucide-react';
 
 const iconComponents: Record<string, React.ElementType> = {
-    inmunologia:            LeafyGreen,
-    nutricion:              Wheat,
-    bienestar:              Leaf,
+    inmunologia: LeafyGreen,
+    nutricion: Wheat,
+    bienestar: Leaf,
     'cuidado-del-cuidador': Clover,
-    dermatologia:           Microscope,
-    'actividad-fisica':     Dumbbell,
+    dermatologia: Microscope,
+    'actividad-fisica': Dumbbell,
 };
 
 function timeAgo(dateStr: string) {
@@ -26,22 +26,58 @@ function timeAgo(dateStr: string) {
     return `hace ${days} días`;
 }
 
-interface Props {
+interface ForumData {
+    id: string;
     slug: string;
+    title: string;
+    description: string;
+    icon?: string;
 }
 
-export default function ForoDetallePage({ slug }: Props) {
+// Estructura limpia para evitar el uso de 'any'
+interface CommentCount {
+    count: number;
+}
+
+interface PostData {
+    id: string;
+    title: string;
+    content: string;
+    created_at: string;
+    profiles: {
+        name: string;
+    } | null;
+    comments?: CommentCount[] | CommentCount | null; 
+}
+
+interface ForoDetallePageProps {
+    slug: string;
+    forum: ForumData;
+    posts: PostData[];
+}
+
+// Función auxiliar para leer con seguridad la estructura devuelta por Supabase
+function getCommentCount(comments: PostData['comments']): number {
+    if (!comments) return 0;
+    if (Array.isArray(comments)) {
+        return comments[0]?.count ?? 0;
+    }
+    return comments.count ?? 0;
+}
+
+export default function ForoDetallePage({ slug, forum, posts }: ForoDetallePageProps) {
+    const router = useRouter();
+    const supabase = createClient();
+
     const [isDesktop, setIsDesktop] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [titulo, setTitulo] = useState('');
     const [contenido, setContenido] = useState('');
     const [tagInput, setTagInput] = useState('');
     const [tags, setTags] = useState<string[]>([]);
+    const [submitting, setSubmitting] = useState(false);
 
-    const forum = mockForums.find(f => f.slug === slug);
-    const initialPosts = mockForumPosts.filter(p => p.forumSlug === slug);
-    const [localPosts, setLocalPosts] = useState(initialPosts);
-    const IconComponent = iconComponents[slug];
+    const IconComponent = iconComponents[slug] || MessageSquare;
 
     useEffect(() => {
         const check = () => setIsDesktop(window.innerWidth >= 768);
@@ -68,35 +104,37 @@ export default function ForoDetallePage({ slug }: Props) {
         setTagInput('');
     };
 
-    const handlePublicarTema = () => {
+    const handlePublicarTema = async () => {
         if (!titulo.trim() || !contenido.trim()) return;
-        setLocalPosts(prev => [...prev, {
-            id: String(Date.now()),
-            forumId: forum?.id ?? '',
-            forumSlug: slug,
-            title: titulo.trim(),
-            content: contenido.trim(),
-            authorName: 'Vos',
-            authorAvatar: '',
-            createdAt: new Date().toISOString(),
-            repliesCount: 0,
-            likesCount: 0,
-            isPinned: false,
-            tags: tags,
-        }]);
-        handleCloseModal();
-    };
 
-    if (!forum) {
-        return (
-            <div className="pt-40 text-center">
-                <p className="font-inconsolata text-[#003C43] text-xl">Foro no encontrado.</p>
-                <Link href="/foros" className="text-sm text-[#003C43]/60 mt-4 inline-block hover:opacity-70">
-                    ← Volver al directorio
-                </Link>
-            </div>
-        );
-    }
+        try {
+            setSubmitting(true);
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                alert("Debés estar logueado para publicar.");
+                return;
+            }
+
+            const { error } = await supabase
+                .from('posts')
+                .insert([
+                    {
+                        forum_id: forum.id,
+                        user_id: user.id,
+                        title: titulo.trim(),
+                        content: contenido.trim(),
+                    }
+                ]);
+
+            if (error) throw error;
+
+            handleCloseModal();
+            router.refresh();
+        } catch (err: unknown) {
+            console.error("DEBUG COMPLETO:", JSON.stringify(err, null, 2));
+            alert("Error detallado en consola (F12)");
+        }
+    };
 
     return (
         <div className="pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
@@ -117,7 +155,6 @@ export default function ForoDetallePage({ slug }: Props) {
 
                         {/* Contenido izquierda */}
                         <div className="flex flex-col min-w-0 gap-4">
-
                             {/* Icono */}
                             <div
                                 className="rounded-xl bg-white/10 flex items-center justify-center mb-4 p-2 shrink-0 self-start"
@@ -151,22 +188,13 @@ export default function ForoDetallePage({ slug }: Props) {
                             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
                                 <span className="flex items-center gap-2 text-[#E3FEF7] text-sm font-noto-sans">
                                     <Users className="w-4 h-4 shrink-0" />
-                                    <span>
-                                        {forum.membersCount >= 1000
-                                            ? `${(forum.membersCount / 1000).toFixed(1)}k`
-                                            : forum.membersCount} miembros
-                                    </span>
+                                    <span>Miembro de la Comunidad</span>
                                 </span>
                                 <span className="hidden sm:block w-px h-4 bg-[#E3FEF7]/20" />
                                 <span className="flex items-center gap-2 text-[#E3FEF7] text-sm font-noto-sans">
                                     <MessageSquare className="w-4 h-4 shrink-0" />
-                                    <span>{forum.activeTopics} temas activos</span>
+                                    <span>{posts.length} temas abiertos</span>
                                 </span>
-                            </div>
-
-                            {/* Badge Miembro mobile */}
-                            <div className="md:hidden mt-6 self-start flex items-center gap-2 bg-white/10 border border-[#E3FEF7]/30 text-[#E3FEF7] font-inconsolata text-xs font-bold uppercase tracking-wide px-6 py-3 rounded-md">
-                                ✓ Miembro
                             </div>
                         </div>
 
@@ -199,7 +227,7 @@ export default function ForoDetallePage({ slug }: Props) {
             </div>
 
             {/* Lista de posts */}
-            {localPosts.length === 0 ? (
+            {posts.length === 0 ? (
                 <div className="bg-white rounded-xl p-12 text-center">
                     <MessageSquare className="w-10 h-10 text-[#003C43]/20 mx-auto mb-4" />
                     <p className="font-inconsolata text-[#003C43] font-semibold mb-2">Todavía no hay temas</p>
@@ -207,68 +235,64 @@ export default function ForoDetallePage({ slug }: Props) {
                 </div>
             ) : (
                 <div className="flex flex-col gap-4">
-                    {localPosts.map((post) => (
-                        <Link
-                            href={`/foros/${slug}/${post.id}`}
-                            key={post.id}
-                            className="group bg-white rounded-xl p-6 hover:shadow-[0_20px_40px_rgba(0,60,67,0.07)] transition-shadow cursor-pointer block"
-                        >
-                            <div className="flex items-start gap-4">
+                    {posts.map((post) => {
+                        const totalComments = getCommentCount(post.comments);
+                        return (
+                            <Link
+                                href={`/foros/${slug}/${post.id}`}
+                                key={post.id}
+                                className="group bg-white rounded-xl p-6 hover:shadow-[0_20px_40px_rgba(0,60,67,0.07)] transition-shadow cursor-pointer block"
+                            >
+                                <div className="flex items-start gap-4">
 
-                                {/* Avatar */}
-                                <div
-                                    className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-sm mt-1"
-                                    style={{ width: '36px', height: '36px', minWidth: '36px', minHeight: '36px' }}
-                                >
-                                    {post.authorName.charAt(0)}
-                                </div>
-
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        {post.isPinned && (
-                                            <Pin className="w-3 h-3 text-[#003C43]/40 shrink-0" />
-                                        )}
-                                        <h3
-                                            className="font-inconsolata font-bold text-[#003C43] text-base leading-snug group-hover:text-[#00252a] transition-colors"
-                                            style={{ letterSpacing: '-0.01em' }}
-                                        >
-                                            {post.title}
-                                        </h3>
+                                    {/* Avatar basado en la inicial */}
+                                    <div
+                                        className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-sm mt-1"
+                                        style={{ width: '36px', height: '36px', minWidth: '36px', minHeight: '36px' }}
+                                    >
+                                        {(post.profiles?.name || 'A').charAt(0).toUpperCase()}
                                     </div>
 
-                                    <p className="text-sm text-[#181c1d]/65 font-noto-sans leading-relaxed mb-3 line-clamp-2">
-                                        {post.content}
-                                    </p>
-
-                                    <div className="flex flex-wrap gap-2 mb-3">
-                                        {post.tags.map((tag, i) => (
-                                            <span
-                                                key={i}
-                                                className="font-inconsolata text-[0.6rem] font-bold uppercase tracking-wider text-[#003C43] bg-[#E3FEF7] px-3 py-1.5 rounded-full"
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <h3
+                                                className="font-inconsolata font-bold text-[#003C43] text-base leading-snug group-hover:text-[#00252a] transition-colors"
+                                                style={{ letterSpacing: '-0.01em' }}
                                             >
-                                                {tag}
-                                            </span>
-                                        ))}
-                                    </div>
+                                                {post.title}
+                                            </h3>
+                                        </div>
 
-                                    <div className="flex flex-wrap items-center gap-4 text-xs text-[#181c1d]/45 font-noto-sans">
-                                        <span className="flex items-center gap-1">
-                                            <Clock className="w-3 h-3 shrink-0" />
-                                            {post.authorName} · {timeAgo(post.createdAt)}
-                                        </span>
-                                        <span className="flex items-center gap-1">
-                                            <MessageSquare className="w-3 h-3 shrink-0" />
-                                            {post.repliesCount} respuestas
-                                        </span>
-                                        <span className="flex items-center gap-1">
-                                            <Heart className="w-3 h-3 shrink-0" />
-                                            {post.likesCount}
-                                        </span>
+                                        <p className="text-sm text-[#181c1d]/65 font-noto-sans leading-relaxed mb-3 line-clamp-2">
+                                            {post.content}
+                                        </p>
+
+                                        {/* Metadata con contador de respuestas */}
+                                        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-[#181c1d]/45 font-noto-sans">
+                                            <span className="flex items-center gap-1">
+                                                <Clock className="w-3 h-3 shrink-0" />
+                                                Publicado por <strong className="text-[#003C43]/70 ml-0.5">{post.profiles?.name || 'Usuario'}</strong> · {timeAgo(post.created_at)}
+                                            </span>
+
+                                            {totalComments > 0 && (
+                                                <>
+                                                    <span className="w-1 h-1 rounded-full bg-[#181c1d]/20 shrink-0" />
+                                                    <span className="flex items-center gap-1 text-[#003C43]/70 font-medium bg-[#f0f7f6] px-2 py-0.5 rounded-md">
+                                                        <MessageSquare className="w-3 h-3 text-[#003C43]/50" />
+                                                        <span>
+                                                            {totalComments}{' '}
+                                                            {totalComments === 1 ? 'respuesta' : 'respuestas'}
+                                                        </span>
+                                                    </span>
+                                                </>
+                                            )}
+                                        </div>
+
                                     </div>
                                 </div>
-                            </div>
-                        </Link>
-                    ))}
+                            </Link>
+                        );
+                    })}
                 </div>
             )}
 
@@ -304,7 +328,6 @@ export default function ForoDetallePage({ slug }: Props) {
                         </div>
 
                         <div className="flex flex-col gap-5">
-
                             <div className="flex flex-col gap-1.5">
                                 <label className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#003C43]/55">
                                     Título
@@ -366,17 +389,18 @@ export default function ForoDetallePage({ slug }: Props) {
                             <div className="flex items-center justify-end gap-3 pt-2">
                                 <button
                                     onClick={handleCloseModal}
+                                    disabled={submitting}
                                     className="font-inconsolata text-xs font-bold uppercase tracking-wide text-[#003C43]/55 hover:text-[#003C43] transition-colors px-4 py-2.5"
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     onClick={handlePublicarTema}
-                                    disabled={!titulo.trim() || !contenido.trim()}
+                                    disabled={!titulo.trim() || !contenido.trim() || submitting}
                                     className="bg-[#003C43] text-[#E3FEF7] font-inconsolata text-xs font-bold uppercase tracking-wide px-6 py-3 rounded-md hover:bg-[#00252a] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                                 >
                                     <MessageSquare className="w-3.5 h-3.5" />
-                                    Publicar tema
+                                    {submitting ? 'Publicando...' : 'Publicar tema'}
                                 </button>
                             </div>
                         </div>
