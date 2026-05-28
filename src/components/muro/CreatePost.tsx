@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image'; // <-- Importamos Image de Next.js
 import { supabase } from '@/lib/supabase/client';
 import { Image as ImageIcon, Smile, Send } from 'lucide-react';
 
@@ -11,19 +12,24 @@ interface Props {
 export default function CreatePost({ onPublish }: Props) {
     const [content, setContent] = useState('');
     const [userInitial, setUserInitial] = useState('U');
+    const [userAvatar, setUserAvatar] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function getActiveUser() {
             try {
+                setLoading(true);
                 const { data: { user } } = await supabase.auth.getUser();
                 if (user) {
-                    // Intentamos sacar el nombre desde la metadata de auth o del perfil de profiles
                     const { data: profile } = await supabase
                         .from('profiles')
-                        .select('name')
+                        .select('name, avatar_url')
                         .eq('id', user.id)
                         .maybeSingle();
+
+                    if (profile?.avatar_url) {
+                        setUserAvatar(profile.avatar_url);
+                    }
 
                     const name = profile?.name || user.user_metadata?.name || user.email || 'U';
                     setUserInitial(name.charAt(0).toUpperCase());
@@ -46,12 +52,26 @@ export default function CreatePost({ onPublish }: Props) {
     return (
         <div className="bg-white rounded-xl p-6 hover:shadow-[0_4px_20px_rgba(0,60,67,0.07)] transition-shadow">
             <div className="flex items-start gap-3">
+                
+                {/* Contenedor del Avatar / Inicial */}
                 <div
-                    className={`rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-sm ${loading ? 'animate-pulse' : ''}`}
+                    className={`relative rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-sm overflow-hidden ${loading ? 'animate-pulse' : ''}`}
                     style={{ width: '40px', height: '40px', minWidth: '40px' }}
                 >
-                    {userInitial}
+                    {!loading && userAvatar ? (
+                        <Image 
+                            src={userAvatar} 
+                            alt="Mi Perfil" 
+                            fill // Al usar fill se adapta al tamaño del contenedor (40x40)
+                            sizes="40px"
+                            className="object-cover"
+                            unoptimized // Evita tener que configurar dominios en next.config.js
+                        />
+                    ) : (
+                        userInitial
+                    )}
                 </div>
+
                 <textarea
                     value={content}
                     onChange={e => setContent(e.target.value)}

@@ -12,7 +12,6 @@ function timeAgo(dateStr: string) {
     return `hace ${days} días`;
 }
 
-// Estructuras adaptadas para que dependan puramente de lo inyectado desde Supabase
 export interface PostCardType {
     id: string;
     userId: string;
@@ -29,6 +28,7 @@ export interface CommentCardType {
     id: string;
     postId: string;
     authorName: string;
+    authorAvatar: string | null;
     content: string;
     createdAt: string;
 }
@@ -37,9 +37,11 @@ interface Props {
     post: PostCardType;
     comments: CommentCardType[];
     onAddComment: (postId: string, content: string) => void;
+    currentUserAvatar?: string | null;
+    currentUserName?: string; // <-- Nueva prop para calcular la inicial del usuario actual si no tiene foto
 }
 
-export default function PostCard({ post, comments, onAddComment }: Props) {
+export default function PostCard({ post, comments, onAddComment, currentUserAvatar, currentUserName }: Props) {
     const [showComments, setShowComments] = useState(false);
     const [commentInput, setCommentInput] = useState('');
     const [liked, setLiked] = useState(false);
@@ -49,6 +51,9 @@ export default function PostCard({ post, comments, onAddComment }: Props) {
         onAddComment(post.id, commentInput.trim());
         setCommentInput('');
     };
+
+    // Dinámico: Si no hay avatar para el input, saca la inicial del nombre del usuario, o 'U' por defecto
+    const inputFallbackInitial = currentUserName ? currentUserName.charAt(0).toUpperCase() : 'U';
 
     return (
         <div className="bg-white rounded-xl p-6 hover:shadow-[0_20px_40px_rgba(0,60,67,0.07)] transition-shadow">
@@ -60,9 +65,9 @@ export default function PostCard({ post, comments, onAddComment }: Props) {
                     style={{ width: '40px', height: '40px', minWidth: '40px' }}
                 >
                     {post.authorAvatar ? (
-                        <Image src={post.authorAvatar} alt={post.authorName} fill className="object-cover" />
+                        <Image src={post.authorAvatar} alt={post.authorName} fill sizes="40px" className="object-cover" unoptimized />
                     ) : (
-                        post.authorName.charAt(0).toUpperCase()
+                        post.authorName ? post.authorName.charAt(0).toUpperCase() : 'U'
                     )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -113,10 +118,14 @@ export default function PostCard({ post, comments, onAddComment }: Props) {
                         comments.map(comment => (
                             <div key={comment.id} className="flex items-start gap-2.5">
                                 <div
-                                    className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-xs"
+                                    className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-xs overflow-hidden relative"
                                     style={{ width: '28px', height: '28px', minWidth: '28px' }}
                                 >
-                                    {comment.authorName.charAt(0).toUpperCase()}
+                                    {comment.authorAvatar ? (
+                                        <Image src={comment.authorAvatar} alt={comment.authorName} fill sizes="28px" className="object-cover" unoptimized />
+                                    ) : (
+                                        comment.authorName ? comment.authorName.charAt(0).toUpperCase() : 'U'
+                                    )}
                                 </div>
                                 <div className="bg-[#f6fafa] rounded-xl px-3 py-2 flex-1">
                                     <p className="font-inconsolata font-bold text-[#003C43] text-xs mb-0.5">
@@ -133,10 +142,21 @@ export default function PostCard({ post, comments, onAddComment }: Props) {
                     {/* Input comentario */}
                     <div className="flex items-center gap-2 mt-1">
                         <div
-                            className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-xs"
+                            className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-xs relative overflow-hidden"
                             style={{ width: '28px', height: '28px', minWidth: '28px' }}
                         >
-                            V
+                            {currentUserAvatar ? (
+                                <Image 
+                                    src={currentUserAvatar} 
+                                    alt="Mi foto de comentario" 
+                                    fill 
+                                    sizes="28px"
+                                    className="object-cover" 
+                                    unoptimized 
+                                />
+                            ) : (
+                                inputFallbackInitial
+                            )}
                         </div>
                         <div className="flex-1 flex items-center gap-2 bg-[#f6fafa] rounded-xl px-3 py-2">
                             <input

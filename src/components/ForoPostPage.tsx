@@ -1,14 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/navigation'; 
 import LinkActual from 'next/link'; 
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Heart, MessageSquare, Clock } from 'lucide-react';
 import { addComment } from '@/lib/supabase/actions';
 
 interface Profile {
     name: string;
+    avatar_url?: string | null;
 }
 
 interface Reply {
@@ -77,20 +78,22 @@ export default function ForoPostPage({ slug, post, comments }: Props) {
 
     return (
         <div className="pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
-            {/* Breadcrumb */}
             <LinkActual href={`/foros/${slug}`} className="flex items-center gap-2 text-sm text-[#003C43]/55 hover:text-[#003C43] transition font-noto-sans mb-6 group w-fit">
                 <ArrowLeft className="w-4 h-4 shrink-0 group-hover:-translate-x-1 transition-transform" />
                 <span className="leading-none">{post.forum_title || 'Foro'}</span>
             </LinkActual>
 
-            {/* CONTENEDOR ÚNICO */}
             <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,60,67,0.05)] overflow-hidden">
                 
                 {/* 1. SECCIÓN: Post Principal */}
                 <div className="p-6 sm:p-8">
                     <div className="flex items-start gap-4 mb-4">
-                        <div className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-sm mt-1" style={{ width: '40px', height: '40px' }}>
-                            {post.profiles?.name?.charAt(0) || '?'}
+                        <div className="relative rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-sm mt-1 overflow-hidden" style={{ width: '40px', height: '40px' }}>
+                            {post.profiles?.avatar_url ? (
+                                <Image src={post.profiles.avatar_url} alt={post.profiles.name || 'Avatar'} width={40} height={40} className="object-cover w-full h-full" />
+                            ) : (
+                                post.profiles?.name?.charAt(0).toUpperCase() || '?'
+                            )}
                         </div>
                         <div>
                             <p className="font-inconsolata font-bold text-[#003C43] text-sm">{post.profiles?.name || 'Anónimo'}</p>
@@ -111,7 +114,6 @@ export default function ForoPostPage({ slug, post, comments }: Props) {
 
                 {/* 2. SECCIÓN: Listado de respuestas */}
                 {comments.length > 0 && (
-                    /* CAMBIO: Borde superior ahora usa el color verde clarito (#E3FEF7) */
                     <div className="bg-[#fcfefe] border-t border-[#E3FEF7] px-6 sm:px-8 py-6 flex flex-col gap-5">
                         <p className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#003C43]/50 mb-1">
                             Respuestas ({comments.length})
@@ -119,8 +121,12 @@ export default function ForoPostPage({ slug, post, comments }: Props) {
                         
                         {comments.map((reply) => (
                             <div key={reply.id} className="flex items-start gap-3 pl-2 sm:pl-4">
-                                <div className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-xs mt-0.5" style={{ width: '32px', height: '32px' }}>
-                                    {reply.profiles?.name?.charAt(0) || '?'}
+                                <div className="relative rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-xs mt-0.5 overflow-hidden" style={{ width: '32px', height: '32px' }}>
+                                    {reply.profiles?.avatar_url ? (
+                                        <Image src={reply.profiles.avatar_url} alt={reply.profiles.name || 'Avatar'} width={32} height={32} className="object-cover w-full h-full" />
+                                    ) : (
+                                        reply.profiles?.name?.charAt(0).toUpperCase() || '?'
+                                    )}
                                 </div>
                                 <div className="flex-1 bg-white border border-[#E3FEF7] rounded-xl p-4 shadow-[0_2px_8px_rgba(0,60,67,0.02)]">
                                     <div className="flex items-center justify-between mb-1">
@@ -137,7 +143,6 @@ export default function ForoPostPage({ slug, post, comments }: Props) {
                 )}
 
                 {/* 3. SECCIÓN: Formulario para agregar respuesta */}
-              
                 <div className="bg-white border-t border-[#E3FEF7] p-6 sm:p-8">
                     <div className="flex items-start gap-3">
                         <div className="w-full">
@@ -161,7 +166,6 @@ export default function ForoPostPage({ slug, post, comments }: Props) {
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     );

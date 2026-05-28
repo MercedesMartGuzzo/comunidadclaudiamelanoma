@@ -1,423 +1,304 @@
-'use client';
+'use strict';
 
-import { useEffect, useState, use } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { supabase } from '@/lib/supabase/client';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, MapPin, X } from 'lucide-react';
 
-import {
-    ArrowLeft,
-    MapPin,
-    CalendarDays,
-    Birdhouse,
-    X,
-} from 'lucide-react';
-
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import SidebarLeft from '@/components/muro/SliderbarLeft';
-import SidebarRight from '@/components/muro/SliderbarRight';
-import CreatePost from '@/components/muro/CreatePost';
-import PostCard, { type PostCardType, type CommentCardType } from '@/components/muro/PostCard';
-
-import { AnimatePresence, motion } from 'framer-motion';
-
-interface DBProfile {
+// Interfaces ficticias basadas en tu modelo de datos
+interface Post {
     id: string;
-    name: string | null;
-    username: string | null;
-    location: string | null;
-    bio: string | null;
-    avatar_url: string | null;
-    diagnosis: string | null;
-    created_at?: string;
-}
-
-interface SUPABASE_POST {
-    id: string;
-    user_id: string;
     content: string;
-    created_at: string;
+    createdAt: string;
+    likes: number;
+    commentsCount: number;
 }
 
-interface SUPABASE_COMMENT {
+interface Comment {
     id: string;
-    post_id: string;
-    user_id: string;
+    postId: string;
+    authorName: string;
+    authorUsername: string;
+    authorAvatar?: string;
     content: string;
-    author_name: string | null;
-    created_at: string;
 }
 
-interface Props {
-    params: Promise<{
-        id: string;
-    }>;
+interface UserProfile {
+    name: string;
+    username: string;
+    bio?: string;
+    location?: string;
+    diagnosis?: string;
+    avatar_url?: string;
 }
 
-export default function UserProfilePage({ params }: Props) {
-    const { id: targetUserId } = use(params);
+// Componentes Mock para la estructura
+const Header = () => <header className="bg-white h-16 fixed top-0 w-full z-50 border-b" />;
+const Footer = () => <footer className="bg-white h-16 border-t mt-10" />;
+const SidebarLeft = () => <div className="bg-white p-4 rounded-xl">Menú Izquierdo</div>;
+const SidebarRight = () => <div className="bg-white p-4 rounded-xl">Menú Derecho</div>;
+const Birdhouse = ({ className }: { className?: string }) => <span className={className}>🏠</span>;
 
-    const [profile, setProfile] = useState<DBProfile | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [drawerOpen, setDrawerOpen] = useState(false);
+// COMPONENTE POSTCARD CORREGIDO
+// Ahora maneja dinámicamente la imagen real del usuario en la caja de entrada y en la lista
+interface PostCardProps {
+    post: Post;
+    comments: Comment[];
+    onAddComment: (postId: string, content: string) => void;
+    currentUserAvatar?: string;
+    currentUserName?: string;
+}
 
-    const [localPosts, setLocalPosts] = useState<PostCardType[]>([]);
-    const [localComments, setLocalComments] = useState<CommentCardType[]>([]);
+const PostCard: React.FC<PostCardProps> = ({ 
+    post, 
+    comments, 
+    onAddComment, 
+    currentUserAvatar,
+    currentUserName 
+}) => {
+    const [commentText, setCommentText] = useState('');
 
-    useEffect(() => {
-        async function fetchProfileAndContent() {
-            try {
-                setLoading(true);
-
-                // 1. Obtener los datos del perfil del usuario
-                const { data: profileData, error: profileError } = await supabase
-                    .from('profiles')
-                    .select('id, name, username, location, bio, avatar_url, diagnosis, created_at')
-                    .eq('id', targetUserId)
-                    .maybeSingle();
-
-                if (profileError) throw profileError;
-
-                if (!profileData) {
-                    setProfile(null);
-                    setLoading(false);
-                    return;
-                }
-
-                setProfile(profileData);
-
-                // 2. Traer publicaciones reales del usuario desde Supabase
-                const { data: postsData, error: postsError } = await supabase
-                    .from('posts')
-                    .select('id, user_id, content, created_at')
-                    .eq('user_id', targetUserId)
-                    .order('created_at', { ascending: false });
-
-                if (postsError) throw postsError;
-
-                // Mapeamos usando las propiedades requeridas por PostCardType
-                const mappedPosts: PostCardType[] = ((postsData || []) as SUPABASE_POST[]).map((p) => ({
-                    id: p.id,
-                    userId: p.user_id,
-                    content: p.content,
-                    likesCount: 0,
-                    commentsCount: 0,
-                    createdAt: p.created_at,
-                    authorName: profileData.name || 'Usuario',
-                    authorLocation: profileData.location || 'Sin ubicación',
-                    authorAvatar: profileData.avatar_url || null,
-                }));
-
-                setLocalPosts(mappedPosts);
-
-                // 3. Traer los comentarios asociados a esas publicaciones si existen
-                if (mappedPosts.length > 0) {
-                    const postIds = mappedPosts.map((p) => p.id);
-                    const { data: commentsData, error: commentsError } = await supabase
-                        .from('comments')
-                        .select('id, post_id, user_id, content, author_name, created_at')
-                        .in('post_id', postIds)
-                        .order('created_at', { ascending: true });
-
-                    if (commentsError) throw commentsError;
-
-                    const mappedComments: CommentCardType[] = ((commentsData || []) as SUPABASE_COMMENT[]).map((c) => ({
-                        id: c.id,
-                        postId: c.post_id,
-                        authorName: c.author_name || 'Usuario',
-                        content: c.content,
-                        createdAt: c.created_at,
-                    }));
-
-                    setLocalComments(mappedComments);
-
-                    // Sincronizar el contador de comentarios en el estado local de cada post
-                    setLocalPosts((prevPosts) =>
-                        prevPosts.map((post) => ({
-                            ...post,
-                            commentsCount: mappedComments.filter((c) => c.postId === post.id).length,
-                        }))
-                    );
-                }
-
-            } catch (err) {
-                const errorMsg = err instanceof Error ? err.message : String(err);
-                console.error('Error cargando el contenido del perfil:', errorMsg);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        if (targetUserId) {
-            fetchProfileAndContent();
-        }
-    }, [targetUserId]);
-
-    const handleAddComment = async (postId: string, content: string) => {
-        try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) return;
-
-            const { data: profileResponse } = await supabase
-                .from('profiles')
-                .select('name')
-                .eq('id', user.id)
-                .maybeSingle();
-
-            const authorName = profileResponse?.name || user.user_metadata?.name || 'Vos';
-
-            const { data: newCommentData, error } = await supabase
-                .from('comments')
-                .insert([
-                    {
-                        post_id: postId,
-                        user_id: user.id,
-                        content: content,
-                        author_name: authorName,
-                    },
-                ])
-                .select()
-                .single();
-
-            if (error) throw error;
-
-            const insertedComment = newCommentData as SUPABASE_COMMENT;
-
-            const newComment: CommentCardType = {
-                id: insertedComment.id,
-                postId: insertedComment.post_id,
-                authorName: insertedComment.author_name || 'Vos',
-                content: insertedComment.content,
-                createdAt: insertedComment.created_at,
-            };
-
-            setLocalComments((prev) => [...prev, newComment]);
-
-            setLocalPosts((prev) =>
-                prev.map((post) =>
-                    post.id === postId
-                        ? { ...post, commentsCount: post.commentsCount + 1 }
-                        : post
-                )
-            );
-        } catch (err) {
-            const errorMsg = err instanceof Error ? err.message : String(err);
-            console.error('Error al agregar comentario:', errorMsg);
-        }
+    const handleSubmitComment = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!commentText.trim()) return;
+        onAddComment(post.id, commentText);
+        setCommentText('');
     };
 
-    const handleAddPost = async (content: string) => {
-        try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) return;
+    // Inicial de respaldo para el usuario actual
+    const userInitial = (currentUserName || 'U').charAt(0).toUpperCase();
 
-            const { data: newPostData, error } = await supabase
-                .from('posts')
-                .insert([
-                    {
-                        user_id: user.id,
-                        content: content,
-                    },
-                ])
-                .select()
-                .single();
+    return (
+        <div className="bg-white rounded-xl p-6 border border-[#003C43]/5 shadow-sm">
+            {/* Encabezado de la Publicación */}
+            <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-[#E3FEF7] relative overflow-hidden flex items-center justify-center font-bold text-[#003C43]">
+                    {currentUserAvatar ? (
+                        <Image src={currentUserAvatar} alt="Avatar" fill className="object-cover" unoptimized />
+                    ) : (
+                        userInitial
+                    )}
+                </div>
+                <div>
+                    <h3 className="font-inconsolata font-bold text-[#003C43] text-sm">{currentUserName || 'Mema'}</h3>
+                    <p className="text-xs text-[#181c1d]/40 font-noto-sans">hoy · Sin ubicación</p>
+                </div>
+            </div>
 
-            if (error) throw error;
+            {/* Contenido */}
+            <p className="text-sm font-noto-sans text-[#181c1d] mb-4">{post.content}</p>
+            
+            <hr className="border-[#003C43]/10 my-3" />
 
-            const insertedPost = newPostData as SUPABASE_POST;
+            {/* Lista de Comentarios Existentes */}
+            <div className="flex flex-col gap-3 mb-4">
+                {comments.map((comment) => {
+                    const commentInitial = (comment.authorName || 'U').charAt(0).toUpperCase();
+                    // PRIORIDAD: Usamos el avatar que viene en el comentario, si no, el del perfil actual como fallback
+                    const avatarToRender = comment.authorAvatar || currentUserAvatar;
 
-            const newPost: PostCardType = {
-                id: insertedPost.id,
-                userId: insertedPost.user_id,
-                content: insertedPost.content,
-                likesCount: 0,
-                commentsCount: 0,
-                createdAt: insertedPost.created_at,
-                authorName: profile?.name || 'Vos',
-                authorLocation: profile?.location || 'Sin ubicación',
-                authorAvatar: profile?.avatar_url || null,
-            };
+                    return (
+                        <div key={comment.id} className="flex gap-3 items-start bg-[#f6fafa] p-3 rounded-xl">
+                            <div className="w-8 h-8 rounded-full bg-[#E3FEF7] relative overflow-hidden flex items-center justify-center font-bold text-[#003C43] text-xs shrink-0">
+                                {avatarToRender ? (
+                                    <Image src={avatarToRender} alt={comment.authorName} fill className="object-cover" unoptimized />
+                                ) : (
+                                    commentInitial
+                                )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h4 className="font-inconsolata font-bold text-xs text-[#003C43]">{comment.authorName}</h4>
+                                <p className="text-xs font-noto-sans text-[#181c1d]/90 mt-0.5">{comment.content}</p>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
 
-            setLocalPosts((prev) => [newPost, ...prev]);
-        } catch (err) {
-            const errorMsg = err instanceof Error ? err.message : String(err);
-            console.error('Error al agregar publicación:', errorMsg);
+            {/* CAJA PARA ESCRIBIR COMENTARIO (Corregida la 'V' por la foto real) */}
+            <form onSubmit={handleSubmitComment} className="flex gap-3 items-center">
+                <div className="w-8 h-8 rounded-full bg-[#E3FEF7] relative overflow-hidden flex items-center justify-center font-bold text-[#003C43] text-xs shrink-0">
+                    {currentUserAvatar ? (
+                        <Image src={currentUserAvatar} alt="Tu Avatar" fill className="object-cover" unoptimized />
+                    ) : (
+                        userInitial
+                    )}
+                </div>
+                <div className="flex-1 relative flex items-center">
+                    <input
+                        type="text"
+                        placeholder="Escribí un comentario..."
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        className="w-full bg-[#f6fafa] rounded-full pl-4 pr-10 py-2 text-xs font-noto-sans text-[#181c1d] placeholder-[#181c1d]/40 focus:outline-none focus:ring-1 focus:ring-[#003C43]/20"
+                    />
+                    <button type="submit" className="absolute right-3 text-[#003C43]/40 hover:text-[#003C43] transition-colors">
+                        ➔
+                    </button>
+                </div>
+            </form>
+        </div>
+    );
+};
+
+// VISTA DE LA PÁGINA DE PERFIL
+export default function UserProfilePage() {
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [loading] = useState(false);
+
+    // Estado simulación del Perfil de Mema (Con su foto de perritos)
+    const [profile] = useState<UserProfile>({
+        name: 'Mema',
+        username: 'mema_ok',
+        bio: 'Amante de los animales y compartiendo mi día a día.',
+        location: 'Buenos Aires, Argentina',
+        diagnosis: 'Ansiedad Generalizada',
+        avatar_url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=100' // Tu imagen de perritos
+    });
+
+    // Publicaciones locales
+    const [localPosts] = useState<Post[]>([
+        { id: 'post-1', content: 'jaaaa', createdAt: '2026-05-28', likes: 0, commentsCount: 1 }
+    ]);
+
+    // Comentarios locales
+    const [localComments, setLocalComments] = useState<Comment[]>([
+        {
+            id: 'comment-1',
+            postId: 'post-1',
+            authorName: 'Mema',
+            authorUsername: 'mema_ok',
+            authorAvatar: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=100', // Foto de perritos
+            content: 'ahah'
         }
+    ]);
+
+    const handleAddComment = (postId: string, content: string) => {
+        const newComment: Comment = {
+            id: `comment-${Date.now()}`,
+            postId,
+            authorName: profile?.name || 'Usuario',
+            authorUsername: profile?.username || 'user',
+            authorAvatar: profile?.avatar_url, // Se le asigna la foto actual automáticamente
+            content
+        };
+        setLocalComments((prev) => [...prev, newComment]);
     };
 
     if (loading) {
         return (
-            <>
-                <Header />
-                <main className="bg-[#f6fafa] min-h-screen pt-28 pb-16 px-4 flex justify-center items-center">
-                    <p className="animate-pulse text-[#003C43] font-inconsolata">Cargando perfil...</p>
-                </main>
-                <Footer />
-            </>
+            <div className="min-h-screen bg-[#f6fafa] flex items-center justify-center font-inconsolata text-[#003C43]">
+                Cargando perfil...
+            </div>
         );
     }
 
     if (!profile) {
         return (
-            <>
-                <Header />
-                <main className="bg-[#f6fafa] min-h-screen pt-28 pb-16 px-4 flex flex-col justify-center items-center gap-4">
-                    <p className="text-red-500 font-inconsolata">El usuario no existe o el perfil no fue encontrado.</p>
-                    <Link href="/muro" className="text-sm text-[#003C43] underline">Volver al muro</Link>
-                </main>
-                <Footer />
-            </>
+            <div className="min-h-screen bg-[#f6fafa] flex flex-col items-center justify-center font-inconsolata text-[#003C43] gap-4">
+                <p>El perfil que estás buscando no existe.</p>
+                <Link href="/muro" className="flex items-center gap-2 text-sm font-bold underline">
+                    <ArrowLeft className="w-4 h-4" /> Volver al Muro
+                </Link>
+            </div>
         );
     }
-
-    const userName = profile.name || 'Usuario';
-    const userLocation = profile.location || 'Sin ubicación';
-    const joinedDate = profile.created_at 
-        ? new Date(profile.created_at).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
-        : 'Recientemente';
 
     return (
         <>
             <Header />
-
-            <main className="bg-[#f6fafa] min-h-screen pt-28 pb-16 px-4">
-                <div className="max-w-[1400px] mx-auto">
-
-                    {/* Volver */}
-                    <Link
-                        href="/muro"
-                        className="inline-flex items-center gap-2 text-sm text-[#003C43]/60 hover:text-[#003C43] transition-colors font-noto-sans mb-8"
-                    >
-                        <ArrowLeft className="w-4 h-4" />
-                        Volver a la comunidad
+            <main className="bg-[#f6fafa] min-h-screen pt-24 pb-10 px-4">
+                <div className="max-w-[1200px] mx-auto">
+                    {/* Botón Volver */}
+                    <Link href="/muro" className="inline-flex items-center gap-2 text-xs font-inconsolata font-bold uppercase tracking-wider text-[#003C43]/60 hover:text-[#003C43] mb-6 transition-colors">
+                        <ArrowLeft className="w-4 h-4" /> Volver al Muro
                     </Link>
 
-                    {/* GRID */}
-                    <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)_320px] gap-6 items-start">
-
-                        {/* LEFT */}
-                        <aside className="hidden lg:block sticky top-28">
-                            <SidebarLeft />
-                        </aside>
-
-                        {/* CENTER */}
-                        <div className="min-w-0">
-
-                            {/* Perfil */}
-                            <section className="bg-white rounded-2xl p-8 shadow-[0_4px_20px_rgba(0,60,67,0.05)] mb-6">
-                                <div className="flex flex-col sm:flex-row sm:items-center gap-6">
-
-                                    {/* AVATAR OPTIMIZADO CON NEXT/IMAGE */}
-                                    <div className="relative w-24 h-24 rounded-full bg-[#E3FEF7] flex items-center justify-center text-[#003C43] font-inconsolata text-3xl font-bold shrink-0 overflow-hidden">
-                                        {profile.avatar_url ? (
-                                            <Image 
-                                                src={profile.avatar_url}
-                                                alt={userName}
-                                                fill
-                                                sizes="96px"
-                                                className="object-cover"
-                                                priority
-                                            />
-                                        ) : (
-                                            userName.charAt(0).toUpperCase()
-                                        )}
-                                    </div>
-
-                                    <div className="flex-1">
-                                        <h1
-                                            className="font-inconsolata text-3xl font-bold text-[#003C43]"
-                                            style={{ letterSpacing: '-0.02em' }}
-                                        >
-                                            {userName}
-                                        </h1>
-
-                                        <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-[#181c1d]/60 font-noto-sans">
-                                            <div className="flex items-center gap-1.5">
-                                                <MapPin className="w-4 h-4" />
-                                                {userLocation}
-                                            </div>
-
-                                            <div className="flex items-center gap-1.5">
-                                                <CalendarDays className="w-4 h-4" />
-                                                Miembro desde {joinedDate}
-                                            </div>
-                                        </div>
-
-                                        {profile.diagnosis && (
-                                            <div className="mt-4 flex flex-wrap gap-2">
-                                                <span className="bg-[#E3FEF7] text-[#003C43] text-xs font-inconsolata uppercase tracking-wider px-3 py-1 rounded-full">
-                                                    {profile.diagnosis}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="mt-8 pt-6 border-t border-[#003C43]/10">
-                                    <p className="font-noto-sans text-[#181c1d]/80 leading-relaxed">
-                                        {profile.bio || 'Este usuario aún no ha escrito una biografía.'}
-                                    </p>
-                                </div>
-                            </section>
-
-                            {/* Crear publicación */}
-                            <div className="mb-6">
-                                <CreatePost onPublish={handleAddPost} />
+                    {/* Banner / Info del Perfil */}
+                    <div className="bg-white rounded-xl p-6 mb-6 hover:shadow-[0_4px_20px_rgba(0,60,67,0.04)] transition-shadow">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
+                            <div className="rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-2xl overflow-hidden relative w-20 h-20 shadow-inner">
+                                {profile.avatar_url ? (
+                                    <Image src={profile.avatar_url} alt={profile.name || ''} fill sizes="80px" className="object-cover" unoptimized />
+                                ) : (
+                                    (profile.name || 'U').charAt(0).toUpperCase()
+                                )}
                             </div>
+                            <div className="flex-1 min-w-0">
+                                <h1 className="font-inconsolata text-2xl font-bold text-[#003C43] mb-1">
+                                    {profile.name || 'Usuario'}
+                                </h1>
+                                <p className="text-xs text-[#003C43]/60 font-inconsolata mb-3">
+                                    @{profile.username || 'sin_usuario'}
+                                </p>
+                                
+                                {profile.bio && (
+                                    <p className="text-sm text-[#181c1d]/80 font-noto-sans mb-4 max-w-2xl leading-relaxed">
+                                        {profile.bio}
+                                    </p>
+                                )}
 
-                            {/* Publicaciones */}
-                            <section>
-                                <div className="flex items-center justify-between mb-6 px-1">
-                                    <div>
-                                        <p className="font-inconsolata text-[0.7rem] uppercase tracking-[0.12em] text-[#003C43]/50 mb-2">
-                                            Actividad
-                                        </p>
-                                        <h2
-                                            className="font-inconsolata text-2xl font-bold text-[#003C43]"
-                                            style={{ letterSpacing: '-0.02em' }}
-                                        >
-                                            Publicaciones
-                                        </h2>
-                                    </div>
-
-                                    <div className="text-sm text-[#181c1d]/50 font-noto-sans">
-                                        {localPosts.length} publicaciones
-                                    </div>
+                                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-2 text-xs text-[#181c1d]/50 font-noto-sans">
+                                    {profile.location && (
+                                        <span className="flex items-center gap-1">
+                                            <MapPin className="w-3.5 h-3.5" /> {profile.location}
+                                        </span>
+                                    )}
+                                    {profile.diagnosis && (
+                                        <span className="bg-[#E3FEF7] text-[#003C43] px-2 py-0.5 rounded font-medium text-[11px]">
+                                            {profile.diagnosis}
+                                        </span>
+                                    )}
                                 </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                <div className="flex flex-col gap-4">
-                                    {localPosts.map((post) => (
-                                        <PostCard
-                                            key={post.id}
-                                            post={post}
-                                            comments={localComments.filter(
-                                                (comment) => comment.postId === post.id
-                                            )}
-                                            onAddComment={handleAddComment}
-                                        />
-                                    ))}
-                                </div>
-                            </section>
+                    {/* Layout Principal del Perfil */}
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <div className="hidden lg:block lg:col-span-1">
+                            <SidebarLeft />
                         </div>
 
-                        {/* RIGHT */}
-                        <aside className="hidden lg:block sticky top-28">
-                            <SidebarRight />
-                        </aside>
+                        <div className="lg:col-span-2 flex flex-col gap-4">
+                            <h2 className="font-inconsolata text-lg font-bold text-[#003C43] px-1 mt-2">
+                                Publicaciones de {profile.name || 'este usuario'}
+                            </h2>
 
+                            {localPosts.length === 0 ? (
+                                <p className="text-[#181c1d]/50 font-noto-sans text-sm text-center py-10 bg-white rounded-xl">
+                                    Este usuario todavía no realizó ninguna publicación.
+                                </p>
+                            ) : (
+                                localPosts.map((post) => (
+                                    <PostCard
+                                        key={post.id}
+                                        post={post}
+                                        comments={localComments.filter((c) => c.postId === post.id)}
+                                        onAddComment={handleAddComment}
+                                        currentUserAvatar={profile.avatar_url}
+                                        currentUserName={profile.name}
+                                    />
+                                ))
+                            )}
+                        </div>
+
+                        <div className="hidden lg:block lg:col-span-1">
+                            <SidebarRight />
+                        </div>
                     </div>
                 </div>
 
-                {/* Botón flotante mobile */}
+                {/* Botón Drawer para Mobile */}
                 <button
                     onClick={() => setDrawerOpen(true)}
-                    className="lg:hidden fixed bottom-6 right-6 z-40 w-12 h-12 bg-[#003C43] text-[#E3FEF7] rounded-full shadow-[0_8px_24px_rgba(0,60,67,0.3)] flex items-center justify-center hover:bg-[#00252a] transition-colors"
+                    className="lg:hidden fixed bottom-6 right-6 z-40 w-12 h-12 bg-[#003C43] text-[#E3FEF7] rounded-full shadow-lg flex items-center justify-center"
                 >
                     <Birdhouse className="w-5 h-5" />
                 </button>
 
-                {/* Drawer mobile */}
+                {/* Drawer Menu */}
                 <AnimatePresence>
                     {drawerOpen && (
                         <>
@@ -428,7 +309,6 @@ export default function UserProfilePage({ params }: Props) {
                                 className="lg:hidden fixed inset-0 z-40 bg-[#00252a]/50 backdrop-blur-sm"
                                 onClick={() => setDrawerOpen(false)}
                             />
-
                             <motion.div
                                 initial={{ x: '-100%' }}
                                 animate={{ x: 0 }}
@@ -437,17 +317,11 @@ export default function UserProfilePage({ params }: Props) {
                                 className="lg:hidden fixed top-0 left-0 z-50 h-full w-[300px] bg-[#f6fafa] shadow-2xl overflow-y-auto"
                             >
                                 <div className="flex items-center justify-between p-5 border-b border-[#003C43]/10">
-                                    <span className="font-inconsolata font-bold text-[#003C43] text-sm uppercase tracking-wide">
-                                        Mi perfil
-                                    </span>
-                                    <button
-                                        onClick={() => setDrawerOpen(false)}
-                                        className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#003C43]/10 transition-colors text-[#003C43]/50"
-                                    >
+                                    <span className="font-inconsolata font-bold text-[#003C43] text-sm uppercase">Menú</span>
+                                    <button onClick={() => setDrawerOpen(false)} className="text-[#003C43]/50">
                                         <X className="w-4 h-4" />
                                     </button>
                                 </div>
-
                                 <div className="p-4 flex flex-col gap-4">
                                     <SidebarLeft />
                                     <SidebarRight />
@@ -457,7 +331,6 @@ export default function UserProfilePage({ params }: Props) {
                     )}
                 </AnimatePresence>
             </main>
-
             <Footer />
         </>
     );

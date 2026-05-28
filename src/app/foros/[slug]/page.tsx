@@ -12,10 +12,13 @@ export default async function RutaDetalleForo({ params }: PageProps) {
     const { slug } = await params;
     const supabase = await createClient();
 
-    // 1. Traemos el foro específico
+    // 1. Traemos el foro, contando miembros y verificando si el usuario es miembro
     const { data: forumData, error: forumError } = await supabase
         .from('forums')
-        .select('id, slug, title, description, icon')
+        .select(`
+            id, slug, title, description, icon,
+            forum_members(count)
+        `)
         .eq('slug', slug)
         .maybeSingle();
 
@@ -23,43 +26,39 @@ export default async function RutaDetalleForo({ params }: PageProps) {
         notFound();
     }
 
-    // --- NUEVO: AUTO-UNIRSE AL ENTRAR AL GRUPO ---
     const { data: { user } } = await supabase.auth.getUser();
-    
+    let isMember = false;
+
     if (user) {
-        // Hacemos un upsert o insert directo. 
-        // Como pusimos una regla UNIQUE(user_id, forum_id) en la base de datos, 
-        // no se va a duplicar aunque entre mil veces.
         await supabase
             .from('forum_members')
             .upsert(
                 { user_id: user.id, forum_id: forumData.id },
                 { onConflict: 'user_id,forum_id' }
             );
+        isMember = true;
     }
-    // ---------------------------------------------
 
-    // 2. Traemos los posts de este foro (con conteo de comentarios)
+    // 2. Traemos los posts
     const { data: postsData } = await supabase
         .from('posts')
         .select(`
-            id,
-            title,
-            content,
-            created_at,
-            profiles ( name ),
+            id, title, content, created_at,
+            profiles ( name, avatar_url ),
             comments ( count )
         `)
         .eq('forum_id', forumData.id)
         .order('created_at', { ascending: false });
 
-    // 3. Adaptamos la respuesta
+    // Adaptamos el objeto forum con los nuevos campos
     const forum = {
         id: forumData.id,
         slug: forumData.slug,
         title: forumData.title,
         description: forumData.description,
-        icon: forumData.icon || undefined
+        icon: forumData.icon || undefined,
+        member_count: Array.isArray(forumData.forum_members) ? forumData.forum_members[0].count : 0,
+        is_member: isMember
     };
 
     const posts = (postsData || []).map(post => ({
@@ -75,11 +74,7 @@ export default async function RutaDetalleForo({ params }: PageProps) {
         <div className="bg-[#f6fafa] min-h-screen">
             <Header />
             <main>
-                <ForoDetallePage 
-                    slug={slug} 
-                    forum={forum} 
-                    posts={posts} 
-                />
+                <ForoDetallePage slug={slug} forum={forum} posts={posts} />
             </main>
             <Footer />
         </div>
