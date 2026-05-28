@@ -7,6 +7,7 @@ import Feed from '@/components/muro/Feed';
 import CreatePost from '@/components/muro/CreatePost';
 import SidebarLeft from '@/components/muro/SliderbarLeft';
 import SidebarRight from '@/components/muro/SliderbarRight'; 
+import { Bird } from 'lucide-react';
 
 interface PostProfile {
     name: string;
@@ -27,6 +28,7 @@ export default function MuroPage() {
     const [currentUserId, setCurrentUserId] = useState<string>('');
     const [currentUserAvatar, setCurrentUserAvatar] = useState<string | null>(null);
     const [currentUserName, setCurrentUserName] = useState<string>('Usuario');
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const fetchFeedData = useCallback(async () => {
         const { data: { user } } = await supabase.auth.getUser();
@@ -76,7 +78,34 @@ export default function MuroPage() {
     }, [fetchFeedData]);
 
     return (
-        <main className="bg-[#f6fafa] min-h-screen pt-24 pb-10 px-4">
+        <main className="bg-[#f6fafa] min-h-screen pt-24 pb-10 px-4 relative">
+            
+            {/* Navegación Móvil */}
+            {isMenuOpen && (
+                <div 
+                    className="fixed inset-0 z-50 bg-black/50 lg:hidden"
+                    onClick={() => setIsMenuOpen(false)}
+                >
+                    <div 
+                        className="fixed inset-y-0 left-0 w-[85%] max-w-sm bg-[#f6fafa] shadow-xl p-6 overflow-y-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <SidebarLeft />
+                        <div className="mt-6 pt-6 border-t border-gray-200">
+                            <SidebarRight />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Botón flotante móvil */}
+            <button 
+                onClick={() => setIsMenuOpen(true)}
+                className="lg:hidden fixed bottom-6 right-6 z-40 bg-[#003C43] text-white p-4 rounded-full shadow-lg"
+            >
+                <Bird size={24} />
+            </button>
+
             <div className="max-w-[1200px] mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     <div className="hidden lg:block lg:col-span-1"><SidebarLeft /></div>
