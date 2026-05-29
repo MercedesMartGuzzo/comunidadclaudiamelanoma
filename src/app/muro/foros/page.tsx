@@ -1,30 +1,77 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-
-import {
-    ArrowLeft,Leaf,
-    Users,
-    MessageCircle,
-    ChevronRight,
+import { 
+    ArrowLeft, 
+    Leaf, 
+    Users, 
+    MessageCircle, 
+    ChevronRight, 
+    Loader2 
 } from 'lucide-react';
+import { supabase } from '@/lib/supabase/client';
 
-import { mockForums } from '@/lib/mock-data/foro/forums';
-import { mockUsers } from '@/lib/mock-data/users';
+interface ForumMember {
+    user_id: string;
+}
+
+// Corregido: nombre en minúscula para coincidir con la respuesta de la base de datos
+interface ForumData {
+    id: string;
+    title: string;
+    slug: string;
+    description: string;
+    forum_members: ForumMember[]; 
+}
 
 export default function MisForosPage() {
+    const [forums, setForums] = useState<ForumData[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
-    const user = mockUsers[0];
+    useEffect(() => {
+        async function fetchJoinedForums() {
+            setLoading(true);
+            const { data: { user } } = await supabase.auth.getUser();
+            
+            if (!user) {
+                setLoading(false);
+                return;
+            }
 
-    const joinedForums = mockForums.filter((forum) =>
-        user.forumsJoined.includes(forum.slug)
-    );
+            // Mantenemos forum_members en minúsculas aquí también
+            const { data, error } = await supabase
+                .from('forums')
+                .select(`
+                    id, 
+                    title, 
+                    slug, 
+                    description,
+                    forum_members!inner(user_id)
+                `)
+                .eq('forum_members.user_id', user.id);
+
+            // Supabase devuelve los datos tipados; al coincidir los nombres, el error desaparece
+            if (!error && data) {
+                setForums(data as ForumData[]);
+            }
+            setLoading(false);
+        }
+
+        fetchJoinedForums();
+    }, []);
+
+    if (loading) {
+        return (
+            <main className="bg-[#f6fafa] min-h-screen flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-[#003C43]" />
+            </main>
+        );
+    }
 
     return (
         <main className="bg-[#f6fafa] min-h-screen pt-14 pb-20 px-4">
-
             <div className="max-w-[1000px] mx-auto">
-
                 {/* VOLVER */}
                 <Link
                     href="/muro"
@@ -36,93 +83,61 @@ export default function MisForosPage() {
 
                 {/* HEADER */}
                 <div className="mb-10">
-
                     <p className="font-inconsolata text-[0.7rem] font-bold uppercase tracking-[0.14em] text-[#003C43]/55 mb-3">
                         Comunidad RML
                     </p>
-
                     <h1
                         className="font-inconsolata text-4xl sm:text-5xl font-bold text-[#003C43] mb-4"
                         style={{ letterSpacing: '-0.02em' }}
                     >
                         Mis Grupos
                     </h1>
-
                     <p className="text-[#181c1d]/70 text-lg font-noto-sans max-w-2xl leading-relaxed">
                         Espacios donde participás, compartís experiencias y seguís conversaciones con la comunidad.
                     </p>
-
                 </div>
 
                 {/* LISTA */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                    {joinedForums.map((forum) => (
-
+                    {forums.map((forum) => (
                         <Link
                             key={forum.id}
                             href={`/foros/${forum.slug}`}
                             className="group bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,60,67,0.04)] hover:shadow-[0_8px_28px_rgba(0,60,67,0.08)] transition-all"
                         >
-
-                            {/* TOP */}
                             <div className="flex items-start justify-between gap-4 mb-5">
-
                                 <div className="w-12 h-12 rounded-xl bg-[#E3FEF7] flex items-center justify-center shrink-0">
-
                                     <Leaf className="w-5 h-5 text-[#003C43]" />
-
                                 </div>
-
                                 <ChevronRight className="w-5 h-5 text-[#003C43]/30 group-hover:text-[#003C43] transition-colors" />
-
                             </div>
 
-                            {/* INFO */}
                             <div>
-
                                 <h2
                                     className="font-inconsolata text-2xl font-bold text-[#003C43] mb-3"
                                     style={{ letterSpacing: '-0.02em' }}
                                 >
                                     {forum.title}
                                 </h2>
-
                                 <p className="text-[#181c1d]/70 font-noto-sans leading-relaxed mb-6">
                                     {forum.description}
                                 </p>
-
                             </div>
 
-                            {/* FOOTER */}
                             <div className="flex items-center justify-between border-t border-[#003C43]/8 pt-4">
-
                                 <div className="flex items-center gap-2 text-sm text-[#181c1d]/60 font-noto-sans">
-
                                     <Users className="w-4 h-4 text-[#003C43]/50" />
-
-                                    {forum.membersCount} miembros
-
+                                    Miembro
                                 </div>
-
                                 <div className="flex items-center gap-2 text-sm text-[#181c1d]/60 font-noto-sans">
-
                                     <MessageCircle className="w-4 h-4 text-[#003C43]/50" />
-
-                                    {forum.activeTopics} temas
-
+                                    Entrar al foro
                                 </div>
-
                             </div>
-
                         </Link>
-
                     ))}
-
                 </div>
-
             </div>
-
         </main>
     );
 }

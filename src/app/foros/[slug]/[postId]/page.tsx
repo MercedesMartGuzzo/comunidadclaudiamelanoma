@@ -15,6 +15,7 @@ export default async function PostDetalle({ params }: Props) {
     const { slug, postId } = await params;
     const supabase = await createClient();
 
+    // 1. Buscamos el foro
     const { data: forum } = await supabase
         .from('forums')
         .select('id, title')
@@ -25,23 +26,39 @@ export default async function PostDetalle({ params }: Props) {
         notFound();
     }
 
-    // CORRECCIÓN: Agregamos avatar_url al select de perfiles
-    const { data: post, error: postError } = await supabase
+    // 2. Obtenemos el post principal
+    const { data: postData, error: postError } = await supabase
         .from('posts')
         .select('*, profiles(name, avatar_url)')
         .eq('id', postId)
         .eq('forum_id', forum.id)
         .maybeSingle();
 
-    if (postError || !post) {
+    if (postError || !postData) {
         notFound();
     }
 
-    // CORRECCIÓN: Agregamos avatar_url al select de perfiles
+    // 3. Obtenemos el conteo REAL de likes filtrado por 'foro'
+    // Esto asegura que al cargar, el número sea exacto y no se borre al refrescar
+    const { count: likesCount } = await supabase
+        .from('likes')
+        .select('*', { count: 'exact', head: true })
+        .eq('post_id', postId)
+        .eq('target_type', 'foro');
+
+    // 4. Creamos el objeto post enriquecido para pasarlo al componente
+    const post = {
+        ...postData,
+        likes_count: likesCount || 0,
+        forum_title: forum.title,
+        forum_id: forum.id
+    };
+
+    // 5. Obtenemos los comentarios
     const { data: comments } = await supabase
         .from('comments') 
         .select('*, profiles(name, avatar_url)')
-        .eq('post_id', post.id)
+        .eq('post_id', postId)
         .order('created_at', { ascending: true });
 
     return (

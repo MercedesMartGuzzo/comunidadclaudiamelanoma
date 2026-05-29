@@ -6,7 +6,6 @@ import ResourcesSection from '@/components/ResourcesSection';
 import AboutClaudiaSection from '@/components/AboutClaudiaSection';
 import Footer from '@/components/Footer';
 import FAQSectionCCM from '@/components/FAQSectionCCM';
-
 export default function Home() {
   return (
     <div className="bg-white">

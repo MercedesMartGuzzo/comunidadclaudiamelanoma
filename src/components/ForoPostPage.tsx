@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LinkActual from 'next/link'; 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Heart, MessageSquare, Clock } from 'lucide-react';
+import { ArrowLeft, Heart, MessageSquare, Clock3 } from 'lucide-react';
 import { addComment } from '@/lib/supabase/actions';
+import { supabase } from '@/lib/supabase/client';
 
 interface Profile {
     name: string;
@@ -36,19 +37,113 @@ interface Props {
     comments: Reply[];
 }
 
-function timeAgo(dateStr: string) {
-    if (!dateStr) return '';
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    if (days === 0) return 'hoy';
-    if (days === 1) return 'ayer';
-    return `hace ${days} días`;
+function formatTimeAgo(dateString: string): string {
+    const now = new Date();
+    const past = new Date(dateString);
+    const diffMs = now.getTime() - past.getTime();
+    
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return 'Hace un momento';
+    if (diffMins < 60) return `Hace ${diffMins} min`;
+    if (diffHours < 24) return `Hace ${diffHours} ${diffHours === 1 ? 'hora' : 'horas'}`;
+    return `Hace ${diffDays} ${diffDays === 1 ? 'día' : 'días'}`;
 }
 
 export default function ForoPostPage({ slug, post, comments }: Props) {
     const [replyContent, setReplyContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    
+    const [isLiked, setIsLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(post?.likes_count || 0);
+    
     const router = useRouter();
+
+    useEffect(() => {
+        if (!post) return;
+        
+        async function syncLikeData() {
+            const { data: { user } } = await supabase.auth.getUser();
+            
+            // 1. Verificar si el usuario actual dio like
+            if (user) {
+                const { data } = await supabase
+                    .from('likes')
+                    .select('id')
+                    .eq('post_id', post!.id)
+                    .eq('target_type', 'foro')
+                    .eq('user_id', user.id)
+                    .maybeSingle();
+
+                if (data) setIsLiked(true);
+            }
+
+            // 2. Obtener el conteo real y actualizado de la DB
+            const { count, error } = await supabase
+                .from('likes')
+                .select('*', { count: 'exact', head: true })
+                .eq('post_id', post!.id)
+                .eq('target_type', 'foro');
+                
+            if (!error && count !== null) {
+                setLikeCount(count);
+            }
+        }
+        syncLikeData();
+    }, [post]);
+
+    const handleToggleLike = async () => {
+        if (!post) return;
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return alert("Debes iniciar sesión para dar me gusta");
+
+        const wasLiked = isLiked;
+        const previousCount = likeCount;
+
+        // Optimistic UI
+        setIsLiked(!wasLiked);
+        setLikeCount(wasLiked ? likeCount - 1 : likeCount + 1);
+
+        try {
+            if (wasLiked) {
+                await supabase.from('likes')
+                    .delete()
+                    .eq('post_id', post!.id)
+                    .eq('target_type', 'foro')
+                    .eq('user_id', user.id);
+            } else {
+                await supabase.from('likes')
+                    .insert({ 
+                        post_id: post!.id, 
+                        user_id: user.id, 
+                        target_type: 'foro' 
+                    });
+            }
+            // Sincronizar estado final
+            router.refresh();
+        } catch (error) {
+            setIsLiked(wasLiked);
+            setLikeCount(previousCount);
+            console.error("Error al gestionar like:", error);
+        }
+    };
+
+    const handleAddReply = async () => {
+        if (!replyContent.trim() || !post) return;
+        setIsSubmitting(true);
+        try {
+            await addComment(post!.id, replyContent);
+            setReplyContent('');
+            router.refresh();
+        } catch (error) {
+            console.error("Error al publicar:", error);
+            alert("No se pudo publicar la respuesta.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     if (!post) {
         return (
@@ -61,21 +156,6 @@ export default function ForoPostPage({ slug, post, comments }: Props) {
         );
     }
 
-    const handleAddReply = async () => {
-        if (!replyContent.trim()) return;
-        setIsSubmitting(true);
-        try {
-            await addComment(post.id, replyContent);
-            setReplyContent('');
-            router.refresh();
-        } catch (error) {
-            console.error("Error al publicar:", error);
-            alert("No se pudo publicar la respuesta.");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
     return (
         <div className="pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
             <LinkActual href={`/foros/${slug}`} className="flex items-center gap-2 text-sm text-[#003C43]/55 hover:text-[#003C43] transition font-noto-sans mb-6 group w-fit">
@@ -84,8 +164,6 @@ export default function ForoPostPage({ slug, post, comments }: Props) {
             </LinkActual>
 
             <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,60,67,0.05)] overflow-hidden">
-                
-                {/* 1. SECCIÓN: Post Principal */}
                 <div className="p-6 sm:p-8">
                     <div className="flex items-start gap-4 mb-4">
                         <div className="relative rounded-full bg-[#E3FEF7] flex items-center justify-center shrink-0 font-inconsolata font-bold text-[#003C43] text-sm mt-1 overflow-hidden" style={{ width: '40px', height: '40px' }}>
@@ -98,7 +176,7 @@ export default function ForoPostPage({ slug, post, comments }: Props) {
                         <div>
                             <p className="font-inconsolata font-bold text-[#003C43] text-sm">{post.profiles?.name || 'Anónimo'}</p>
                             <p className="text-xs text-[#181c1d]/45 font-noto-sans flex items-center gap-1 mt-0.5">
-                                <Clock className="w-3 h-3" /> {timeAgo(post.created_at)}
+                                <Clock3 className="w-3 h-3" /> {formatTimeAgo(post.created_at)}
                             </p>
                         </div>
                     </div>
@@ -107,12 +185,17 @@ export default function ForoPostPage({ slug, post, comments }: Props) {
                     <p className="text-sm text-[#181c1d]/75 font-noto-sans leading-relaxed mb-6">{post.content}</p>
                     
                     <div className="flex items-center gap-6 text-xs text-[#181c1d]/45 font-noto-sans">
-                        <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5 text-[#003C43]" /> {post.likes_count || 0} me gusta</span>
+                        <button 
+                            onClick={handleToggleLike}
+                            className={`flex items-center gap-1.5 transition-colors ${isLiked ? 'text-red-500' : 'text-[#003C43] hover:text-[#003C43]/70'}`}
+                        >
+                            <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-current' : ''}`} /> 
+                            {likeCount} me gusta
+                        </button>
                         <span className="flex items-center gap-1.5"><MessageSquare className="w-3.5 h-3.5 text-[#003C43]" /> {comments.length} respuestas</span>
                     </div>
                 </div>
 
-                {/* 2. SECCIÓN: Listado de respuestas */}
                 {comments.length > 0 && (
                     <div className="bg-[#fcfefe] border-t border-[#E3FEF7] px-6 sm:px-8 py-6 flex flex-col gap-5">
                         <p className="font-inconsolata text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#003C43]/50 mb-1">
@@ -132,7 +215,7 @@ export default function ForoPostPage({ slug, post, comments }: Props) {
                                     <div className="flex items-center justify-between mb-1">
                                         <p className="font-inconsolata font-bold text-[#003C43] text-xs">{reply.profiles?.name || 'Usuario'}</p>
                                         <p className="text-[10px] text-[#181c1d]/40 font-noto-sans flex items-center gap-1">
-                                            <Clock className="w-2.5 h-2.5" /> {timeAgo(reply.created_at)}
+                                            <Clock3 className="w-2.5 h-2.5" /> {formatTimeAgo(reply.created_at)}
                                         </p>
                                     </div>
                                     <p className="text-sm text-[#181c1d]/75 font-noto-sans leading-relaxed">{reply.content}</p>
@@ -142,7 +225,6 @@ export default function ForoPostPage({ slug, post, comments }: Props) {
                     </div>
                 )}
 
-                {/* 3. SECCIÓN: Formulario para agregar respuesta */}
                 <div className="bg-white border-t border-[#E3FEF7] p-6 sm:p-8">
                     <div className="flex items-start gap-3">
                         <div className="w-full">
