@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="max-w-[1000px] w-full">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             {/* Logo */}
-               <div>
+            <div>
               <h4 className="text-2xl font-bold text-[#003C43] mb-1 font-inconsolata flex items-start">RML</h4>
               <p className="text-sm text-[#181c1d] font-noto-sans">
                 Red Melanoma Latam
@@ -22,6 +22,7 @@ export default function Footer() {
                 <li><Link href="#claudia" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Sobre Nosotros</Link></li>
                 <li><Link href="#melanoma" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Información Importamte</Link></li>
                 <li><Link href="#faq" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">FAQ</Link></li>
+                <li><Link href="#contacto" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Contacto</Link></li>
               </ul>
             </div>
 
@@ -31,7 +32,7 @@ export default function Footer() {
               <ul className="space-y-2">
                 <li><Link href="./muro" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Comunidad</Link></li>
                 <li><Link href="./foros" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Grupos</Link></li>
-                <li><Link href="#" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Contacto</Link></li>
+              
               </ul>
             </div>
 
@@ -41,7 +42,7 @@ export default function Footer() {
               <ul className="space-y-2">
                 <li><Link href="#" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Privacidad</Link></li>
                 <li><Link href="#" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Términos</Link></li>
-                <li><Link href="#" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Contacto</Link></li>
+                {/* <li><Link href="#" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Contacto</Link></li> */}
               </ul>
             </div>
           </div>
@@ -49,7 +50,7 @@ export default function Footer() {
           {/* Divider */}
           <div className="border-t border-[#E3FEF7] pt-2">
             <div className="flex flex-col sm:flex-row justify-between items-center px-0 py-2">
-            
+
               <div className="flex gap-4 mt-2 sm:mt-0 px-0 py-2 pr-8 md:pr-14">
                 <Leaf className="w-4 h-4 text-[#003C43]" />
                 <Clover className="w-4 h-4 text-[#003C43]" />
@@ -60,7 +61,7 @@ export default function Footer() {
                 <Wheat className="w-4 h-4 text-[#003C43]" />
                 <Flower className="w-4 h-4 text-[#003C43]" />
               </div>
-                <p className="text-xs text-[#181c1d]/60 font-noto-sans">
+              <p className="text-xs text-[#181c1d]/60 font-noto-sans">
                 © 2026 Red Melanoma Latam. Todos los derechos reservados.
               </p>
             </div>

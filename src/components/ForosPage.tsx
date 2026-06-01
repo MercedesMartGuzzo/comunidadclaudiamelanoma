@@ -46,8 +46,8 @@ export default function ForosPage({ forums }: ForosPageProps) {
             {/* Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
                 {forums && forums.map((forum) => (
-                    <div 
-                        key={forum.id} 
+                    <div
+                        key={forum.id}
                         className="group w-full bg-[var(--clr-surface-low)] rounded-lg p-6 gap-2 hover:shadow-[0_20px_40px_rgba(0,80,70,0.1)] transition-shadow flex flex-col font-inconsolata"
                     >
                         {/* Contenido Informativo Clickeable */}
@@ -75,8 +75,7 @@ export default function ForosPage({ forums }: ForosPageProps) {
                         {/* Botón condicional según el estado de pertenencia (isMember) */}
                         <div className="mt-2 flex items-center justify-between">
                             {forum.isMember ? (
-                                /* CAMBIO NUEVO: Estado Miembro ahora es bg-transparent con borde verde claro e interactivo al pasar el mouse */
-                                <Link 
+                                <Link
                                     href={`/foros/${forum.slug}`}
                                     className="font-inconsolata text-xs font-bold uppercase tracking-wide bg-transparent text-[#003C43] border-2 border-[#003C43] px-6 py-2 rounded-md hover:bg-[#E3FEF7]/40 transition-colors inline-block text-center w-full sm:w-auto"
                                 >
@@ -84,7 +83,7 @@ export default function ForosPage({ forums }: ForosPageProps) {
                                 </Link>
                             ) : (
                                 /* Estado: Todavía no es miembro (Se mantiene el diseño sólido original) */
-                                <Link 
+                                <Link
                                     href={`/foros/${forum.slug}`}
                                     className="font-inconsolata text-xs font-bold uppercase tracking-wide bg-[#003C43] text-[#E3FEF7] border-2 border-[#003C43] px-6 py-2 rounded-md hover:bg-[#00252a] transition-colors inline-block text-center w-full sm:w-auto"
                                 >
