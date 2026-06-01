@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, Suspense } from 'react';
@@ -186,6 +185,17 @@ function AuthContent() {
                             <button type="submit" disabled={loading} className="w-full py-2.5 bg-[#003C43] text-white rounded-xl text-sm font-semibold hover:bg-[#00252a] transition-colors font-inconsolata uppercase tracking-wide disabled:opacity-60">
                                 {loading ? 'Ingresando...' : 'Iniciar sesión'}
                             </button>
+
+                            {/* --- SEPARADOR LOGIN --- */}
+                            <div className="relative my-2">
+                                <div className="absolute inset-0 flex items-center">
+                                    <div className="w-full border-t border-[#003C43]/10"></div>
+                                </div>
+                                <div className="relative flex justify-center text-xs uppercase">
+                                    <span className="bg-white px-2 text-[#003C43]/40 font-noto-sans">o continuar con</span>
+                                </div>
+                            </div>
+
                             <div className="grid grid-cols-2 gap-3">
                                 <button type="button" onClick={handleGoogleLogin} className="flex items-center justify-center gap-2 py-2.5 border border-[#003C43]/10 rounded-lg text-sm hover:bg-[#f6fafa] transition-colors font-noto-sans">
                                     <FcGoogle size={18} /> Google
@@ -216,6 +226,25 @@ function AuthContent() {
                             <button type="submit" disabled={loading} className="bg-[#003C43] text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-[#00252a] transition-colors mt-1 font-inconsolata uppercase tracking-wide disabled:opacity-60">
                                 {loading ? 'Creando cuenta...' : 'Crear cuenta'}
                             </button>
+
+                            {/* --- SEPARADOR REGISTRO --- */}
+                            <div className="relative my-2">
+                                <div className="absolute inset-0 flex items-center">
+                                    <div className="w-full border-t border-[#003C43]/10"></div>
+                                </div>
+                                <div className="relative flex justify-center text-xs uppercase">
+                                    <span className="bg-white px-2 text-[#003C43]/40 font-noto-sans">o continuar con</span>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <button type="button" onClick={handleGoogleLogin} className="flex items-center justify-center gap-2 py-2.5 border border-[#003C43]/10 rounded-lg text-sm hover:bg-[#f6fafa] transition-colors font-noto-sans">
+                                    <FcGoogle size={18} /> Google
+                                </button>
+                                <button type="button" onClick={handleFacebookLogin} className="flex items-center justify-center gap-2 py-2.5 border border-[#003C43]/10 rounded-lg text-sm hover:bg-[#f6fafa] transition-colors font-noto-sans">
+                                    <FaFacebook size={18} className="text-[#1877F2]" /> Facebook
+                                </button>
+                            </div>
                         </form>
                     )}
                 </div>
@@ -231,4 +260,3 @@ export default function AuthPage() {
         </Suspense>
     );
 }
-

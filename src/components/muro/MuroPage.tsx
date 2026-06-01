@@ -6,49 +6,72 @@ import { type PostCardType } from '@/components/muro/PostCard';
 import Feed from '@/components/muro/Feed';
 import CreatePost from '@/components/muro/CreatePost';
 import SidebarLeft from '@/components/muro/SliderbarLeft';
-import SidebarRight from '@/components/muro/SliderbarRight'; 
+import SidebarRight from '@/components/muro/SliderbarRight';
 import { Bird } from 'lucide-react';
 
+
+
 interface PostProfile {
-    name: string;
-    location: string;
+    name: string
+    location: string
     avatar_url: string | null;
 }
 
+
+
 interface PostRaw {
-    id: string;
+    id: string
     user_id: string;
     content: string;
     created_at: string;
     profiles: PostProfile | null;
 }
 
+
+
 export default function MuroPage() {
+
     const [localPosts, setLocalPosts] = useState<PostCardType[]>([]);
     const [currentUserId, setCurrentUserId] = useState<string>('');
     const [currentUserAvatar, setCurrentUserAvatar] = useState<string | null>(null);
     const [currentUserName, setCurrentUserName] = useState<string>('Usuario');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+
+
     const fetchFeedData = useCallback(async () => {
+
         const { data: { user } } = await supabase.auth.getUser();
+
         if (user) {
+
             setCurrentUserId(user.id);
+
             const { data: profile } = await supabase.from('profiles').select('name, avatar_url').eq('id', user.id).maybeSingle();
+
             if (profile) {
-                setCurrentUserAvatar(profile.avatar_url);
+
+                setCurrentUserAvatar(profile.avatar_url)
                 setCurrentUserName(profile.name || 'Vos');
             }
         }
 
+
+
         const { data: postsData } = await supabase
+
             .from('posts')
             .select('id, user_id, content, created_at, profiles(name, location, avatar_url)')
             .order('created_at', { ascending: false });
-        
+
+
+
         const typedPosts = (postsData as unknown as PostRaw[]) || [];
-        
+
+
+
         setLocalPosts(typedPosts.map(p => ({
+
             id: p.id,
             userId: p.user_id,
             content: p.content,
@@ -61,15 +84,21 @@ export default function MuroPage() {
         })));
     }, []);
 
+
+
     const handleDelete = async (postId: string) => {
         await supabase.from('posts').delete().eq('id', postId);
         setLocalPosts(prev => prev.filter(p => p.id !== postId));
     };
 
+
+
     const handleUpdate = async (postId: string, newContent: string) => {
         await supabase.from('posts').update({ content: newContent }).eq('id', postId);
         setLocalPosts(prev => prev.map(p => p.id === postId ? { ...p, content: newContent } : p));
     };
+
+
 
     useEffect(() => {
         (async () => {
@@ -77,19 +106,24 @@ export default function MuroPage() {
         })();
     }, [fetchFeedData]);
 
+
+
     return (
         <main className="bg-[#f6fafa] min-h-screen pt-24 pb-10 px-4 relative">
-            
+
             {/* Navegación Móvil */}
             {isMenuOpen && (
-                <div 
+
+                <div
                     className="fixed inset-0 z-50 bg-black/50 lg:hidden"
+
                     onClick={() => setIsMenuOpen(false)}
                 >
-                    <div 
+                    <div
                         className="fixed inset-y-0 left-0 w-[85%] max-w-sm bg-[#f6fafa] shadow-xl p-6 overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
+
                         <SidebarLeft />
                         <div className="mt-6 pt-6 border-t border-gray-200">
                             <SidebarRight />
@@ -99,22 +133,25 @@ export default function MuroPage() {
             )}
 
             {/* Botón flotante móvil */}
-            <button 
+
+            <button
                 onClick={() => setIsMenuOpen(true)}
                 className="lg:hidden fixed bottom-6 right-6 z-40 bg-[#003C43] text-white p-4 rounded-full shadow-lg"
             >
                 <Bird size={24} />
             </button>
 
+
+
             <div className="max-w-[1200px] mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     <div className="hidden lg:block lg:col-span-1"><SidebarLeft /></div>
                     <div className="lg:col-span-2 flex flex-col gap-4">
                         <CreatePost onPublish={fetchFeedData} />
-                        <Feed 
-                            posts={localPosts} 
-                            comments={[]} 
-                            onAddComment={() => {}} 
+                        <Feed
+                            posts={localPosts}
+                            comments={[]}
+                            onAddComment={() => { }}
                             onDelete={handleDelete}
                             onUpdate={handleUpdate}
                             currentUserId={currentUserId}
@@ -128,3 +165,4 @@ export default function MuroPage() {
         </main>
     );
 }
+
