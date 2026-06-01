@@ -18,10 +18,10 @@ export default function Footer() {
             <div>
               <h4 className="font-semibold text-[#003C43] mb-3 mt-2 font-noto-sans text-sm">Plataforma</h4>
               <ul className="space-y-2">
-                <li><Link href="#" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Inicio</Link></li>
-                <li><Link href="#claudia" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Sobre Nosotros</Link></li>
-                <li><Link href="#melanoma" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Información Importamte</Link></li>
-                <li><Link href="#faq" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">FAQ</Link></li>
+                <li><Link href="/#inicio" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Inicio</Link></li>
+                <li><Link href="/#claudia" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Sobre Nosotros</Link></li>
+                <li><Link href="/#melanoma" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Información Importamte</Link></li>
+                <li><Link href="/#faq" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">FAQ</Link></li>
                 <li><Link href="/contacto" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Contacto</Link></li>
               </ul>
             </div>
@@ -30,8 +30,8 @@ export default function Footer() {
             <div>
               <h4 className="font-semibold text-[#003C43] mb-3 mt-2 font-noto-sans text-sm">Comunidad</h4>
               <ul className="space-y-2">
-                <li><Link href="./muro" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Comunidad</Link></li>
-                <li><Link href="./foros" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Grupos</Link></li>
+                <li><Link href="/muro" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Comunidad</Link></li>
+                <li><Link href="/foros" className="text-sm text-[#181c1d] hover:text-[#003C43] transition font-noto-sans">Grupos</Link></li>
               
               </ul>
             </div>

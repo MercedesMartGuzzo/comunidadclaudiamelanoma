@@ -9,12 +9,12 @@ import { Bell, CircleUserRound } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 
 const navLinks = [
-  { label: 'Inicio', href: '#inicio' },
+  { label: 'Inicio', href: '/#inicio' },
   { label: 'Comunidad', href: '/muro', requiresAuth: true },
-  { label: 'Grupos', href: '#foros' }, 
-  { label: 'Información importante', href: '#melanoma' },
+  { label: 'Grupos', href: '/#foros' }, 
+  { label: 'Información importante', href: '/#melanoma' },
   { label: 'Sobre Nosotros', href: '/about-claudia' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'FAQ', href: '/#faq' },
 ];
 
 export default function Header() {
