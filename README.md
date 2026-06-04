@@ -36,117 +36,8 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 
-```
-comunidadclaudiamelanoma
-├─ css.d.ts
-├─ eslint.config.mjs
-├─ next.config.ts
-├─ package-lock.json
-├─ package.json
-├─ postcss.config.js
-├─ public
-│  ├─ file.svg
-│  ├─ globe.svg
-│  ├─ images
-│  │  └─ hero
-│  │     ├─ bienvenida.png
-│  │     ├─ clau-dibu-sinfondo.png
-│  │     ├─ clau-dibu.png
-│  │     ├─ clau-dibujo.png
-│  │     ├─ clau-leyendo.jpeg
-│  │     ├─ clauperfil.jpeg
-│  │     ├─ comunidad-nueva.png
-│  │     ├─ comunidad.png
-│  │     ├─ grupos.png
-│  │     ├─ informacion.png
-│  │     ├─ nosotros.png
-│  │     ├─ personas.png
-│  │     └─ ronda.png
-│  └─ window.svg
-├─ README.md
-├─ src
-│  ├─ app
-│  │  ├─ about-claudia
-│  │  │  └─ page.tsx
-│  │  ├─ api
-│  │  │  └─ delete-account
-│  │  │     └─ route.ts
-│  │  ├─ auth
-│  │  │  └─ page.tsx
-│  │  ├─ favicon.ico
-│  │  ├─ foros
-│  │  │  ├─ layout.tsx
-│  │  │  ├─ page.tsx
-│  │  │  └─ [slug]
-│  │  │     ├─ page.tsx
-│  │  │     └─ [postId]
-│  │  │        └─ page.tsx
-│  │  ├─ globals.css
-│  │  ├─ globals.d.ts
-│  │  ├─ layout.tsx
-│  │  ├─ muro
-│  │  │  ├─ actividad
-│  │  │  │  └─ page.tsx
-│  │  │  ├─ configuracion
-│  │  │  │  └─ page.tsx
-│  │  │  ├─ favoritos
-│  │  │  │  └─ page.tsx
-│  │  │  ├─ foros
-│  │  │  │  └─ page.tsx
-│  │  │  ├─ layout.tsx
-│  │  │  ├─ miembros
-│  │  │  │  └─ page.tsx
-│  │  │  ├─ page.tsx
-│  │  │  ├─ perfil
-│  │  │  │  └─ editar
-│  │  │  │     └─ page.tsx
-│  │  │  └─ usuario
-│  │  │     └─ [id]
-│  │  │        └─ page.tsx
-│  │  ├─ page.tsx
-│  │  └─ resources
-│  │     └─ page.tsx
-│  ├─ components
-│  │  ├─ AboutClaudiaSection.tsx
-│  │  ├─ ClaudiaPage.tsx
-│  │  ├─ FAQSectionCCM.tsx
-│  │  ├─ Footer.tsx
-│  │  ├─ ForoDetallePage.tsx
-│  │  ├─ ForoPostPage.tsx
-│  │  ├─ ForosPage.tsx
-│  │  ├─ ForumCard.tsx
-│  │  ├─ ForumSectionThematic.tsx
-│  │  ├─ Header.tsx
-│  │  ├─ HeroSection.tsx
-│  │  ├─ muro
-│  │  │  ├─ CreatePost.tsx
-│  │  │  ├─ Feed.tsx
-│  │  │  ├─ MiembrosPage.tsx
-│  │  │  ├─ MuroPage.tsx
-│  │  │  ├─ PostCard.tsx
-│  │  │  ├─ SliderbarLeft.tsx
-│  │  │  └─ SliderbarRight.tsx
-│  │  ├─ ResourcesPage.tsx
-│  │  └─ ResourcesSection.tsx
-│  ├─ lib
-│  │  ├─ auth.ts
-│  │  ├─ mock-data
-│  │  │  ├─ feed
-│  │  │  │  └─ feed-posts.ts
-│  │  │  ├─ foro
-│  │  │  │  ├─ forum-post.ts
-│  │  │  │  └─ forums.ts
-│  │  │  └─ users.ts
-│  │  └─ supabase
-│  │     ├─ actions.ts
-│  │     ├─ client.ts
-│  │     └─ server.ts
-│  └─ middleware.ts
-├─ tailwind.config.ts
-└─ tsconfig.json
 
 ```
-```
 comunidadclaudiamelanoma
 ├─ css.d.ts
 ├─ eslint.config.mjs
@@ -166,6 +57,7 @@ comunidadclaudiamelanoma
 │  │     ├─ clau-leyendo.jpeg
 │  │     ├─ clauperfil.jpeg
 │  │     ├─ comunidad-nueva.png
+│  │     ├─ comunidad-sinmarca.png
 │  │     ├─ comunidad.png
 │  │     ├─ grupos.png
 │  │     ├─ informacion.png
@@ -182,6 +74,8 @@ comunidadclaudiamelanoma
 │  │  │  └─ delete-account
 │  │  │     └─ route.ts
 │  │  ├─ auth
+│  │  │  └─ page.tsx
+│  │  ├─ contacto
 │  │  │  └─ page.tsx
 │  │  ├─ favicon.ico
 │  │  ├─ foros
@@ -219,6 +113,7 @@ comunidadclaudiamelanoma
 │  ├─ components
 │  │  ├─ AboutClaudiaSection.tsx
 │  │  ├─ ClaudiaPage.tsx
+│  │  ├─ ContactoPage.tsx
 │  │  ├─ FAQSectionCCM.tsx
 │  │  ├─ Footer.tsx
 │  │  ├─ ForoDetallePage.tsx

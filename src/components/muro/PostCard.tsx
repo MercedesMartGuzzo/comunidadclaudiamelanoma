@@ -65,14 +65,11 @@ export default function PostCard({
     const [showComments, setShowComments] = useState(false);
     const [commentInput, setCommentInput] = useState('');
     
-    // Estados para Likes
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(post.likesCount);
 
-  // Cargar estado inicial del Like y el contador real
     useEffect(() => {
         async function fetchLikeStatus() {
-            // 1. Verificamos si el usuario actual dio like
             const { data: userLike } = await supabase
                 .from('likes')
                 .select('id')
@@ -82,7 +79,6 @@ export default function PostCard({
             
             if (userLike) setIsLiked(true);
 
-            // 2. Traemos el conteo real desde la tabla de likes
             const { count, error } = await supabase
                 .from('likes')
                 .select('*', { count: 'exact', head: true })
@@ -100,7 +96,6 @@ export default function PostCard({
         const previousLiked = isLiked;
         const previousCount = likeCount;
 
-        // Optimistic UI update
         setIsLiked(!previousLiked);
         setLikeCount(previousLiked ? likeCount - 1 : likeCount + 1);
 
@@ -111,7 +106,6 @@ export default function PostCard({
                 await supabase.from('likes').insert({ post_id: post.id, user_id: currentUserId });
             }
         } catch (error) {
-            // Revertir en caso de error
             setIsLiked(previousLiked);
             setLikeCount(previousCount);
             console.error("Error al actualizar like:", error);
@@ -188,17 +182,34 @@ export default function PostCard({
             </div>
 
             {showComments && (
-                <div className="mt-4 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-[#E3FEF7] flex items-center justify-center text-xs font-bold text-[#003C43]">
-                        {currentUserAvatar ? <Image src={currentUserAvatar} alt={currentUserName || 'User'} width={32} height={32} className="rounded-full" unoptimized /> : (currentUserName?.charAt(0) || 'U')}
+                <div className="mt-4 space-y-4">
+                    {/* Lista de comentarios renderizada */}
+                    <div className="space-y-3">
+                        {comments.map((c) => (
+                            <div key={c.id} className="flex gap-2 p-2 bg-[#f6fafa] rounded-lg">
+                                <div className="w-6 h-6 rounded-full bg-[#E3FEF7] flex items-center justify-center text-[10px] font-bold text-[#003C43]">
+                                    {c.authorAvatar ? <Image src={c.authorAvatar} alt={c.authorName} width={24} height={24} className="rounded-full" unoptimized /> : c.authorName.charAt(0)}
+                                </div>
+                                <div>
+                                    <p className="text-[11px] font-bold text-[#003C43]">{c.authorName}</p>
+                                    <p className="text-[11px] text-[#181c1d]/80">{c.content}</p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                    <input
-                        value={commentInput}
-                        onChange={(e) => setCommentInput(e.target.value)}
-                        placeholder="Escribir un comentario..."
-                        className="flex-1 bg-[#f6fafa] rounded-lg px-3 py-2 text-xs outline-none"
-                    />
-                    <button onClick={handleComment} className="text-[#003C43]"><Send size={16} /></button>
+
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-[#E3FEF7] flex items-center justify-center text-xs font-bold text-[#003C43]">
+                            {currentUserAvatar ? <Image src={currentUserAvatar} alt={currentUserName || 'User'} width={32} height={32} className="rounded-full" unoptimized /> : (currentUserName?.charAt(0) || 'U')}
+                        </div>
+                        <input
+                            value={commentInput}
+                            onChange={(e) => setCommentInput(e.target.value)}
+                            placeholder="Escribir un comentario..."
+                            className="flex-1 bg-[#f6fafa] rounded-lg px-3 py-2 text-xs outline-none"
+                        />
+                        <button onClick={handleComment} className="text-[#003C43]"><Send size={16} /></button>
+                    </div>
                 </div>
             )}
         </div>

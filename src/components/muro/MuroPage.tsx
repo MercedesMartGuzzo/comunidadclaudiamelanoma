@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase/client';
-import { type PostCardType } from '@/components/muro/PostCard';
+import { type PostCardType, type CommentCardType } from '@/components/muro/PostCard';
 import Feed from '@/components/muro/Feed';
 import CreatePost from '@/components/muro/CreatePost';
 import SidebarLeft from '@/components/muro/SliderbarLeft';
@@ -27,11 +27,23 @@ interface PostRaw {
     profiles: PostProfile | null;
 }
 
+interface SupabaseComment {
+    id: string;
+    post_id: string;
+    content: string;
+    created_at: string;
+    profiles: {
+        name: string;
+        avatar_url: string | null;
+    } | null;
+}
+
 
 
 export default function MuroPage() {
 
     const [localPosts, setLocalPosts] = useState<PostCardType[]>([]);
+    const [comments, setComments] = useState<CommentCardType[]>([]);
     const [currentUserId, setCurrentUserId] = useState<string>('');
     const [currentUserAvatar, setCurrentUserAvatar] = useState<string | null>(null);
     const [currentUserName, setCurrentUserName] = useState<string>('Usuario');
@@ -64,9 +76,14 @@ export default function MuroPage() {
             .select('id, user_id, content, created_at, profiles(name, location, avatar_url)')
             .order('created_at', { ascending: false });
 
+        const { data: commentsData } = await supabase
+            .from('comments')
+            .select('id, post_id, content, created_at, profiles(name, avatar_url)');
+
 
 
         const typedPosts = (postsData as unknown as PostRaw[]) || [];
+        const typedComments = (commentsData as unknown as SupabaseComment[]) || [];
 
 
 
@@ -82,6 +99,15 @@ export default function MuroPage() {
             authorLocation: p.profiles?.location || 'Sin ubicación',
             authorAvatar: p.profiles?.avatar_url || null,
         })));
+
+        setComments(typedComments.map(c => ({
+            id: c.id,
+            postId: c.post_id,
+            content: c.content,
+            createdAt: c.created_at,
+            authorName: c.profiles?.name || 'Usuario',
+            authorAvatar: c.profiles?.avatar_url || null,
+        })));
     }, []);
 
 
@@ -96,6 +122,29 @@ export default function MuroPage() {
     const handleUpdate = async (postId: string, newContent: string) => {
         await supabase.from('posts').update({ content: newContent }).eq('id', postId);
         setLocalPosts(prev => prev.map(p => p.id === postId ? { ...p, content: newContent } : p));
+    };
+
+    const handleAddComment = async (postId: string, content: string): Promise<void> => {
+        const { data: authData } = await supabase.auth.getUser();
+        if (!authData.user) return;
+
+        const { data: newCommentData } = await supabase
+            .from('comments')
+            .insert([{ post_id: postId, user_id: authData.user.id, content: content }])
+            .select('id, post_id, content, created_at, profiles(name, avatar_url)')
+            .single();
+
+        if (newCommentData) {
+            const raw = newCommentData as unknown as SupabaseComment;
+            setComments((prev) => [...prev, {
+                id: raw.id,
+                postId: raw.post_id,
+                content: raw.content,
+                createdAt: raw.created_at,
+                authorName: raw.profiles?.name || 'Usuario',
+                authorAvatar: raw.profiles?.avatar_url || null,
+            }]);
+        }
     };
 
 
@@ -150,8 +199,8 @@ export default function MuroPage() {
                         <CreatePost onPublish={fetchFeedData} />
                         <Feed
                             posts={localPosts}
-                            comments={[]}
-                            onAddComment={() => { }}
+                            comments={comments}
+                            onAddComment={handleAddComment}
                             onDelete={handleDelete}
                             onUpdate={handleUpdate}
                             currentUserId={currentUserId}
