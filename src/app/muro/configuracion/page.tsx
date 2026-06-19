@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation'; // Importado para la redirección p
 import {
     ArrowLeft,
     Bell,
-    Moon,
     Save,
     Mail,
     UserX,
@@ -33,7 +32,7 @@ export default function ConfiguracionPage() {
     // Estados de las preferencias (locales por ahora)
     const [emailNotifications, setEmailNotifications] = useState(true);
     const [communityNotifications, setCommunityNotifications] = useState(true);
-    const [darkMode, setDarkMode] = useState(false);
+ /*    const [darkMode, setDarkMode] = useState(false); */
     
     // Estados de UI de guardado
     const [saved, setSaved] = useState(false);
@@ -381,7 +380,7 @@ export default function ConfiguracionPage() {
                     </section>
 
                     {/* APARIENCIA */}
-                    <section className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,60,67,0.04)]">
+                {/*     <section className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,60,67,0.04)]">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="w-11 h-11 rounded-xl bg-[#E3FEF7] flex items-center justify-center">
                                 <Moon className="w-5 h-5 text-[#003C43]" />
@@ -412,7 +411,7 @@ export default function ConfiguracionPage() {
                                 className="w-5 h-5 accent-[#003C43]"
                             />
                         </label>
-                    </section>
+                    </section> */}
 
                     {/* BOTÓN GUARDAR CAMBIOS */}
                     <div className="flex justify-start sm:justify-end">

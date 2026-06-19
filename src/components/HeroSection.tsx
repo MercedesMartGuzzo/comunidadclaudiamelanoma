@@ -111,7 +111,7 @@ function MobileSections() {
 function TabletGrid() {
   const [first, ...rest] = sections;
   const middle = rest.slice(0, rest.length - 1);
-  const last   = rest[rest.length - 1];
+  const last = rest[rest.length - 1];
 
   return (
     <div className="flex flex-col gap-4 w-full mt-8">
@@ -150,8 +150,8 @@ function SectionSlide({ section }: { section: (typeof sections)[0]; index: numbe
   });
 
   const opacity = useTransform(scrollYProgress, [0, 0.08, 0.75, 0.9, 1], [0, 1, 1, 0.15, 0]);
-  const y       = useTransform(scrollYProgress, [0, 0.08], [24, 0]);
-  const scale   = useTransform(scrollYProgress, [0, 0.75, 1], [1.03, 1, 0.97]);
+  const y = useTransform(scrollYProgress, [0, 0.08], [24, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.75, 1], [1.03, 1, 0.97]);
 
   return (
     <motion.div
@@ -164,13 +164,13 @@ function SectionSlide({ section }: { section: (typeof sections)[0]; index: numbe
         alt={section.title}
         fill
         sizes="(max-w: 1300px) 56vw, 730px"
-    
-        unoptimized={true} 
-        className="object-cover z-0" 
+
+        unoptimized={true}
+        className="object-cover z-0"
       />
-      
+
       <div className="absolute inset-0 bg-gradient-to-t from-[#001a1d]/55 via-[#001a1d]/10 to-transparent z-10" />
-      
+
       <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
         <span className="inline-block font-inconsolata text-[0.6rem] font-bold uppercase tracking-[0.2em] text-[#aaeaf5] bg-[#003C43]/80 border border-[#aaeaf5]/20 px-3 py-1 rounded-full mb-4">
           {section.tag}
@@ -232,8 +232,7 @@ function LeftText({
       </h1>
 
       <p className="text-base sm:text-lg text-gray-300 font-noto-sans leading-relaxed mb-8">
-        Un espacio digital diseñado para brindar apoyo y conexión.
-        Información clínica con calidez humana.
+        Compartí experiencias, encontrá apoyo real y conectate con quienes entienden tu camino. Para que nadie enfrente el melanoma en soledad.
       </p>
 
       <div className="flex flex-col sm:flex-row gap-4 font-inconsolata">
@@ -301,29 +300,29 @@ export default function HeroSection() {
   const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   // ── GSAP refs ─────────────────────────────────────────────────────────────
-  const primaryOverlayRef   = useRef<HTMLSpanElement>(null);
-  const primaryTextRef      = useRef<HTMLSpanElement>(null);
-  const primaryIconRef      = useRef<HTMLSpanElement>(null);
+  const primaryOverlayRef = useRef<HTMLSpanElement>(null);
+  const primaryTextRef = useRef<HTMLSpanElement>(null);
+  const primaryIconRef = useRef<HTMLSpanElement>(null);
   const secondaryOverlayRef = useRef<HTMLSpanElement>(null);
-  const secondaryTextRef    = useRef<HTMLSpanElement>(null);
+  const secondaryTextRef = useRef<HTMLSpanElement>(null);
 
   const handlePrimaryEnter = () => {
-    gsap.to(primaryOverlayRef.current,  { x: 0, duration: 0.4, ease: 'power2.out' });
-    gsap.to(primaryTextRef.current,     { color: '#E3FEF7', duration: 0.4 });
-    gsap.to(primaryIconRef.current,     { x: 16, color: '#E3FEF7', duration: 0.4 });
+    gsap.to(primaryOverlayRef.current, { x: 0, duration: 0.4, ease: 'power2.out' });
+    gsap.to(primaryTextRef.current, { color: '#E3FEF7', duration: 0.4 });
+    gsap.to(primaryIconRef.current, { x: 16, color: '#E3FEF7', duration: 0.4 });
   };
   const handlePrimaryLeave = () => {
-    gsap.to(primaryOverlayRef.current,  { x: '-100%', duration: 0.4, ease: 'power2.out' });
-    gsap.to(primaryTextRef.current,     { color: '#003C43', duration: 0.4 });
-    gsap.to(primaryIconRef.current,     { x: 0, color: '#003C43', duration: 0.4 });
+    gsap.to(primaryOverlayRef.current, { x: '-100%', duration: 0.4, ease: 'power2.out' });
+    gsap.to(primaryTextRef.current, { color: '#003C43', duration: 0.4 });
+    gsap.to(primaryIconRef.current, { x: 0, color: '#003C43', duration: 0.4 });
   };
   const handleSecondaryEnter = () => {
     gsap.to(secondaryOverlayRef.current, { x: 0, duration: 0.4, ease: 'power2.out' });
-    gsap.to(secondaryTextRef.current,    { x: 4, color: '#ffffff', duration: 0.4 });
+    gsap.to(secondaryTextRef.current, { x: 4, color: '#ffffff', duration: 0.4 });
   };
   const handleSecondaryLeave = () => {
     gsap.to(secondaryOverlayRef.current, { x: '-100%', duration: 0.4, ease: 'power2.out' });
-    gsap.to(secondaryTextRef.current,    { x: 0, color: '#003C43', duration: 0.4 });
+    gsap.to(secondaryTextRef.current, { x: 0, color: '#003C43', duration: 0.4 });
   };
 
   return (
@@ -401,7 +400,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.9, ease: 'easeOut' }}
           >
-            Un espacio digital diseñado para brindar apoyo y conexión. Información clínica con calidez humana.
+            Compartí experiencias, encontrá apoyo real y conectate con quienes entienden tu camino. Para que nadie enfrente el melanoma en soledad.
           </motion.p>
 
           <motion.div
@@ -435,19 +434,19 @@ export default function HeroSection() {
           </motion.div>
 
           <motion.div
-            className="flex flex-row gap-3 mt-10"
+            className="flex flex-row  gap-3 mt-10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.9, duration: 1 }}
           >
-            <Leaf       className="w-4 h-4 text-white/30" />
-            <Clover     className="w-4 h-4 text-white/30" />
+            <Leaf className="w-4 h-4 text-white/30" />
+            <Clover className="w-4 h-4 text-white/30" />
             <LeafyGreen className="w-4 h-4 text-white/30" />
-            <Sprout     className="w-4 h-4 text-white/30" />
-            <Rose       className="w-4 h-4 text-white/30" />
-            <Flower2    className="w-4 h-4 text-white/30" />
-            <Wheat      className="w-4 h-4 text-white/30" />
-            <Flower     className="w-4 h-4 text-white/30" />
+            <Sprout className="w-4 h-4 text-white/30" />
+            <Rose className="w-4 h-4 text-white/30" />
+            <Flower2 className="w-4 h-4 text-white/30" />
+            <Wheat className="w-4 h-4 text-white/30" />
+            <Flower className="w-4 h-4 text-white/30" />
           </motion.div>
         </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, use, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Loader2, Bird } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
@@ -20,28 +20,28 @@ type Params = Promise<{ id: string }>;
 
 export default function UserProfilePage(props: { params: Params }) {
     const params = use(props.params);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [initialLoading, setInitialLoading] = useState<boolean>(true);
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [posts, setPosts] = useState<PostCardType[]>([]);
     const [comments, setComments] = useState<CommentCardType[]>([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchEverything = async () => {
-            setLoading(true);
-            const userId = params.id;
+    const fetchEverything = useCallback(async () => {
+        const userId = params.id;
 
-            const { data: profileData } = await supabase.from('profiles').select('name, location, bio').eq('id', userId).maybeSingle();
-            const { data: postsData } = await supabase.from('posts').select('id, user_id, content, created_at, profiles(name, location, avatar_url)').eq('user_id', userId).order('created_at', { ascending: false });
-            const { data: commentsData } = await supabase.from('comments').select('id, post_id, content, created_at, profiles(name, avatar_url)');
+        const { data: profileData } = await supabase.from('profiles').select('name, location, bio').eq('id', userId).maybeSingle();
+        const { data: postsData } = await supabase.from('posts').select('id, user_id, content, created_at, profiles(name, location, avatar_url)').eq('user_id', userId).order('created_at', { ascending: false });
+        const { data: commentsData } = await supabase.from('comments').select('id, post_id, content, created_at, profiles(name, avatar_url)');
 
-            if (profileData) setProfile(profileData as UserProfile);
-            if (postsData) setPosts((postsData as unknown as SupabasePost[]).map((item) => ({ id: item.id, userId: item.user_id, content: item.content, createdAt: item.created_at, likesCount: 0, commentsCount: 0, authorName: item.profiles?.name ?? 'Usuario', authorLocation: item.profiles?.location ?? 'Sin ubicación', authorAvatar: item.profiles?.avatar_url ?? null })));
-            if (commentsData) setComments((commentsData as unknown as SupabaseComment[]).map((item) => ({ id: item.id, postId: item.post_id, content: item.content, createdAt: item.created_at, authorName: item.profiles?.name ?? 'Usuario', authorAvatar: item.profiles?.avatar_url ?? null })));
-            setLoading(false);
-        };
-        fetchEverything();
+        if (profileData) setProfile(profileData as UserProfile);
+        if (postsData) setPosts((postsData as unknown as SupabasePost[]).map((item) => ({ id: item.id, userId: item.user_id, content: item.content, createdAt: item.created_at, likesCount: 0, commentsCount: 0, authorName: item.profiles?.name ?? 'Usuario', authorLocation: item.profiles?.location ?? 'Sin ubicación', authorAvatar: item.profiles?.avatar_url ?? null })));
+        if (commentsData) setComments((commentsData as unknown as SupabaseComment[]).map((item) => ({ id: item.id, postId: item.post_id, content: item.content, createdAt: item.created_at, authorName: item.profiles?.name ?? 'Usuario', authorAvatar: item.profiles?.avatar_url ?? null })));
     }, [params.id]);
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchEverything().finally(() => setInitialLoading(false));
+    }, [fetchEverything]);
 
     const handleAddComment = async (postId: string, content: string): Promise<void> => {
         const { data: authData } = await supabase.auth.getUser();
@@ -55,7 +55,7 @@ export default function UserProfilePage(props: { params: Params }) {
         }
     };
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin w-10 h-10 text-[#003C43]" /></div>;
+    if (initialLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin w-10 h-10 text-[#003C43]" /></div>;
 
     return (
         <div className="min-h-screen bg-[#f6fafa]">
@@ -69,7 +69,7 @@ export default function UserProfilePage(props: { params: Params }) {
                         </div>
                     </div>
                 )}
-                <button onClick={() => setIsMenuOpen(true)} className="lg:hidden fixed bottom-6 right-6 z-40 bg-[#003C43] text-white p-4 rounded-full shadow-lg"><Bird size={24} /></button>
+                <button type="button" onClick={() => setIsMenuOpen(true)} className="lg:hidden fixed bottom-6 right-6 z-40 bg-[#003C43] text-white p-4 rounded-full shadow-lg"><Bird size={24} /></button>
 
                 <div className="max-w-[1200px] mx-auto">
                     <Link href="/muro" className="flex items-center gap-2 text-xs font-bold uppercase text-[#003C43]/60 mb-6"><ArrowLeft className="w-4 h-4" /> Volver al muro</Link>
@@ -77,7 +77,7 @@ export default function UserProfilePage(props: { params: Params }) {
                         <div className="hidden lg:block lg:col-span-1"><SidebarLeft /></div>
                         <div className="lg:col-span-2">
                             <div className="bg-[#003C43] text-white p-6 rounded-xl mb-6 shadow-sm"><h1 className="text-2xl font-bold">{profile?.name ?? 'Cargando...'}</h1><p className="text-sm">{profile?.location ?? 'Ubicación no disponible'}</p><p className="mt-4">{profile?.bio ?? 'Este usuario no tiene biografía.'}</p></div>
-                            <CreatePost onPublish={() => {}} />
+                            <CreatePost onPublish={fetchEverything} />
                             <Feed posts={posts} comments={comments} onAddComment={handleAddComment} onDelete={async (id) => { await supabase.from('posts').delete().eq('id', id); setPosts(prev => prev.filter(p => p.id !== id)); }} onUpdate={async (id, content) => { await supabase.from('posts').update({ content }).eq('id', id); setPosts(prev => prev.map(p => p.id === id ? { ...p, content } : p)); }} currentUserId={params.id} currentUserName={profile?.name ?? 'Usuario'} />
                         </div>
                         <div className="hidden lg:block lg:col-span-1"><SidebarRight /></div>

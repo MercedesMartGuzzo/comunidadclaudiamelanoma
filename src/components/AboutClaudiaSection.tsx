@@ -98,7 +98,7 @@ export default function AboutClaudiaSection() {
                 ref={textRef}
                 className="relative z-10 text-[#003C43]  font-bold"
               >
-                Conocer nuestra historia
+                Conocé nuestra historia
               </span>
 
               {/* Lucide icon */}

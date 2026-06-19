@@ -7,7 +7,7 @@ import { Image as ImageIcon, Smile, Send, X, Check } from 'lucide-react';
 import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
 
 interface Props {
-    onPublish: (content: string) => void;
+    onPublish: () => void;
     initialData?: { id: string; content: string };
     onCancel?: () => void;
 }
@@ -18,11 +18,11 @@ export default function CreatePost({ onPublish, initialData, onCancel }: Props) 
     const [userAvatar, setUserAvatar] = useState<string | null>(null);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
-    
+    const [submitting, setSubmitting] = useState(false);
+
     const emojiPickerRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Lógica para cerrar el emoji picker al hacer clic fuera
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
@@ -72,14 +72,54 @@ export default function CreatePost({ onPublish, initialData, onCancel }: Props) 
         setSelectedImage(data.publicUrl);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!content.trim() && !selectedImage) return;
+        setSubmitting(true);
+
         const finalContent = selectedImage ? `${content}\n\n![img](${selectedImage})` : content;
-        onPublish(finalContent.trim());
-        
-        if (!initialData) {
-            setContent('');
-            setSelectedImage(null);
+
+        try {
+            if (initialData) {
+                // EDITAR post existente
+                const { error } = await supabase
+                    .from('posts')
+                    .update({ content: finalContent.trim() })
+                    .eq('id', initialData.id);
+
+                if (error) {
+                    console.error('Error al actualizar:', error.message);
+                    return;
+                }
+            } else {
+                // CREAR nuevo post
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    console.error('No hay usuario autenticado');
+                    return;
+                }
+
+                const { error } = await supabase
+                    .from('posts')
+                    .insert([{
+                        user_id: user.id,
+                        content: finalContent.trim(),
+                    }]);
+
+                if (error) {
+                    console.error('Error al publicar:', error.message);
+                    return;
+                }
+            }
+
+            // Limpieza y refresco
+            if (!initialData) {
+                setContent('');
+                setSelectedImage(null);
+            }
+            onPublish();
+
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -100,7 +140,6 @@ export default function CreatePost({ onPublish, initialData, onCancel }: Props) 
                     />
                     {selectedImage && (
                         <div className="mt-2 relative w-20 h-20">
-                            {/* Cambiado object-cover a object-contain para que la imagen no se corte */}
                             <Image src={selectedImage} alt="Preview" fill className="rounded-lg object-contain" unoptimized />
                             <button onClick={() => setSelectedImage(null)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5"><X size={12} /></button>
                         </div>
@@ -112,18 +151,17 @@ export default function CreatePost({ onPublish, initialData, onCancel }: Props) 
                 <div className="flex gap-3 relative">
                     <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
                     <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-1.5 text-xs text-[#003C43]/50 hover:text-[#003C43]"><ImageIcon size={16} /> Foto</button>
-                    
+
                     <div ref={emojiPickerRef}>
                         <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="flex items-center gap-1.5 text-xs text-[#003C43]/50 hover:text-[#003C43]"><Smile size={16} /> Emoción</button>
                         {showEmojiPicker && (
-                            // Contenedor fixed que centra el picker en toda la pantalla (móvil y desktop)
                             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/20" onClick={() => setShowEmojiPicker(false)}>
                                 <div className="shadow-2xl rounded-xl overflow-hidden" onClick={e => e.stopPropagation()}>
-                                    <EmojiPicker 
-                                        theme={Theme.LIGHT} 
+                                    <EmojiPicker
+                                        theme={Theme.LIGHT}
                                         onEmojiClick={(e: EmojiClickData) => {
                                             setContent(prev => prev + e.emoji);
-                                        }} 
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -137,8 +175,17 @@ export default function CreatePost({ onPublish, initialData, onCancel }: Props) 
                             Cancelar
                         </button>
                     )}
-                    <button onClick={handleSubmit} disabled={!content.trim() && !selectedImage} className="bg-[#003C43] text-[#E3FEF7] px-5 py-2 rounded-md text-xs font-bold uppercase hover:bg-[#00252a] disabled:opacity-40">
-                        {initialData ? <><Check size={14} className="inline mr-2" /> Guardar</> : <><Send size={14} className="inline mr-2" /> Publicar</>}
+                    <button
+                        onClick={handleSubmit}
+                        disabled={(!content.trim() && !selectedImage) || submitting}
+                        className="bg-[#003C43] text-[#E3FEF7] px-5 py-2 rounded-md text-xs font-bold uppercase hover:bg-[#00252a] disabled:opacity-40"
+                    >
+                        {submitting
+                            ? '...'
+                            : initialData
+                                ? <><Check size={14} className="inline mr-2" /> Guardar</>
+                                : <><Send size={14} className="inline mr-2" /> Publicar</>
+                        }
                     </button>
                 </div>
             </div>

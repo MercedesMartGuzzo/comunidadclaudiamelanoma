@@ -20,12 +20,12 @@ const faqData: FAQItem[] = [
     {
         question: '¿La comunidad tiene costo?',
         answer:
-            'No. Comunidad Claudia Melanoma es completamente gratuita para pacientes, familiares, cuidadores y acompañantes.',
+            'No. Red Melanoma Latinoamérica es completamente gratuita para pacientes, familiares, cuidadores y acompañantes.',
     },
     {
         question: '¿Qué recursos ofrece la plataforma?',
         answer:
-            'Incluye información clínica curada, foros temáticos, recursos emocionales, experiencias compartidas y contenido educativo actualizado.',
+            'Incluye información clínica curada, grupos temáticos, recursos emocionales, experiencias compartidas y contenido educativo actualizado.',
     },
     {
         question: '¿Cómo puedo contactar al equipo?',
@@ -88,13 +88,13 @@ function CommunityCTAButton() {
             ease: 'power2.out',
         });
 
-       
+
         gsap.to(textRef.current, {
             color: '#003C43',
             duration: 0.4,
         });
 
-        
+
         gsap.to(iconRef.current, {
             x: 20,
             color: '#003C43',
