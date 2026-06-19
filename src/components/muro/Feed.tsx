@@ -7,21 +7,21 @@ interface Props {
     comments: CommentCardType[];
     onAddComment: (postId: string, content: string) => void;
     onDelete: (postId: string) => void;
-    onUpdate: (postId: string, content: string) => void;
+    onRefresh: () => void; // ← reemplaza a onUpdate
     currentUserId: string;
     currentUserAvatar?: string | null;
     currentUserName?: string;
 }
 
-export default function Feed({ 
-    posts, 
-    comments, 
-    onAddComment, 
-    onDelete, 
-    onUpdate, 
-    currentUserId, 
-    currentUserAvatar, 
-    currentUserName 
+export default function Feed({
+    posts,
+    comments,
+    onAddComment,
+    onDelete,
+    onRefresh,
+    currentUserId,
+    currentUserAvatar,
+    currentUserName
 }: Props) {
     return (
         <div className="flex flex-col gap-4">
@@ -32,7 +32,7 @@ export default function Feed({
                     comments={comments.filter((c) => c.postId === post.id)}
                     onAddComment={onAddComment}
                     onDelete={onDelete}
-                    onUpdate={onUpdate}
+                    onRefresh={onRefresh}
                     currentUserId={currentUserId}
                     currentUserAvatar={currentUserAvatar}
                     currentUserName={currentUserName}

@@ -6,7 +6,6 @@ import { Heart, MessageCircle, Clock, Send, Trash2, Edit2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import CreatePost from './CreatePost';
 
-// Función para calcular el tiempo relativo
 function timeAgo(dateStr: string) {
     const now = new Date();
     const date = new Date(dateStr);
@@ -45,7 +44,7 @@ interface Props {
     comments: CommentCardType[];
     onAddComment: (postId: string, content: string) => void;
     onDelete: (postId: string) => void;
-    onUpdate: (postId: string, content: string) => void;
+    onRefresh: () => void; // ← reemplaza a onUpdate
     currentUserId: string;
     currentUserAvatar?: string | null;
     currentUserName?: string;
@@ -56,15 +55,15 @@ export default function PostCard({
     comments,
     onAddComment,
     onDelete,
-    onUpdate,
+    onRefresh,
     currentUserId,
-    currentUserAvatar, 
-    currentUserName    
+    currentUserAvatar,
+    currentUserName
 }: Props) {
     const [isEditing, setIsEditing] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [commentInput, setCommentInput] = useState('');
-    
+
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(post.likesCount);
 
@@ -76,7 +75,7 @@ export default function PostCard({
                 .eq('post_id', post.id)
                 .eq('user_id', currentUserId)
                 .single();
-            
+
             if (userLike) setIsLiked(true);
 
             const { count, error } = await supabase
@@ -88,7 +87,7 @@ export default function PostCard({
                 setLikeCount(count);
             }
         }
-        
+
         fetchLikeStatus();
     }, [post.id, currentUserId]);
 
@@ -116,6 +115,13 @@ export default function PostCard({
         if (!commentInput.trim()) return;
         onAddComment(post.id, commentInput.trim());
         setCommentInput('');
+    };
+
+    // CreatePost ya hizo el update real en Supabase.
+    // Acá solo cerramos el modo edición y pedimos al padre que refresque los datos.
+    const handleEditPublished = () => {
+        setIsEditing(false);
+        onRefresh();
     };
 
     const renderContent = (content: string) => {
@@ -150,8 +156,8 @@ export default function PostCard({
                 </div>
                 {post.userId === currentUserId && !isEditing && (
                     <div className="flex gap-3">
-                        <button onClick={() => setIsEditing(true)} className="text-[#003C43]/60 hover:text-[#003C43]"><Edit2 size={16} /></button>
-                        <button onClick={() => onDelete(post.id)} className="text-[#003C43]/60 hover:text-[#003C43]"><Trash2 size={16} /></button>
+                        <button type="button" onClick={() => setIsEditing(true)} className="text-[#003C43]/60 hover:text-[#003C43]"><Edit2 size={16} /></button>
+                        <button type="button" onClick={() => onDelete(post.id)} className="text-[#003C43]/60 hover:text-[#003C43]"><Trash2 size={16} /></button>
                     </div>
                 )}
             </div>
@@ -159,7 +165,7 @@ export default function PostCard({
             {isEditing ? (
                 <CreatePost
                     initialData={{ id: post.id, content: post.content }}
-                    onPublish={(c) => { onUpdate(post.id, c); setIsEditing(false); }}
+                    onPublish={handleEditPublished}
                     onCancel={() => setIsEditing(false)}
                 />
             ) : (
@@ -167,13 +173,15 @@ export default function PostCard({
             )}
 
             <div className="flex gap-4 pt-4 border-t border-[#003C43]/08">
-                <button 
+                <button
+                    type="button"
                     onClick={handleLike}
                     className={`flex items-center gap-1 text-xs ${isLiked ? 'text-red-500' : 'text-gray-500'}`}
                 >
                     <Heart size={16} fill={isLiked ? "currentColor" : "none"} /> {likeCount}
                 </button>
                 <button
+                    type="button"
                     onClick={() => setShowComments(!showComments)}
                     className="flex items-center gap-1 text-xs text-gray-500"
                 >
@@ -183,7 +191,6 @@ export default function PostCard({
 
             {showComments && (
                 <div className="mt-4 space-y-4">
-                    {/* Lista de comentarios renderizada */}
                     <div className="space-y-3">
                         {comments.map((c) => (
                             <div key={c.id} className="flex gap-2 p-2 bg-[#f6fafa] rounded-lg">
@@ -208,7 +215,7 @@ export default function PostCard({
                             placeholder="Escribir un comentario..."
                             className="flex-1 bg-[#f6fafa] rounded-lg px-3 py-2 text-xs outline-none"
                         />
-                        <button onClick={handleComment} className="text-[#003C43]"><Send size={16} /></button>
+                        <button type="button" onClick={handleComment} className="text-[#003C43]"><Send size={16} /></button>
                     </div>
                 </div>
             )}

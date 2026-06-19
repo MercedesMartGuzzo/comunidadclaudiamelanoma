@@ -78,7 +78,18 @@ export default function UserProfilePage(props: { params: Params }) {
                         <div className="lg:col-span-2">
                             <div className="bg-[#003C43] text-white p-6 rounded-xl mb-6 shadow-sm"><h1 className="text-2xl font-bold">{profile?.name ?? 'Cargando...'}</h1><p className="text-sm">{profile?.location ?? 'Ubicación no disponible'}</p><p className="mt-4">{profile?.bio ?? 'Este usuario no tiene biografía.'}</p></div>
                             <CreatePost onPublish={fetchEverything} />
-                            <Feed posts={posts} comments={comments} onAddComment={handleAddComment} onDelete={async (id) => { await supabase.from('posts').delete().eq('id', id); setPosts(prev => prev.filter(p => p.id !== id)); }} onUpdate={async (id, content) => { await supabase.from('posts').update({ content }).eq('id', id); setPosts(prev => prev.map(p => p.id === id ? { ...p, content } : p)); }} currentUserId={params.id} currentUserName={profile?.name ?? 'Usuario'} />
+                            <Feed
+                                posts={posts}
+                                comments={comments}
+                                onAddComment={handleAddComment}
+                                onDelete={async (id) => {
+                                    await supabase.from('posts').delete().eq('id', id);
+                                    setPosts(prev => prev.filter(p => p.id !== id));
+                                }}
+                                onRefresh={fetchEverything}
+                                currentUserId={params.id}
+                                currentUserName={profile?.name ?? 'Usuario'}
+                            />
                         </div>
                         <div className="hidden lg:block lg:col-span-1"><SidebarRight /></div>
                     </div>

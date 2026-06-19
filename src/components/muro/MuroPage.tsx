@@ -118,11 +118,11 @@ export default function MuroPage() {
     };
 
 
-
+/* 
     const handleUpdate = async (postId: string, newContent: string) => {
         await supabase.from('posts').update({ content: newContent }).eq('id', postId);
         setLocalPosts(prev => prev.map(p => p.id === postId ? { ...p, content: newContent } : p));
-    };
+    }; */
 
     const handleAddComment = async (postId: string, content: string): Promise<void> => {
         const { data: authData } = await supabase.auth.getUser();
@@ -202,7 +202,7 @@ export default function MuroPage() {
                             comments={comments}
                             onAddComment={handleAddComment}
                             onDelete={handleDelete}
-                            onUpdate={handleUpdate}
+                            onRefresh={fetchFeedData}
                             currentUserId={currentUserId}
                             currentUserAvatar={currentUserAvatar}
                             currentUserName={currentUserName}
